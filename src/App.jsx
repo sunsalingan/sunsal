@@ -31,6 +31,7 @@ import ReviewModal from "./components/features/ReviewModal";
 import ProfileModal from "./components/features/ProfileModal";
 import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
 import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
+import Sidebar from "./components/layout/Sidebar";
 
 function App() {
     // --- Auth State ---
@@ -59,6 +60,8 @@ function App() {
     const [targetProfile, setTargetProfile] = useState(null);
     const [selectedNewPlace, setSelectedNewPlace] = useState(null);
     const [newReviewParams, setNewReviewParams] = useState({ text: "" });
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [categoryFilter, setCategoryFilter] = useState("전체");
 
     // --- Map State ---
     const mapElement = useRef(null);
@@ -109,36 +112,40 @@ function App() {
     // --- Derived Data ---
     const activeReviews = useMemo(() => {
         if (!reviews) return [];
+        let filtered = reviews;
         if (viewMode === "MY") {
-            // If not logged in, return empty or handle safely
             if (!user) return [];
-            return reviews.filter((r) => r.userId === user.uid);
+            filtered = reviews.filter((r) => r.userId === user.uid);
         }
-        return reviews; // Global or Friends (mock)
-    }, [reviews, viewMode, user]);
+
+        if (categoryFilter !== "전체") {
+            filtered = filtered.filter(r => r.category === categoryFilter);
+        }
+
+        return filtered;
+    }, [reviews, viewMode, user, categoryFilter]);
 
     const displayedReviews = useMemo(() => {
-        // Basic sorting logic (mock scores for global)
-        // Global: random score or stored score
-        // My: My Rank order (based on insertion order or 'rank' field? original code used array order as rank)
-        // Original code: 'reviews' from firestore ordered by createdAt desc.
-        // That means latest added is top. 
-        // Wait, the "Rank" logic in the prototype was:
-        // "Recursive comparison inserts item at specific index" -> but Firestore is flat.
-        // Original code maintained order via a "rank" field? Or just UI ordering?
-        // Looking at original App.js logic (which I have in memory/history):
-        // `const handleReviewSubmit = ... addDoc({ ... rankingIndex ... })`
-        // It seems it didn't strictly enforce re-ordering all docs. It just added a doc.
-        // And the list was `reviews`.
-        // Let's assume `reviews` is the source of truth.
-        // For "Global", we assign random mock scores 9.0 ~ 9.9 for visual `globalScore`.
-
         return (activeReviews || []).map((r) => ({
             ...r,
-            globalScore: r.globalScore || (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
+            // Calculate score if not present, but usually it should be stored
+            displayScore: r.globalScore || (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
             friendScore: (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
-        }));
+        })).sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
     }, [activeReviews]);
+
+    // --- Scoring Logic ---
+    const getRankScore = (myRank, totalCount) => {
+        if (totalCount === 0) return 10;
+        const percentile = ((myRank + 1) / (totalCount + 1)) * 100; // 상위 n%
+
+        if (percentile <= 1) return 10;   // 상위 1% : 인생 맛집 (10점)
+        if (percentile <= 5) return 9.5;  // 상위 5% : 강력 추천 (9점 -> 9.5로 세분화 가능)
+        if (percentile <= 15) return 9.0;
+        if (percentile <= 30) return 8.5;
+        if (percentile <= 50) return 7.5;
+        return 6.0;
+    };
 
     // --- Map Clusters ---
     const mapClusters = useMemo(() => {
@@ -221,17 +228,36 @@ function App() {
         }
     };
 
+    const [tempRankIndex, setTempRankIndex] = useState(0);
+
+    const handleInsert = (targetId, position) => {
+        // Logic: Calculate target rankIndex based on neighbors
+        // Simple implementation: for prototype, just set a value.
+        // In real app, we would shift others or use Lexorank.
+        if (targetId === "TOP") {
+            setTempRankIndex(0);
+        } else {
+            const targetIdx = reviews.findIndex(r => r.id === targetId);
+            setTempRankIndex(position === "BEFORE" ? targetIdx : targetIdx + 1);
+        }
+    };
+
     const handleReviewSubmit = async () => {
         if (!user || !selectedNewPlace) return;
-        // Add to firestore
+
+        const totalCount = reviews.length;
+        const calculatedScore = getRankScore(tempRankIndex, totalCount);
+
         const newDoc = {
             ...selectedNewPlace,
             userId: user.uid,
             userName: user.displayName,
             userPhoto: user.photoURL,
             comment: newReviewParams.text,
-            timestamp: serverTimestamp(), // FIXED: use 'timestamp' to match read query
-            // x, y for virtual map (legacy but kept for schema)
+            timestamp: serverTimestamp(),
+            rankIndex: tempRankIndex,
+            globalScore: calculatedScore,
+            // x, y for legacy schema
             x: Math.random() * 800 + 100,
             y: Math.random() * 800 + 100,
         };
@@ -239,21 +265,13 @@ function App() {
         try {
             await addDoc(collection(db, "reviews"), newDoc);
             setReviewModalOpen(false);
-            // Reset
             setSelectedNewPlace(null);
             setNewReviewParams({ text: "" });
-            alert("등록되었습니다!");
+            alert(`등록되었습니다! 확정 순위: ${tempRankIndex + 1}위 (점수: ${calculatedScore}점)`);
         } catch (e) {
             console.error(e);
             alert("오류가 발생했습니다.");
         }
-    };
-
-    const handleInsert = (targetId, position) => {
-        // Prototype Logic: Just confirm selection and move flow
-        // The ReviewModal now handles the next step automatically for better UX
-        console.log(`Insert ${position} ${targetId}`);
-        // Removed alert to make flow smoother as requested
     };
 
     return (
@@ -271,9 +289,32 @@ function App() {
                 handleLogout={handleLogout}
                 handleBackToMain={() => setCurrentPage("MAIN")}
                 targetProfile={targetProfile}
+                onMenuClick={() => setSidebarOpen(true)}
+            />
+
+            <Sidebar
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                user={user}
+                handleLogout={handleLogout}
             />
 
             <div className="flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl bg-white">
+                {/* Category Quick Filter */}
+                <div className="flex gap-2 p-3 bg-white border-b overflow-x-auto scrollbar-hide z-20 shrink-0">
+                    {["전체", "한식", "일식", "양식", "중식", "카페"].map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setCategoryFilter(cat)}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${categoryFilter === cat
+                                    ? "bg-indigo-600 text-white shadow-md scale-105"
+                                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
                 <MapArea
                     useRealMap={useRealMap}
                     showMap={showMap}
@@ -391,11 +432,16 @@ function App() {
                 activeReviews={activeReviews}
             />
 
-            <RestaurantDetailModal
-                restaurant={selectedRestaurant}
-                onClose={() => setDetailModalOpen(false)}
-                allReviews={reviews}
-            />
+            {detailModalOpen && (
+                <RestaurantDetailModal
+                    restaurant={selectedRestaurant}
+                    onClose={() => {
+                        setDetailModalOpen(false);
+                        setSelectedRestaurant(null);
+                    }}
+                    allReviews={reviews}
+                />
+            )}
 
             <RestaurantSearchModal
                 isOpen={restaurantSearchOpen}

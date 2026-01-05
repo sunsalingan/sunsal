@@ -1,5 +1,5 @@
 import React from "react";
-import { Trophy, Users, ArrowLeft, LogIn, LogOut } from "lucide-react";
+import { Trophy, Users, ArrowLeft, LogIn, LogOut, Menu } from "lucide-react";
 
 const Header = ({
     currentPage,
@@ -14,17 +14,26 @@ const Header = ({
     setViewMode,
     handleLogin,
     handleLogout,
+    onMenuClick,
 }) => {
     return (
         <header className="bg-white shadow-sm z-30 shrink-0">
             <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
                 {currentPage === "MAIN" ? (
                     <>
-                        <div className="flex items-center gap-2">
-                            <div className="bg-indigo-600 p-2 rounded-lg text-white">
-                                <Trophy size={18} />
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={onMenuClick}
+                                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                            >
+                                <Menu size={20} className="text-slate-600" />
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <div className="bg-indigo-600 p-2 rounded-lg text-white">
+                                    <Trophy size={18} />
+                                </div>
+                                <h1 className="text-lg font-bold text-slate-900">RankEats</h1>
                             </div>
-                            <h1 className="text-lg font-bold text-slate-900">RankEats</h1>
                         </div>
                         <div className="flex gap-2">
                             <div className="flex items-center gap-2">

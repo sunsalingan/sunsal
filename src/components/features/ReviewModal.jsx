@@ -21,13 +21,17 @@ const ReviewModal = ({
     mockRestaurantSearch, // function to search
 }) => {
     const [step, setStep] = useState(1);
-    const [localSearchTerm, setLocalSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+    const [isLocationAuthed, setIsLocationAuthed] = useState(false);
+    const [isReceiptAuthed, setIsReceiptAuthed] = useState(false);
 
     if (!isOpen) return null;
 
     const handleNext = () => {
         if (step === 1) {
+            if (!isLocationAuthed || !isReceiptAuthed) {
+                alert("방문 인증(위치 및 영수증)을 먼저 완료해주세요.");
+                return;
+            }
             if (!selectedNewPlace || !newReviewParams.text) {
                 alert("식당을 선택하고 한줄 평을 입력해주세요.");
                 return;
@@ -36,7 +40,6 @@ const ReviewModal = ({
         } else if (step === 2) {
             setStep(3);
         } else {
-            // Final submit
             onSubmit();
         }
     };
@@ -65,18 +68,34 @@ const ReviewModal = ({
                     {step === 1 && (
                         <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="border border-green-200 bg-green-50 p-4 rounded-xl flex flex-col items-center justify-center gap-2 text-green-700">
-                                    <div className="p-2 bg-white rounded-full shadow-sm">
-                                        <Check size={20} className="text-green-600" />
+                                <button
+                                    onClick={() => {
+                                        setIsLocationAuthed(true);
+                                        alert("위치 인증 완료!");
+                                    }}
+                                    className={`p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-all ${isLocationAuthed
+                                        ? "bg-green-50 border border-green-200 text-green-700"
+                                        : "bg-white border border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600"}`}
+                                >
+                                    <div className={`p-2 rounded-full shadow-sm ${isLocationAuthed ? "bg-white" : "bg-slate-50"}`}>
+                                        <MapPin size={20} className={isLocationAuthed ? "text-green-600" : "text-slate-300"} />
                                     </div>
-                                    <span className="text-xs font-bold">위치 인증됨</span>
-                                </div>
-                                <div className="border border-blue-200 bg-blue-50 p-4 rounded-xl flex flex-col items-center justify-center gap-2 text-blue-700">
-                                    <div className="p-2 bg-white rounded-full shadow-sm">
-                                        <Check size={20} className="text-blue-600" />
+                                    <span className="text-xs font-bold">{isLocationAuthed ? "위치 인증됨" : "위치 인증하기"}</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsReceiptAuthed(true);
+                                        alert("영수증 OCR 인증 완료!");
+                                    }}
+                                    className={`p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-all ${isReceiptAuthed
+                                        ? "bg-blue-50 border border-blue-200 text-blue-700"
+                                        : "bg-white border border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600"}`}
+                                >
+                                    <div className={`p-2 rounded-full shadow-sm ${isReceiptAuthed ? "bg-white" : "bg-slate-50"}`}>
+                                        <CreditCard size={20} className={isReceiptAuthed ? "text-blue-600" : "text-slate-300"} />
                                     </div>
-                                    <span className="text-xs font-bold">영수증 인증됨</span>
-                                </div>
+                                    <span className="text-xs font-bold">{isReceiptAuthed ? "영수증 인증됨" : "영수증 인증하기"}</span>
+                                </button>
                             </div>
 
                             <div className="space-y-2">
