@@ -38,13 +38,13 @@ import { resetAndSeedData } from "./utils/seeder";
 // import ReviewModal from "./components/features/ReviewModal";
 // import ProfileModal from "./components/features/ProfileModal";
 import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
-import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
+// import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
 
 // Dummy Modals (SAFE MODE - FIXING CRASH)
 const ReviewModal = () => null;
 const ProfileModal = () => null;
 // Real Modal is imported above
-// const RestaurantSearchModal = () => null;
+const RestaurantSearchModal = () => null;
 
 
 function App() {
@@ -69,12 +69,6 @@ function App() {
     const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [targetProfile, setTargetProfile] = useState(null); // For Profile Modal
     const [friendsListOpen, setFriendsListOpen] = useState(false); // If friends list is a modal
-
-    // --- Ranking Group State ---
-    const [expandedFolders, setExpandedFolders] = useState({});
-    const toggleFolder = (folderId) => {
-        setExpandedFolders(prev => ({ ...prev, [folderId]: !prev[folderId] }));
-    };
 
     const [followingList, setFollowingList] = useState([]);
     const [wishlist, setWishlist] = useState([]);
@@ -254,7 +248,6 @@ function App() {
             {/* --- MODALS --- */}
             {restaurantSearchOpen && (
                 <RestaurantSearchModal
-                    isOpen={true} // Fixed: Modal requires this prop to render
                     onClose={() => setRestaurantSearchOpen(false)} // Pass correctly
                     user={user}
                     onSelect={(place) => {

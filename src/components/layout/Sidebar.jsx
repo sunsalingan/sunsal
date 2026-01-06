@@ -1,12 +1,12 @@
 import React from "react";
-import { X, Trophy, User, Users, Settings, LogOut, ChevronRight } from "lucide-react";
+import { X, Trophy, User, Users, Settings, LogOut, ChevronRight, Heart, Sparkles } from "lucide-react";
 
-const Sidebar = ({ isOpen, onClose, user, handleLogout }) => {
+const Sidebar = ({ isOpen, onClose, user, handleLogout, onNavigate }) => {
     return (
         <>
             {/* Backdrop */}
             <div
-                className={`fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                className={`fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 hidden"
                     }`}
                 onClick={onClose}
             />
@@ -44,11 +44,13 @@ const Sidebar = ({ isOpen, onClose, user, handleLogout }) => {
                     )}
 
                     <div className="space-y-1 px-3">
-                        <SidebarItem icon={<Trophy size={18} />} label="🏆 전국 통합 랭킹" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
-                        <SidebarItem icon={<Users size={18} />} label="👥 친구 관리" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
-                        <SidebarItem icon={<User size={18} />} label="👤 마이 페이지" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
+                        <SidebarItem icon={<Trophy size={18} />} label="🏆 전국 통합 랭킹" onClick={() => { onNavigate("GLOBAL"); onClose(); }} />
+                        <SidebarItem icon={<Users size={18} />} label="👥 친구 관리" onClick={() => { onNavigate("FRIENDS_MANAGE"); onClose(); }} />
+                        <SidebarItem icon={<Sparkles size={18} />} label="✨ AI 맛집 추천" onClick={() => { onNavigate("AI_RECOMMEND"); onClose(); }} />
+                        <SidebarItem icon={<User size={18} />} label="👤 마이 페이지" onClick={() => { onNavigate("MY_PAGE"); onClose(); }} />
                         <div className="my-4 border-t border-slate-100 mx-3" />
-                        <SidebarItem icon={<Settings size={18} />} label="⚙️ 설정" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
+                        <SidebarItem icon={<Heart size={18} />} label="❤️ 가고싶다" onClick={() => { onNavigate("WISHLIST"); onClose(); }} />
+                        <SidebarItem icon={<Settings size={18} />} label="⚙️ 설정" onClick={() => { alert("준비중입니다."); onClose(); }} />
                     </div>
                 </div>
 

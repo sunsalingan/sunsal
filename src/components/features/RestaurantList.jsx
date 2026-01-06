@@ -27,15 +27,26 @@ const RestaurantList = ({
                             ? (review.globalScore || "0.0")
                             : currentPage === "MAIN" && viewMode === "FRIENDS"
                                 ? (review.friendScore || "-")
-                                : (myScore || "-");
+                                : viewMode === "WISHLIST"
+                                    ? "❤️"
+                                    : viewMode === "AI_RECOMMEND"
+                                        ? (review.friendScore || "추천")
+                                        : (myScore || "-");
                     const scoreColor =
                         currentPage === "MAIN" && viewMode === "GLOBAL"
                             ? "text-indigo-600"
-                            : "text-emerald-600";
+                            : viewMode === "WISHLIST"
+                                ? "text-pink-500"
+                                : viewMode === "AI_RECOMMEND"
+                                    ? "text-purple-600"
+                                    : "text-emerald-600";
                     return (
                         <div
                             key={review.id}
-                            onClick={() => handleOpenDetail(review)}
+                            onClick={() => {
+                                console.log("List Item Clicked:", review.name);
+                                handleOpenDetail(review);
+                            }}
                             className="bg-white p-4 rounded-xl shadow-sm border mb-3 flex justify-between items-center cursor-pointer hover:border-indigo-300 transition-colors"
                         >
                             <div className="flex items-center gap-3">

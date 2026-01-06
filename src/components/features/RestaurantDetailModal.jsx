@@ -1,9 +1,20 @@
 import React from "react";
-import { X, MapPin, Star, User } from "lucide-react";
+import { X, MapPin, Star, User, Heart } from "lucide-react";
 
-const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile }) => {
+const RestaurantDetailModal = ({
+    restaurant,
+    onClose,
+    user,
+    allReviews = [],
+    onOpenReview,
+    onToggleWishlist,
+    isWishlisted
+}) => {
+    // Safety check - if no restaurant, don't render anything that could block clicks
     if (!restaurant) return null;
 
+    // Calculate score
+    const score = restaurant.globalScore || (Math.random() * 1.9 + 8.1).toFixed(1);
     // Find reviews for this restaurant
     // For now we just show a dummy list or filter from allReviews if structured that way.
     // In the original App.jsx `handleOpenDetail` just set `selectedRestaurant`.
@@ -75,12 +86,23 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile 
                     </div>
                 </div>
 
-                <div className="p-4 border-t bg-white safe-area-bottom">
+                <div className="p-4 border-t bg-white safe-area-bottom flex gap-2">
                     <button
-                        onClick={() => alert("내 리스트에 추가되었습니다! (기능 준비중)")}
-                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700"
+                        onClick={onToggleWishlist}
+                        className={`flex-1 py-3 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 ${isWishlisted
+                            ? "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            }`}
                     >
-                        가고싶다 (+내 리스트 추가)
+                        <Heart size={20} className={isWishlisted ? "fill-slate-500" : "text-slate-400"} />
+                        {isWishlisted ? "제거" : "찜하기"}
+                    </button>
+                    <button
+                        onClick={onOpenReview}
+                        className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 flex items-center justify-center gap-2"
+                    >
+                        <Star size={18} className="fill-white/20" />
+                        리뷰 쓰기
                     </button>
                 </div>
             </div>
