@@ -2,7 +2,8 @@
  * 네이버 지역 검색 API 및 지도 관련 서비스
  */
 
-const NAVER_SEARCH_URL = "https://openapi.naver.com/v1/search/local.json";
+// Firebase Functions URL (배포된 주소)
+const FIREBASE_FUNCTION_URL = "https://us-central1-sunsal-ranking.cloudfunctions.net/searchNaverPlaces";
 
 // 주의: Client ID와 Secret은 보안상 백엔드에서 관리해야 함
 // 프론트엔드 테스트를 위해 필요한 경우 프록시 서버(Cors-anywhere 등)를 사용해야 합니다.
@@ -10,44 +11,33 @@ const CLIENT_ID = "YOUR_NAVER_CLIENT_ID";
 const CLIENT_SECRET = "YOUR_NAVER_CLIENT_SECRET";
 
 /**
- * 네이버 지역 검색 API 호출
+ * 네이버 지역 검색 API 호출 (Firebase Functions 프록시 경유)
  * @param {string} query 검색어 (예: "강남역 맛집")
  * @returns {Promise<Array>} 검색 결과 리스트
  */
 export const searchNaverPlaces = async (query) => {
+    if (!query) return [];
+
     try {
-        // 실제 구현 시 CORS 문제로 인해 직접 호출 대신 백엔드 API를 거쳐야 함
-        // 예: const response = await fetch(`/api/naver-search?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`${FIREBASE_FUNCTION_URL}?q=${encodeURIComponent(query)}`);
+        if (!response.ok) throw new Error("Network response was not ok");
 
-        console.log(`Searching Naver Places for: ${query}`);
-
-        // 브라우저 직접 호출용 샘플 (CORS 제한이 없을 경우의 예시)
-        /*
-        const response = await fetch(`${NAVER_SEARCH_URL}?query=${encodeURIComponent(query)}&display=10`, {
-            headers: {
-                "X-Naver-Client-Id": CLIENT_ID,
-                "X-Naver-Client-Secret": CLIENT_SECRET,
-            },
-        });
         const data = await response.json();
-        return data.items.map(item => ({
-            name: item.title.replace(/<[^>]*>?/gm, ''), // HTML 태그 제거
+        const items = data.results || [];
+
+        // 데이터 포맷 통일
+        return items.map(item => ({
+            name: item.name,
             address: item.address,
             category: item.category,
-            link: item.link,
-            // Naver Search API는 좌표(mapx, mapy)를 KATECH계 좌표로 주므로 변환 필요
-            mapx: item.mapx,
-            mapy: item.mapy
+            lat: item.lat, // 이미 WGS84로 변환됨
+            lng: item.lng,
+            isLocation: false // 상호명 검색 결과임
         }));
-        */
 
-        // 현재는 서버 구현이 안되어 있으므로 목업 데이터를 반환하되, 구조는 실제와 동일하게 유도
-        return [
-            { name: `${query} 1번지`, address: "서울시 강남구 ...", category: "한식", lat: 37.5665, lng: 126.9780 },
-            { name: `${query} 핫플레이스`, address: "서울시 서초구 ...", category: "양식", lat: 37.5655, lng: 126.9770 },
-        ];
-    } catch (error) {
-        console.error("Naver Search API Error:", error);
+    } catch (e) {
+        console.error("Search API Error:", e);
+        // Fallback: 오류 시 빈 배열 반환
         return [];
     }
 };
@@ -69,11 +59,60 @@ export const geocodeAddress = (address) => {
                 reject("Geocoding failed");
                 return;
             }
+            if (response.v2.addresses.length === 0) {
+                reject("No result");
+                return;
+            }
             const item = response.v2.addresses[0];
             resolve({
                 lat: parseFloat(item.y),
                 lng: parseFloat(item.x)
             });
+        });
+    });
+};
+
+// 좌표 -> 주소 변환 (Reverse Geocoding)
+export const reverseGeocode = (lat, lng) => {
+    return new Promise((resolve, reject) => {
+        if (!window.naver || !window.naver.maps || !window.naver.maps.Service) {
+            reject("Naver Maps Service not loaded");
+            return;
+        }
+
+        const coord = new window.naver.maps.LatLng(lat, lng);
+
+        window.naver.maps.Service.reverseGeocode({
+            coords: coord,
+            orders: [
+                window.naver.maps.Service.OrderType.ADDR,
+                window.naver.maps.Service.OrderType.ROAD_ADDR
+            ].join(',')
+        }, function (status, response) {
+            if (status !== window.naver.maps.Service.Status.OK) {
+                return reject('Reverse Geocoding failed');
+            }
+
+            const items = response.v2.results;
+            let address = "";
+            let roadAddress = "";
+
+            if (items.length > 0) {
+                // 지번 주소 등 조합
+                const region = items[0].region;
+                const land = items[0].land;
+                address = `${region.area1.name} ${region.area2.name} ${region.area3.name} ${land.number1}${land.number2 ? '-' + land.number2 : ''}`;
+            }
+
+            // 도로명 주소 찾기
+            const roadItem = items.find(it => it.name === 'roadaddr');
+            if (roadItem) {
+                const region = roadItem.region;
+                const land = roadItem.land;
+                roadAddress = `${region.area1.name} ${region.area2.name} ${land.name} ${land.number1} ${land.addition0.value}`;
+            }
+
+            resolve(roadAddress || address || "주소 미상");
         });
     });
 };

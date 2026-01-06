@@ -10,11 +10,18 @@ import {
 import {
     getFirestore,
     collection,
+    doc,
+    setDoc,
+    updateDoc,
     addDoc,
+    deleteDoc,
     query,
+    where,
     orderBy,
     onSnapshot,
     serverTimestamp,
+    arrayUnion,
+    arrayRemove,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -37,9 +44,17 @@ export {
     signOut,
     onAuthStateChanged,
     collection,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
     addDoc,
+    deleteDoc,
     query,
+    where,
     orderBy,
     onSnapshot,
     serverTimestamp,
+    arrayUnion,
+    arrayRemove,
 };

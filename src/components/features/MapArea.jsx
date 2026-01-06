@@ -21,6 +21,7 @@ const MapArea = ({
     handleSearchInArea,
     handleZoom,
     setIsMapMoved,
+    onBoundsChanged, // New prop
 }) => {
     const [selectedClusterItems, setSelectedClusterItems] = useState(null);
 
@@ -54,6 +55,21 @@ const MapArea = ({
         window.naver.maps.Event.addListener(map, 'dragend', () => setIsMapMoved(true));
         window.naver.maps.Event.addListener(map, 'zoom_changed', () => setIsMapMoved(true));
         window.naver.maps.Event.addListener(map, 'click', () => setSelectedClusterItems(null));
+
+        // Bounds Change Listener
+        window.naver.maps.Event.addListener(map, 'idle', () => {
+            const bounds = map.getBounds();
+            const ne = bounds.getNE();
+            const sw = bounds.getSW();
+            if (onBoundsChanged) {
+                onBoundsChanged({
+                    north: ne.lat(),
+                    east: ne.lng(),
+                    south: sw.lat(),
+                    west: sw.lng()
+                });
+            }
+        });
     };
 
     // Clustering and Markers
@@ -63,7 +79,7 @@ const MapArea = ({
         // 1. Grouping Logic
         const clusters = [];
         const zoomLevel = mapInstance.getZoom();
-        const threshold = 0.01 / Math.pow(1.5, zoomLevel - 10); // Dynamic threshold
+        const threshold = 0.025 / Math.pow(1.5, zoomLevel - 10); // Dynamic threshold (increased for better grouping)
 
         const sortedReviews = [...displayedReviews].sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
 
@@ -96,15 +112,40 @@ const MapArea = ({
                 map: mapInstance,
                 icon: {
                     content: `
-                        <div style="position:relative; pointer-events:auto;">
-                            <div style="padding:6px 10px; background:white; border:2px solid #4f46e5; border-radius:20px; font-size:11px; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space:nowrap; color:#1e293b;">
-                                ${representative.name}
-                                ${count > 1 ? `<span style="margin-left:5px; background:#4f46e5; color:white; padding:2px 6px; border-radius:10px; font-size:9px;">+${count - 1}</span>` : ""}
+                        <div style="position:relative; cursor:pointer;">
+                            <div style="padding:6px 10px; background:white; border:2px solid #4f46e5; border-radius:30px; font-size:11px; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.15); white-space:nowrap; color:#1e293b; display:flex; align-items:center; gap:4px; max-width: 150px;">
+                                <span style="font-size:12px;">${representative.name}</span>
+                                <span style="color:#f59e0b;">★</span>
+                                <span>${representative.globalScore || '9.0'}</span>
                             </div>
+                            
+                            ${count > 1 ? `
+                                <div style="
+                                    position: absolute;
+                                    top: -8px;
+                                    right: -8px;
+                                    background: #ef4444;
+                                    color: white;
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 10px;
+                                    font-weight: 800;
+                                    border: 2px solid white;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                    z-index: 10;
+                                ">
+                                    +${count - 1}
+                                </div>
+                            ` : ""}
+
                             <div style="width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-top:8px solid #4f46e5; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);"></div>
                         </div>
                     `,
-                    anchor: new window.naver.maps.Point(20, 40),
+                    anchor: new window.naver.maps.Point(count > 1 ? 30 : 50, 45), // Anchor 조정
                 },
             });
 
@@ -123,41 +164,7 @@ const MapArea = ({
 
 
     // Virtual Map Handlers
-    const handleMouseDown = (e) => {
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - mapOffset.x, y: e.clientY - mapOffset.y });
-        setSelectedCluster(null);
-    };
-    const handleMouseMove = (e) => {
-        // Note: isDragging check should be passed from parent or checked here if state is available
-        // But since handler implementations are passed or local?
-        // Let's implement local logic if props allow, or rely on parent.
-        // Parent passed setters, so we can implement here.
-    };
 
-    // Re-implementing handlers locally to avoid prop drilling complex functions if possible
-    // efficiently. But for now, let's use the props passed for state setters.
-
-    const onMouseMove = (e) => {
-        // isDragging is prop? No, it's boolean. We need the value.
-        // Actually parent passed setIsDragging etc.
-        // Let's assume parent handles the logic or we implement here using the state from props.
-    };
-
-    // Because the original App.jsx had logic inside the component, we need to replicate it.
-
-    const handleVirtualMouseDown = (e) => {
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - mapOffset.x, y: e.clientY - mapOffset.y });
-        setSelectedCluster(null);
-    };
-
-    const handleVirtualMouseMove = (e) => {
-        // We need isDragging state value.
-        // Optimization: Move these handlers to App.jsx and pass them down?
-        // Or keep state in App.jsx and logic here?
-        // For refactoring speed, I'll assume usage of passed functions or re-implement if simple.
-    };
 
     return (
         <div

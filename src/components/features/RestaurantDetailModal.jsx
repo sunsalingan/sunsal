@@ -1,7 +1,7 @@
 import React from "react";
 import { X, MapPin, Star, User } from "lucide-react";
 
-const RestaurantDetailModal = ({ restaurant, onClose, allReviews }) => {
+const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile }) => {
     if (!restaurant) return null;
 
     // Find reviews for this restaurant
@@ -67,7 +67,11 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews }) => {
                     <div className="space-y-3">
                         {/* We need to use `generateMockReviews`, but I'll implement a simple version or expect props. 
                  Ideally, I should import it. */}
-                        <ReviewList mockName={restaurant.name} />
+                        <ReviewList
+                            restaurantName={restaurant.name}
+                            allReviews={allReviews}
+                            onOpenProfile={onOpenProfile}
+                        />
                     </div>
                 </div>
 
@@ -84,33 +88,44 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews }) => {
     );
 };
 
-const ReviewList = ({ mockName }) => {
-    // Simple mock generator inside component to avoid import issues if any
-    const reviews = [
-        { id: 1, user: "미식가K", score: 5, text: `${mockName}, 진짜 인생 맛집입니다.`, date: "2일 전" },
-        { id: 2, user: "쩝쩝박사", score: 4.5, text: "웨이팅이 좀 길지만 기다릴만 합니다.", date: "5일 전" },
-        { id: 3, user: "동네주민", score: 5, text: "사장님이 너무 친절하시고 양도 푸짐해요.", date: "1주 전" },
-    ];
+const ReviewList = ({ restaurantName, allReviews, onOpenProfile }) => {
+    // Filter reviews for this restaurant
+    const reviews = allReviews.filter(r => r.name === restaurantName);
+
+    if (reviews.length === 0) {
+        return <div className="text-center py-6 text-slate-400 text-sm">아직 등록된 리뷰가 없습니다.</div>;
+    }
 
     return (
         <>
             {reviews.map((review) => (
                 <div key={review.id} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
                     <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-                                <User size={14} className="text-slate-500" />
+                        <div
+                            className="flex items-center gap-2 cursor-pointer group"
+                            onClick={() => onOpenProfile && onOpenProfile(review.userId)}
+                        >
+                            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+                                {review.userPhoto ? (
+                                    <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover" />
+                                ) : (
+                                    <User size={14} className="text-slate-500" />
+                                )}
                             </div>
                             <div>
-                                <div className="font-bold text-sm text-slate-800">{review.user}</div>
-                                <div className="text-[10px] text-slate-400">{review.date}</div>
+                                <div className="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
+                                    {review.userName || "익명 사용자"}
+                                </div>
+                                <div className="text-[10px] text-slate-400">
+                                    {review.timestamp?.toDate ? new Date(review.timestamp.toDate()).toLocaleDateString() : "최근"}
+                                </div>
                             </div>
                         </div>
                         <div className="flex items-center gap-1 bg-yellow-50 px-2 py-0.5 rounded text-yellow-600 font-bold text-xs">
-                            <Star size={10} className="fill-yellow-600" /> {review.score}
+                            <Star size={10} className="fill-yellow-600" /> {review.globalScore}
                         </div>
                     </div>
-                    <p className="text-sm text-slate-600 leading-relaxed">{review.text}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{review.comment}</p>
                 </div>
             ))}
         </>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Search, MapPin, X } from "lucide-react";
+import { Search, MapPin, X, Loader2 } from "lucide-react";
+import { searchNaverPlaces } from "../../services/naverApi";
 
 const RestaurantSearchModal = ({
     isOpen,
@@ -9,20 +10,26 @@ const RestaurantSearchModal = ({
 }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [results, setResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             setSearchTerm("");
-            setResults(mockRestaurantSearch(""));
+            setResults([]);
         }
     }, [isOpen]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (isOpen) {
-                setResults(mockRestaurantSearch(searchTerm));
+        const timer = setTimeout(async () => {
+            if (isOpen && searchTerm.trim()) {
+                setIsSearching(true);
+                const data = await searchNaverPlaces(searchTerm);
+                setResults(data);
+                setIsSearching(false);
+            } else {
+                setResults([]);
             }
-        }, 200);
+        }, 500); // 0.5s debounce
         return () => clearTimeout(timer);
     }, [searchTerm, isOpen]);
 
@@ -35,11 +42,12 @@ const RestaurantSearchModal = ({
                     <Search className="text-slate-400" />
                     <input
                         className="flex-1 outline-none text-base font-medium placeholder:text-slate-300"
-                        placeholder="식당 이름을 검색해보세요"
+                        placeholder="지역명, 주소 검색 (예: 강남대로 390)"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         autoFocus
                     />
+                    {isSearching && <Loader2 className="animate-spin text-indigo-500" size={16} />}
                     <button
                         onClick={onClose}
                         className="p-1 rounded-full hover:bg-slate-100"
@@ -78,7 +86,7 @@ const RestaurantSearchModal = ({
                         ))
                     ) : (
                         <div className="py-10 text-center text-slate-400 text-sm">
-                            검색 결과가 없습니다.
+                            {searchTerm ? "검색 결과가 없습니다. 도로명 주소로 검색해보세요." : "방문한 식당의 주소를 검색해보세요."}
                         </div>
                     )}
                 </div>

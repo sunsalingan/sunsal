@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { User, X, MapPin } from "lucide-react";
+import { db, doc, setDoc, deleteDoc, getDoc } from "../../lib/firebase"; // Import firebase tools
 
 const ProfileModal = ({
     isOpen, // Added isOpen prop
@@ -15,6 +16,41 @@ const ProfileModal = ({
     if (!userProfile.ranking) userProfile.ranking = [];
 
     const isMe = currentUser && currentUser.uid === userProfile.id;
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    useEffect(() => {
+        if (currentUser && userProfile.id) {
+            const checkFollow = async () => {
+                const docRef = doc(db, "users", currentUser.uid, "following", userProfile.id);
+                const docSnap = await getDoc(docRef);
+                setIsFollowing(docSnap.exists());
+            };
+            checkFollow();
+        }
+    }, [currentUser, userProfile.id]);
+
+    const handleFollowToggle = async () => {
+        if (!currentUser) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+        try {
+            const docRef = doc(db, "users", currentUser.uid, "following", userProfile.id);
+            if (isFollowing) {
+                await deleteDoc(docRef);
+                setIsFollowing(false);
+            } else {
+                await setDoc(docRef, {
+                    uid: userProfile.id,
+                    name: userProfile.name,
+                    timestamp: new Date()
+                });
+                setIsFollowing(true);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
@@ -42,8 +78,13 @@ const ProfileModal = ({
 
                     {!isMe && (
                         <div className="flex w-full gap-2 mb-6">
-                            <button className="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-sm font-bold shadow-md hover:bg-indigo-700">
-                                팔로우
+                            <button
+                                onClick={handleFollowToggle}
+                                className={`flex-1 py-2 rounded-xl text-sm font-bold shadow-md transition-colors ${isFollowing
+                                        ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                                        : "bg-indigo-600 text-white hover:bg-indigo-700"
+                                    }`}>
+                                {isFollowing ? "팔로잉" : "팔로우"}
                             </button>
                             <button className="px-4 py-2 border rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
                                 메시지
