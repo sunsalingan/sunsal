@@ -53,7 +53,7 @@ const ProfileModal = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] animate-in fade-in duration-200">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative">
                 <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-indigo-500 to-purple-500 z-0" />
                 <button
@@ -81,8 +81,8 @@ const ProfileModal = ({
                             <button
                                 onClick={handleFollowToggle}
                                 className={`flex-1 py-2 rounded-xl text-sm font-bold shadow-md transition-colors ${isFollowing
-                                    ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                                    : "bg-indigo-600 text-white hover:bg-indigo-700"
+                                        ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                                        : "bg-indigo-600 text-white hover:bg-indigo-700"
                                     }`}>
                                 {isFollowing ? "팔로잉" : "팔로우"}
                             </button>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, CheckCircle } from "lucide-react"; // Import CheckCircle
+import { Search } from "lucide-react";
 import { calculateMyScore } from "../../utils";
 
 const RestaurantList = ({
@@ -9,7 +9,6 @@ const RestaurantList = ({
     handleOpenDetail,
     currentPage,
     viewMode,
-    user
 }) => {
     return (
         <main className="flex-1 overflow-y-auto px-4 py-6 bg-slate-50">
@@ -24,54 +23,21 @@ const RestaurantList = ({
                     );
                     const myScore = calculateMyScore(myRankIndex, activeReviews.length);
                     const displayScore =
-                        (currentPage === "MAIN" && viewMode === "GLOBAL") || viewMode === "WISHLIST"
+                        currentPage === "MAIN" && viewMode === "GLOBAL"
                             ? (review.globalScore || "0.0")
                             : currentPage === "MAIN" && viewMode === "FRIENDS"
                                 ? (review.friendScore || "-")
                                 : (myScore || "-");
                     const scoreColor =
-                        (currentPage === "MAIN" && viewMode === "GLOBAL") || viewMode === "WISHLIST"
+                        currentPage === "MAIN" && viewMode === "GLOBAL"
                             ? "text-indigo-600"
                             : "text-emerald-600";
-
-                    // Check if current user has reviewed this restaurant
-                    // Assuming 'review.reviews' holds the list of reviews if aggregated
-                    // Or we check 'activeReviews' again?
-                    // 'displayedReviews' is the aggregated list. It SHOULD contain a 'reviews' array or we check against 'activeReviews'
-
-                    // Let's verify 'displayedReviews' structure in DataContext. If it's aggregated, it has reviews list.
-                    // If not, we might need to filter activeReviews by name/lat/lng again.
-                    // But 'review' object here is the display item.
-
-                    let isReviewedByMe = false;
-                    if (user && viewMode === "GLOBAL") {
-                        // Check raw reviews for match
-                        // Wait, 'review.reviews' might be available if aggregated.
-                        // Let's assume we need to check activeReviews for robust matching or passed prop.
-                        // Actually, 'displayedRestaurants' are constructed in DataContext. 
-                        // Check if review.ids (if we store them) or review.reviews array exists. 
-
-                        // Safer fallback: Check activeReviews
-                        isReviewedByMe = activeReviews.some(r =>
-                            r.userId === user.uid &&
-                            (r.name === review.name /* && lat/lng match if possible */)
-                        );
-                    }
-
-
                     return (
                         <div
                             key={review.id}
                             onClick={() => handleOpenDetail(review)}
-                            className={`bg-white p-4 rounded-xl shadow-sm border mb-3 flex justify-between items-center cursor-pointer transition-colors relative overflow-hidden ${isReviewedByMe ? "border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50/10" : "hover:border-indigo-300"
-                                }`}
+                            className="bg-white p-4 rounded-xl shadow-sm border mb-3 flex justify-between items-center cursor-pointer hover:border-indigo-300 transition-colors"
                         >
-                            {isReviewedByMe && (
-                                <div className="absolute top-0 right-0 w-8 h-8 bg-indigo-600/10 rounded-bl-xl flex items-center justify-center">
-                                    <CheckCircle size={14} className="text-indigo-600" />
-                                </div>
-                            )}
-
                             <div className="flex items-center gap-3">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-sm ${index === 0 ? "bg-yellow-400" : "bg-slate-300"
@@ -80,9 +46,7 @@ const RestaurantList = ({
                                     {index + 1}
                                 </div>
                                 <div>
-                                    <div className="font-bold flex items-center gap-1">
-                                        {review.name}
-                                    </div>
+                                    <div className="font-bold">{review.name}</div>
                                     <div className="text-xs text-slate-500">
                                         {review.location ? review.location.split(" ")[1] : ""}
                                     </div>

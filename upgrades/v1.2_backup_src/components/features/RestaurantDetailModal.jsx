@@ -1,21 +1,9 @@
-<<<<<<< HEAD
 import React from "react";
-import { X, MapPin, Star, User, Heart } from "lucide-react";
+import { X, MapPin, Star, User } from "lucide-react";
 
-const RestaurantDetailModal = ({
-    restaurant,
-    onClose,
-    user,
-    allReviews = [],
-    onOpenReview,
-    onToggleWishlist,
-    isWishlisted
-}) => {
-    // Safety check - if no restaurant, don't render anything that could block clicks
+const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile }) => {
     if (!restaurant) return null;
 
-    // Calculate score
-    const score = restaurant.globalScore || (Math.random() * 1.9 + 8.1).toFixed(1);
     // Find reviews for this restaurant
     // For now we just show a dummy list or filter from allReviews if structured that way.
     // In the original App.jsx `handleOpenDetail` just set `selectedRestaurant`.
@@ -32,13 +20,6 @@ const RestaurantDetailModal = ({
     // Since I can't easily dynamically import inside the component without the file existing securely?
     // I'll import it.
 
-=======
-import { X, MapPin, Star, User, Heart } from "lucide-react";
-
-const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile, isWishlisted, onToggleWishlist }) => {
-    if (!restaurant) return null;
-
->>>>>>> 2442f48 (feat: Wishlist, UI refinement, Refactoring)
     return (
         <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 animate-in fade-in duration-200" style={{ pointerEvents: 'auto' }}>
             <div className="bg-white w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-xl flex flex-col overflow-hidden relative">
@@ -94,41 +75,17 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile,
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="p-4 border-t bg-white safe-area-bottom flex gap-2">
-                    <button
-                        onClick={onToggleWishlist}
-                        className={`flex-1 py-3 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 ${isWishlisted
-                            ? "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            }`}
-                    >
-                        <Heart size={20} className={isWishlisted ? "fill-slate-500" : "text-slate-400"} />
-                        {isWishlisted ? "제거" : "찜하기"}
-                    </button>
-                    <button
-                        onClick={onOpenReview}
-                        className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 flex items-center justify-center gap-2"
-                    >
-                        <Star size={18} className="fill-white/20" />
-                        리뷰 쓰기
-=======
                 {/* Fixed Footer */}
                 <div className="absolute bottom-0 left-0 w-full p-4 border-t bg-white safe-area-bottom z-10">
                     <button
-                        onClick={() => onToggleWishlist && onToggleWishlist(restaurant)}
-                        className={`w-full py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${isWishlisted
-                            ? "bg-pink-50 text-pink-600 border border-pink-200 hover:bg-pink-100"
-                            : "bg-indigo-600 text-white hover:bg-indigo-700"
-                            }`}
+                        onClick={() => alert("내 리스트에 추가되었습니다! (기능 준비중)")}
+                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700"
                     >
-                        <Heart size={20} className={isWishlisted ? "fill-current" : ""} />
-                        {isWishlisted ? "가고싶어요 취소" : "가고싶어요 (+내 리스트)"}
->>>>>>> 2442f48 (feat: Wishlist, UI refinement, Refactoring)
+                        가고싶다 (+내 리스트 추가)
                     </button>
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 

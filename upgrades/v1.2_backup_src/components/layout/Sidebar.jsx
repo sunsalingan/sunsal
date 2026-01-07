@@ -1,7 +1,7 @@
 import React from "react";
-import { X, Trophy, User, Users, Settings, LogOut, ChevronRight, Search, Heart, Map } from "lucide-react";
+import { X, Trophy, User, Users, Settings, LogOut, ChevronRight } from "lucide-react";
 
-const Sidebar = ({ isOpen, onClose, user, handleLogout, onSearch, onChangeViewMode, currentViewMode }) => {
+const Sidebar = ({ isOpen, onClose, user, handleLogout }) => {
     return (
         <>
             {/* Backdrop */}
@@ -43,42 +43,11 @@ const Sidebar = ({ isOpen, onClose, user, handleLogout, onSearch, onChangeViewMo
                         </div>
                     )}
 
-                    <div className="px-4 mb-6">
-                        <button
-                            onClick={onSearch}
-                            className="w-full bg-indigo-50 border-2 border-dashed border-indigo-200 text-indigo-700 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-indigo-100 transition-colors font-bold"
-                        >
-                            <Search size={18} />
-                            맛집 검색 / 추가하기
-                        </button>
-                    </div>
-
                     <div className="space-y-1 px-3">
-                        <SidebarItem
-                            icon={<Trophy size={18} />}
-                            label="🏆 전국 통합 랭킹"
-                            onClick={() => onChangeViewMode && onChangeViewMode("GLOBAL")}
-                            isActive={currentViewMode === "GLOBAL"}
-                        />
-                        <SidebarItem
-                            icon={<Map size={18} />}
-                            label="📍 내 주변 (기능 준비중)"
-                            onClick={() => alert("준비중입니다.")}
-                        />
-                        <SidebarItem
-                            icon={<Heart size={18} className={currentViewMode === "WISHLIST" ? "fill-pink-500 text-pink-500" : ""} />}
-                            label="💖 가고싶어요 (찜)"
-                            onClick={() => onChangeViewMode && onChangeViewMode("WISHLIST")}
-                            isActive={currentViewMode === "WISHLIST"}
-                        />
-
-                        <div className="my-4 border-t border-slate-100 mx-3" />
-
+                        <SidebarItem icon={<Trophy size={18} />} label="🏆 전국 통합 랭킹" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
                         <SidebarItem icon={<Users size={18} />} label="👥 친구 관리" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
                         <SidebarItem icon={<User size={18} />} label="👤 마이 페이지" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
-
                         <div className="my-4 border-t border-slate-100 mx-3" />
-
                         <SidebarItem icon={<Settings size={18} />} label="⚙️ 설정" onClick={() => { alert("서비스 준비중입니다."); onClose(); }} />
                     </div>
                 </div>
@@ -101,17 +70,16 @@ const Sidebar = ({ isOpen, onClose, user, handleLogout, onSearch, onChangeViewMo
     );
 };
 
-const SidebarItem = ({ icon, label, onClick, isActive }) => (
+const SidebarItem = ({ icon, label, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex items-center justify-between p-3.5 rounded-xl group transition-all ${isActive ? "bg-indigo-50 text-indigo-700 font-bold" : "hover:bg-indigo-50 text-slate-700 font-medium"
-            }`}
+        className="w-full flex items-center justify-between p-3.5 hover:bg-indigo-50 rounded-xl group transition-all"
     >
-        <div className="flex items-center gap-3 group-hover:text-indigo-600">
-            <span className={`${isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500"}`}>{icon}</span>
+        <div className="flex items-center gap-3 text-slate-700 font-medium group-hover:text-indigo-600">
+            <span className="text-slate-400 group-hover:text-indigo-500">{icon}</span>
             <span className="text-sm">{label}</span>
         </div>
-        {isActive && <ChevronRight size={14} className="text-indigo-600" />}
+        <ChevronRight size={14} className="text-slate-300 group-hover:text-indigo-400" />
     </button>
 );
 

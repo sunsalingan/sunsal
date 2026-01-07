@@ -24,7 +24,6 @@ const MapArea = ({
     onBoundsChanged, // New prop
 }) => {
     const [selectedClusterItems, setSelectedClusterItems] = useState(null);
-    const [currentZoom, setCurrentZoom] = useState(13); // Local zoom state for re-render
 
     // Track latest bounds without triggering re-renders or parent updates
     const latestBoundsRef = useRef(null);
@@ -55,16 +54,9 @@ const MapArea = ({
         };
         const map = new window.naver.maps.Map(mapElement.current, mapOptions);
         setMapInstance(map);
-        setCurrentZoom(map.getZoom());
 
         window.naver.maps.Event.addListener(map, 'dragend', () => setIsMapMoved(true));
-
-        // Critical: Update local zoom state to trigger re-clustering
-        window.naver.maps.Event.addListener(map, 'zoom_changed', () => {
-            setIsMapMoved(true);
-            setCurrentZoom(map.getZoom());
-        });
-
+        window.naver.maps.Event.addListener(map, 'zoom_changed', () => setIsMapMoved(true));
         window.naver.maps.Event.addListener(map, 'click', () => setSelectedClusterItems(null));
 
         // Bounds Change Listener - JUST TRACK, DON'T UPDATE PARENT YET
@@ -81,6 +73,8 @@ const MapArea = ({
         });
     };
 
+    // ... (Clustering logic remains same)
+
     const handleResearchClick = () => {
         if (latestBoundsRef.current && onBoundsChanged) {
             onBoundsChanged(latestBoundsRef.current);
@@ -89,54 +83,29 @@ const MapArea = ({
     };
 
     // Clustering and Markers
-    // Added currentZoom to dependency array so it re-runs on zoom changes
     useEffect(() => {
         if (!useRealMap || !mapInstance || !window.naver) return;
 
         // 1. Grouping Logic
-        // First, group reviews by unique restaurant (Name + Lat/Lng) to prevent duplicate markers for the same place
-        const uniqueRestaurants = {};
-        displayedReviews.forEach(review => {
-            if (!review.lat || !review.lng) return;
-            const key = `${review.name}-${review.lat}-${review.lng}`;
-            if (!uniqueRestaurants[key]) {
-                uniqueRestaurants[key] = {
-                    ...review,
-                    count: 1, // Track how many reviews this place has
-                    reviews: [review]
-                };
-            } else {
-                uniqueRestaurants[key].count += 1;
-                uniqueRestaurants[key].reviews.push(review);
-            }
-        });
-
-        const restaurantList = Object.values(uniqueRestaurants);
-
-        // Now Cluster the Restaurants, not individual reviews
         const clusters = [];
-        // Use currentZoom state
-        const zoomLevel = currentZoom;
+        const zoomLevel = mapInstance.getZoom();
+        const threshold = 0.025 / Math.pow(1.5, zoomLevel - 10); // Dynamic threshold (increased for better grouping)
 
-        // Dynamic threshold: 
-        // Zoom 13 (Town): ~0.005 (~500m)
-        // Zoom 15 (Street): ~0.0012 (~100m)
-        // Zoom 17 (Building): ~0.0003 (~30m)
-        // Use base 2 exponent for faster falloff than 1.5
-        const threshold = 0.04 / Math.pow(2, zoomLevel - 10);
+        const sortedReviews = [...displayedReviews].sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
 
-        restaurantList.forEach(restaurant => {
+        sortedReviews.forEach(review => {
+            if (!review.lat || !review.lng) return;
             let added = false;
             for (let cluster of clusters) {
                 const rep = cluster[0];
-                const dist = Math.sqrt(Math.pow(restaurant.lat - rep.lat, 2) + Math.pow(restaurant.lng - rep.lng, 2));
+                const dist = Math.sqrt(Math.pow(review.lat - rep.lat, 2) + Math.pow(review.lng - rep.lng, 2));
                 if (dist < threshold) {
-                    cluster.push(restaurant);
+                    cluster.push(review);
                     added = true;
                     break;
                 }
             }
-            if (!added) clusters.push([restaurant]);
+            if (!added) clusters.push([review]);
         });
 
         // 2. Clear old markers
@@ -145,37 +114,27 @@ const MapArea = ({
 
         // 3. Create new cluster markers
         clusters.forEach(cluster => {
-            // Findings from user request:
-            // 1. No "Region Restaurants". Use Name.
-            // 2. No Score.
-            // 3. If cluster, show Top Rated Restaurant Name.
-            // 4. Badge = Number of overlapping restaurants (only if > 1).
-            // 5. Unified Border Color (#4f46e5).
-            // 6. Unified Badge Color (#4f46e5).
-
-            // Sort cluster by globalScore desc to find the "Top" restaurant
-            const sortedCluster = [...cluster].sort((a, b) => (b.globalScore || 0) - (a.globalScore || 0));
-            const topRestaurant = sortedCluster[0];
-
-            const clusterSize = cluster.length;
-            const isSingleRestaurant = clusterSize === 1;
+            const representative = cluster[0];
+            const count = cluster.length;
 
             const marker = new window.naver.maps.Marker({
-                position: new window.naver.maps.LatLng(topRestaurant.lat, topRestaurant.lng),
+                position: new window.naver.maps.LatLng(representative.lat, representative.lng),
                 map: mapInstance,
                 icon: {
                     content: `
                         <div style="position:relative; cursor:pointer;">
                             <div style="padding:6px 10px; background:white; border:2px solid #4f46e5; border-radius:30px; font-size:11px; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.15); white-space:nowrap; color:#1e293b; display:flex; align-items:center; gap:4px; max-width: 150px;">
-                                <span style="font-size:12px;">${topRestaurant.name}</span>
+                                <span style="font-size:12px;">${representative.name}</span>
+                                <span style="color:#f59e0b;">★</span>
+                                <span>${representative.globalScore || '9.0'}</span>
                             </div>
                             
-                            ${clusterSize > 1 ? `
+                            ${count > 1 ? `
                                 <div style="
                                     position: absolute;
                                     top: -8px;
                                     right: -8px;
-                                    background: #4f46e5;
+                                    background: #ef4444;
                                     color: white;
                                     width: 20px;
                                     height: 20px;
@@ -189,30 +148,29 @@ const MapArea = ({
                                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                                     z-index: 10;
                                 ">
-                                    ${clusterSize}
+                                    +${count - 1}
                                 </div>
                             ` : ""}
 
                             <div style="width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-top:8px solid #4f46e5; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);"></div>
                         </div>
                     `,
-                    anchor: new window.naver.maps.Point(50, 45),
+                    anchor: new window.naver.maps.Point(count > 1 ? 30 : 50, 45), // Anchor 조정
                 },
             });
 
             window.naver.maps.Event.addListener(marker, "click", () => {
-                if (isSingleRestaurant) {
-                    handleOpenDetail(topRestaurant);
-                } else {
-                    // Show list of unique restaurants in this cluster
+                if (count > 1) {
                     setSelectedClusterItems(cluster);
+                } else {
+                    handleOpenDetail(representative);
                 }
             });
             newMarkers.push(marker);
         });
 
         markersRef.current = newMarkers;
-    }, [mapInstance, displayedReviews, useRealMap, currentZoom]);
+    }, [mapInstance, displayedReviews, useRealMap]);
 
 
     // Virtual Map Handlers
@@ -305,27 +263,25 @@ const MapArea = ({
                             </button>
                         </div>
                         <div className="max-h-[300px] overflow-y-auto p-2 bg-slate-50 space-y-2">
-                            {selectedClusterItems.map((restaurant) => (
+                            {selectedClusterItems.map((review) => (
                                 <button
-                                    key={`${restaurant.name}-${restaurant.lat}`}
+                                    key={review.id}
                                     onClick={() => {
-                                        // When clicking a restaurant in the list, open its detail modal
-                                        // Use the first review as representative or the aggregated object
-                                        handleOpenDetail(restaurant);
+                                        handleOpenDetail(review);
                                         setSelectedClusterItems(null);
                                     }}
                                     className="w-full flex items-center justify-between p-3 bg-white hover:bg-indigo-50 rounded-xl border border-slate-100 transition-colors shadow-sm group text-left"
                                 >
                                     <div className="flex flex-col gap-0.5 overflow-hidden">
                                         <span className="text-xs font-bold text-slate-800 truncate">
-                                            {restaurant.name}
+                                            {review.name}
                                         </span>
                                         <span className="text-[10px] text-slate-400">
-                                            {restaurant.category} · 리뷰 {restaurant.count}개
+                                            {review.category} · {review.globalScore || '9.0'}점
                                         </span>
                                     </div>
-                                    <div className="text-indigo-600 font-bold text-[10px] shrink-0 bg-indigo-50 px-2 py-0.5 rounded-full">
-                                        이동
+                                    <div className="text-indigo-600 font-bold text-[10px] shrink-0">
+                                        {(review.rankIndex || 0) + 1}위
                                     </div>
                                 </button>
                             ))}

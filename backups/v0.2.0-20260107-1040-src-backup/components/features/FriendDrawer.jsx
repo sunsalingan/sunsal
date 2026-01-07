@@ -53,16 +53,20 @@ const FriendDrawer = ({
                                         f.name?.[0] || "?"
                                     )}
                                 </div>
-                                <div
-                                    className="flex-1 min-w-0 cursor-pointer"
-                                    onClick={() => onViewProfile(f)}
-                                >
-                                    <div className="font-bold text-slate-800 truncate hover:text-indigo-600 transition-colors">{f.name}</div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="font-bold text-slate-800 truncate">{f.name}</div>
                                     <div className="text-[10px] text-slate-400 mt-0.5">
                                         {f.matchRate ? `취향 일치도 ${f.matchRate}%` : "활동 중"}
                                     </div>
                                 </div>
                                 <div className="flex gap-1">
+                                    <button
+                                        onClick={() => onViewProfile(f)}
+                                        className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors"
+                                        title="프로필 보기"
+                                    >
+                                        <MessageSquare size={16} />
+                                    </button>
                                     {followingIds.includes(f.id) ? (
                                         <button
                                             onClick={() => onUnfollow(f.id)}
