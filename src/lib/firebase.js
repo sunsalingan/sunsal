@@ -23,6 +23,8 @@ import {
     serverTimestamp,
     arrayUnion,
     arrayRemove,
+    getDocs,
+    getDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -58,4 +60,5 @@ export {
     serverTimestamp,
     arrayUnion,
     arrayRemove,
+    getDocs,
 };

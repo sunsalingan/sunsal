@@ -1,6 +1,6 @@
 
 import { db } from "../lib/firebase";
-import { collection, getDocs, deleteDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc, setDoc, serverTimestamp } from "../lib/firebase";
 
 export const resetAndSeedData = async () => {
     if (!window.confirm("정말로 모든 데이터를 삭제하고 '순살' 더미 데이터로 초기화하시겠습니까? (되돌릴 수 없습니다!)")) return;
