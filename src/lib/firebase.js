@@ -24,7 +24,6 @@ import {
     arrayUnion,
     arrayRemove,
     getDocs,
-    getDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {

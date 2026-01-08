@@ -85,30 +85,15 @@ export function DataProvider({ children }) {
         } else if (viewMode === "WISHLIST") {
             if (!user) return [];
 
-            filtered = wishlist.map(w => {
-                // Calculate real-time average score from global reviews
-                // Use consistent matching logic with 'displayedRestaurants' aggregation:
-                // name matched && lat/lng diff < 0.0001
-                const matches = reviews.filter(r =>
-                    r.name === w.name &&
-                    Math.abs(parseFloat(r.lat) - parseFloat(w.lat)) < 0.0001 &&
-                    Math.abs(parseFloat(r.lng) - parseFloat(w.lng)) < 0.0001
-                );
+            // [REFACTORED] Return RAW reviews for wishlisted items
+            // This ensures displayedRestaurants uses the EXACT SAME aggregation logic as Global view.
+            const wishlistKeys = new Set(wishlist.map(w =>
+                `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`
+            ));
 
-                let avgScore = w.globalScore || "0.0"; // Fallback to saved score (snapshot)
-                if (matches.length > 0) {
-                    const sum = matches.reduce((acc, curr) => acc + parseFloat(curr.globalScore || 0), 0);
-                    avgScore = (sum / matches.length).toFixed(1);
-                }
-
-                return {
-                    ...w,
-                    globalScore: avgScore,
-                    comment: w.comment || "찜한 식당입니다.",
-                    // Pass matches as specific reviews for detail modal if needed, 
-                    // though modal now uses full reviews list + matching logic.
-                    reviews: matches // Optional: helpful context
-                };
+            filtered = reviews.filter(r => {
+                const key = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
+                return wishlistKeys.has(key);
             });
         }
 
@@ -139,7 +124,7 @@ export function DataProvider({ children }) {
         const uniqueMap = {};
 
         activeReviews.forEach(r => {
-            const key = `${r.name}-${parseFloat(r.lat).toFixed(5)}-${parseFloat(r.lng).toFixed(5)}`;
+            const key = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
             if (!uniqueMap[key]) {
                 uniqueMap[key] = {
                     ...r,
@@ -156,23 +141,51 @@ export function DataProvider({ children }) {
             }
         });
 
+        // [REFACTORED] Post-process: If Wishlist mode, ensure items with 0 reviews are included
         const uniqueList = Object.values(uniqueMap);
+        let finalDisplayList = uniqueList;
 
-        return uniqueList.map((r) => {
+        if (viewMode === "WISHLIST") {
+            const existingKeys = new Set(uniqueList.map(r =>
+                `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`
+            ));
+
+            wishlist.forEach(w => {
+                const key = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
+                if (!existingKeys.has(key)) {
+                    // Add dummy item for Wishlist entry with no reviews
+                    finalDisplayList.push({
+                        ...w,
+                        id: w.id || `wish_${Date.now()}_${Math.random()}`,
+                        reviewCount: 0,
+                        reviews: [],
+                        displayScore: w.globalScore || "0.0", // Snapshot score or 0
+                        maxScore: 0,
+                        friendScore: "-"
+                    });
+                }
+            });
+        }
+
+        return finalDisplayList.map((r) => {
             // Calculate Average Score
-            const totalScore = r.reviews.reduce((sum, rev) => sum + parseFloat(rev.globalScore || 0), 0);
-            const avgScore = (totalScore / r.reviews.length).toFixed(1);
+            // Handle 0 reviews case safely
+            let avgScore = "0.0";
+            if (r.reviews && r.reviews.length > 0) {
+                const totalScore = r.reviews.reduce((sum, rev) => sum + parseFloat(rev.globalScore || 0), 0);
+                avgScore = (totalScore / r.reviews.length).toFixed(1);
+            } else if (r.displayScore) {
+                avgScore = r.displayScore; // Fallback to snapshot
+            }
 
             return {
                 ...r,
                 displayScore: avgScore, // Use Average Score
-                maxScore: r.maxScore, // Keep max for reference if needed
-                friendScore: (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
+                maxScore: r.maxScore || 0, // Keep max for reference if needed
+                friendScore: r.friendScore || (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
             };
         }).sort((a, b) => {
             // Sort by Score Descending (High score first)
-            // or Rank Index? If ViewMode is GLOBAL, maybe Score is better?
-            // User said: "Main page ranking is weird... Global ranking should be strictly based on score"
             return parseFloat(b.displayScore) - parseFloat(a.displayScore);
         });
     }, [activeReviews]);

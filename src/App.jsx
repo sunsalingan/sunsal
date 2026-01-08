@@ -12,6 +12,7 @@ import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
 import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
 import Sidebar from "./components/layout/Sidebar";
 import FriendDrawer from "./components/features/FriendDrawer";
+import UserGuideModal from "./components/features/UserGuideModal";
 import { resetAndSeedData } from "./utils/seeder";
 import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
 
@@ -50,6 +51,7 @@ function App() {
     const [profileModalOpen, setProfileModalOpen] = useState(false);
     const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [friendsListOpen, setFriendsListOpen] = useState(false);
+    const [userGuideOpen, setUserGuideOpen] = useState(false);
 
     // --- Selected Data State ---
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -64,6 +66,14 @@ function App() {
     const [zoom, setZoom] = useState(13);
     const [isMapMoved, setIsMapMoved] = useState(false);
     const [selectedCluster, setSelectedCluster] = useState(null);
+
+    // --- Effects ---
+    React.useEffect(() => {
+        const hasSeenGuide = localStorage.getItem("sunsal_user_guide_seen");
+        if (!hasSeenGuide) {
+            setUserGuideOpen(true);
+        }
+    }, []);
 
     // --- Handlers ---
     const handleLogin = async () => {
@@ -410,6 +420,11 @@ function App() {
                 onClose={() => setRestaurantSearchOpen(false)}
                 mockRestaurantSearch={searchNaverPlaces} // This should eventually be a real API call if possible, or keep mock
                 onSelectRestaurant={handleSelectRestaurantFromSearch}
+            />
+
+            <UserGuideModal
+                isOpen={userGuideOpen}
+                onClose={() => setUserGuideOpen(false)}
             />
         </div >
     );

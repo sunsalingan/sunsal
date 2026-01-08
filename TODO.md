@@ -62,9 +62,9 @@
 
 *   **기능 고도화**:
     *   실제 Firebase Firestore 연동을 통한 데이터 영속화
-    *   앱 설명서 작성 (사용자 가이드) - **[New]**
-    *   카카오톡/구글 소셜 로그인 연동
-    *   친구 초대 및 수락 시스템 구축
+    *   **[Refactor]** 찜 목록(Wishlist) 로직 개선: Global Ranking 점수 및 데이터를 그대로 반영(Mirroring)하여 점수 불일치 원천 차단.
+    *   **[Next]** 친구 초대 및 수락 시스템 구축 (Following System)
+    *   (보류) 카카오톡 소셜 로그인 연동
 *   **유지보수**:
     *   컴포넌트 단위 테스트 코드 추가
     *   반응형 웹 디자인 완성도 제고 (모바일 최적화)
@@ -81,13 +81,16 @@
     - **UI 개선**: 내가 리뷰한 식당 배지(Check Badge) 표시.
     - **리팩토링**: `AuthContext`, `DataContext` 분리 및 모듈화.
     - **버그 수정**: 랭킹 점수 로직 통일 (`0.0001` tolerance), 리뷰 모달 데이터 소스 수정.
+8.  **사용자 가이드 및 점수 로직 안정화 (2026-01-08)**:
+    - **사용자 가이드(UserGuideModal)**: 첫 방문 시 앱의 핵심 가치(광고 없는 지인 맛집)와 사용법을 안내하는 모달 구현.
+    - **점수 불일치 해결**: Wishlist와 Global Ranking 간의 점수 집계 로직을 소수점 4자리(`toFixed(4)`) 기준 Key로 통일하여 점수 불일치 문제 해결.
+    - **리뷰 모달 연결 확인**: 검색 모달과의 Z-Index 충돌 해결 및 입력 로직 정상 작동 확인.
+    - **[Hotfix] 로컬 실행 오류 해결**: `firebase.js`의 중복 Import(`getDoc`) 구문 오류 수정 및 Vite 캐시 초기화로 흰 화면(White Screen) 문제 해결.
 
 ## 🐛 알려진 문제 (Known Issues) - **[Fix Required]**
-- **점수 불일치 이슈 (Score Discrepancy)**: 
-  - 증상: 찜 리스트(Wishlist)와 전체 랭킹(Global Ranking)의 점수가 다르게 표시되는 경우가 있음 (예: 9.7 vs 9.0).
-  - 원인: 두 뷰에서 사용하는 집계(Aggregation) 로직이나 필터링 조건이 미세하게 다를 수 있음.
-  - 조치 예정: 집에 가서 `DataContext`의 `activeReviews` 필터링 로직과 `displayedRestaurants` 집계 로직을 완벽하게 일치시킬 예정.
+- 없음 (주요 이슈 해결 완료)
 
 ## 📌 다음 작업 가이드
-1.  **점수 로직 디버깅**: 위 Known Issue 해결.
-2.  **배포**: 모바일 접근을 위한 Firebase Hosting 배포.
+1.  **모바일 최적화**: 배포된 웹앱의 모바일 사용성 점검.
+2.  **소셜 로그인**: 카카오/구글 로그인 연동 진행.
+3.  **배포**: 최신 변경사항 Firebase Hosting 배포.

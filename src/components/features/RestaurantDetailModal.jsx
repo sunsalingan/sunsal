@@ -1,47 +1,26 @@
-<<<<<<< HEAD
 import React from "react";
 import { X, MapPin, Star, User, Heart } from "lucide-react";
 
+/**
+ * RestaurantDetailModal
+ * Displays details of a selected restaurant, including its category rank, mock hashtags, and reviews.
+ * Allows toggling "Wishlist" status.
+ */
 const RestaurantDetailModal = ({
     restaurant,
     onClose,
-    user,
     allReviews = [],
-    onOpenReview,
-    onToggleWishlist,
-    isWishlisted
+    onOpenProfile,
+    isWishlisted,
+    onToggleWishlist
 }) => {
-    // Safety check - if no restaurant, don't render anything that could block clicks
+    // Safety check
     if (!restaurant) return null;
 
-    // Calculate score
-    const score = restaurant.globalScore || (Math.random() * 1.9 + 8.1).toFixed(1);
-    // Find reviews for this restaurant
-    // For now we just show a dummy list or filter from allReviews if structured that way.
-    // In the original App.jsx `handleOpenDetail` just set `selectedRestaurant`.
-    // The logic for displaying reviews was inside the modal JSX in App.jsx.
-    // We need to replicate that logic.
-
-    // Actually, we can generate mock reviews here or pass them.
-    // The original App.jsx used `generateMockReviews(restaurant.name)`.
-    // I should import that util.
-
-    // NOTE: I cannot import from `../../data/mock` inside this artifact block without validation,
-    // but I just created it.
-
-    // Since I can't easily dynamically import inside the component without the file existing securely?
-    // I'll import it.
-
-=======
-import { X, MapPin, Star, User, Heart } from "lucide-react";
-
-const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile, isWishlisted, onToggleWishlist }) => {
-    if (!restaurant) return null;
-
->>>>>>> 2442f48 (feat: Wishlist, UI refinement, Refactoring)
     return (
         <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 animate-in fade-in duration-200" style={{ pointerEvents: 'auto' }}>
             <div className="bg-white w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-xl flex flex-col overflow-hidden relative">
+
                 {/* Global Close Button for Modal */}
                 <button
                     onClick={onClose}
@@ -94,25 +73,6 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile,
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="p-4 border-t bg-white safe-area-bottom flex gap-2">
-                    <button
-                        onClick={onToggleWishlist}
-                        className={`flex-1 py-3 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 ${isWishlisted
-                            ? "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            }`}
-                    >
-                        <Heart size={20} className={isWishlisted ? "fill-slate-500" : "text-slate-400"} />
-                        {isWishlisted ? "제거" : "찜하기"}
-                    </button>
-                    <button
-                        onClick={onOpenReview}
-                        className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95 flex items-center justify-center gap-2"
-                    >
-                        <Star size={18} className="fill-white/20" />
-                        리뷰 쓰기
-=======
                 {/* Fixed Footer */}
                 <div className="absolute bottom-0 left-0 w-full p-4 border-t bg-white safe-area-bottom z-10">
                     <button
@@ -124,7 +84,6 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile,
                     >
                         <Heart size={20} className={isWishlisted ? "fill-current" : ""} />
                         {isWishlisted ? "가고싶어요 취소" : "가고싶어요 (+내 리스트)"}
->>>>>>> 2442f48 (feat: Wishlist, UI refinement, Refactoring)
                     </button>
                 </div>
             </div >
@@ -134,6 +93,7 @@ const RestaurantDetailModal = ({ restaurant, onClose, allReviews, onOpenProfile,
 
 const ReviewList = ({ restaurantName, allReviews, onOpenProfile }) => {
     // Filter reviews for this restaurant
+    // Matching Logic: Name Match + (Optional) Location Match if possible, but Name is primary for display aggregation
     const reviews = allReviews.filter(r => r.name === restaurantName);
 
     if (reviews.length === 0) {
