@@ -244,21 +244,9 @@ export function DataProvider({ children }) {
         }
     };
 
-    const followUser = async (targetInput) => {
-        if (!user || !targetInput) return;
-        const targetId = typeof targetInput === 'string' ? targetInput : targetInput.id;
-        if (!targetId) return;
-
-        // Save some snapshot data if available (useful for lists)
-        const snapshotData = typeof targetInput === 'object' ? {
-            name: targetInput.name || null,
-            userPhoto: targetInput.userPhoto || null,
-            email: targetInput.email || null,
-        } : {};
-
+    const followUser = async (targetId) => {
+        if (!user) return;
         await setDoc(doc(db, "users", user.uid, "following", targetId), {
-            uid: targetId,
-            ...snapshotData,
             timestamp: serverTimestamp()
         });
     };

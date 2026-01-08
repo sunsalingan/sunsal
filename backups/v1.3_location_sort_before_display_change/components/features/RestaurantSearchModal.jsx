@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, X, Loader2 } from "lucide-react";
-import { searchNaverPlaces, getRegionFromCoords } from "../../services/naverApi";
+import { searchNaverPlaces } from "../../services/naverApi";
 
 const RestaurantSearchModal = ({
     isOpen,
@@ -22,104 +22,88 @@ const RestaurantSearchModal = ({
 
     // Helper: Calculate distance in km
     const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
-        const R = 6371;
+        const R = 6371; // Radius of the earth in km
         const dLat = deg2rad(lat2 - lat1);
         const dLon = deg2rad(lon2 - lon1);
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
+        const d = R * c; // Distance in km
+        return d;
     };
 
-    const deg2rad = (deg) => deg * (Math.PI / 180);
+    const deg2rad = (deg) => {
+        return deg * (Math.PI / 180);
+    };
 
     const [userLocation, setUserLocation] = useState(null);
-    const [currentRegion, setCurrentRegion] = useState(""); // e.g., "Munjeong-dong"
 
     useEffect(() => {
         if (isOpen && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    // Try to identify region name for better search context
-                    try {
-                        const dongName = await getRegionFromCoords(lat, lng);
-                        if (dongName) {
-                            setCurrentRegion(dongName);
-                            console.log("Detected User Dong:", dongName);
-                        }
-                    } catch (e) {
-                        console.error("Region detection failed", e);
-                    }
+                (position) => {
+                    setUserLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
                 },
-                (error) => console.error("Geolocation error:", error),
+                (error) => {
+                    console.error("Geolocation denied or error:", error);
+                    // Fallback to map center if available immediately? 
+                    // Or just let the existing logic handle 'mapInstance' fallback if we want.
+                    // User explicitly requested User Location, so we prioritize that.
+                },
                 { enableHighAccuracy: true, timeout: 5000 }
             );
         }
     }, [isOpen]);
 
-    // Helper to filter only restaurants
-    const filterRestaurants = (items) => {
-        const validCategories = ["음식점", "식당", "카페", "한식", "양식", "중식", "일식", "분식", "주점", "술집", "베이커리", "패스트푸드", "육류", "고기", "해산물", "면", "요리"];
-        return items.filter(item => {
-            const cat = (item.category || "").replace(/\s/g, ""); // remove spaces
-            return validCategories.some(v => cat.includes(v));
-        });
-    };
-
     useEffect(() => {
         const timer = setTimeout(async () => {
             if (isOpen && searchTerm.trim()) {
                 setIsSearching(true);
-                let data = [];
-                let usedFallback = false;
+                const data = await searchNaverPlaces(searchTerm);
 
-                // 1. Context Search: Try "Dong + Keyword" first (e.g., "Munjeong-dong Lotteria")
-                if (currentRegion) {
-                    const contextQuery = `${currentRegion} ${searchTerm}`;
-                    console.log(`Attempting Context Search: ${contextQuery}`);
-                    data = await searchNaverPlaces(contextQuery);
-                }
-
-                // 2. Fallback Search: If no results (or no region), use raw Keyword
-                if (!data || data.length === 0) {
-                    console.log(`Fallback to Raw Search: ${searchTerm}`);
-                    data = await searchNaverPlaces(searchTerm);
-                    usedFallback = true;
-                }
-
-                // [NEW] Filter Non-Restaurants
-                const filteredData = filterRestaurants(data);
-
-                // 3. Sort by Distance
                 // Sort Preference: User Location > Map Center
                 let origin = null;
                 if (userLocation) {
                     origin = { y: userLocation.lat, x: userLocation.lng };
                 } else if (mapInstance && window.naver) {
+                    // Fallback to Map Center if user location not found yet
+                    // But User specifically asked for User Location. 
+                    // If we have mapInstance, it's better than nothing, but let's prioritize userLocation clearly.
                     origin = mapInstance.getCenter();
                 }
 
                 if (origin) {
                     const centerLat = origin.y;
                     const centerLng = origin.x;
-                    const sortedData = filteredData.map(place => ({
-                        ...place,
-                        distance: getDistanceFromLatLonInKm(centerLat, centerLng, parseFloat(place.lat), parseFloat(place.lng))
-                    })).sort((a, b) => a.distance - b.distance);
+
+                    console.log("Sorting by distance from:", centerLat, centerLng);
+
+                    const sortedData = data.map(place => {
+                        const dist = getDistanceFromLatLonInKm(
+                            centerLat,
+                            centerLng,
+                            parseFloat(place.lat),
+                            parseFloat(place.lng)
+                        );
+                        return { ...place, distance: dist };
+                    }).sort((a, b) => a.distance - b.distance);
+
                     setResults(sortedData);
                 } else {
-                    setResults(filteredData);
+                    setResults(data);
                 }
                 setIsSearching(false);
             } else {
                 setResults([]);
             }
-        }, 500);
+        }, 500); // 0.5s debounce
         return () => clearTimeout(timer);
-    }, [searchTerm, isOpen, mapInstance, userLocation, currentRegion]);
+    }, [searchTerm, isOpen, mapInstance, userLocation]);
 
     if (!isOpen) return null;
 

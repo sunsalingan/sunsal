@@ -10,7 +10,6 @@ const FriendDrawer = ({
     onUnfollow,
     onViewProfile,
     currentUser,
-    title, // [NEW]
 }) => {
     return (
         <>
@@ -28,7 +27,7 @@ const FriendDrawer = ({
                     } flex flex-col`}
             >
                 <div className="p-4 border-b flex justify-between items-center bg-slate-50">
-                    <h2 className="text-xl font-bold text-slate-800">{title || "친구 목록"}</h2>
+                    <h2 className="text-xl font-bold text-slate-800">친구 목록</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors"

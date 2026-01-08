@@ -9,7 +9,6 @@ const ProfileModal = ({
     onClose,
     activeReviews,
     onOpenDetail,
-    onViewMap, // [NEW] Handler to view user's map
 }) => {
     if (!isOpen || !userProfile) return null;
 
@@ -81,17 +80,14 @@ const ProfileModal = ({
                         <div className="flex w-full gap-2 mb-6">
                             <button
                                 onClick={handleFollowToggle}
-                                className={`flex-1 py-3 rounded-xl text-sm font-bold shadow-md transition-colors ${isFollowing
+                                className={`flex-1 py-2 rounded-xl text-sm font-bold shadow-md transition-colors ${isFollowing
                                     ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
                                     : "bg-indigo-600 text-white hover:bg-indigo-700"
                                     }`}>
                                 {isFollowing ? "팔로잉" : "팔로우"}
                             </button>
-                            <button
-                                onClick={() => onViewMap && onViewMap(userProfile)}
-                                className="flex-1 py-3 border border-indigo-100 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-bold hover:bg-indigo-100 flex items-center justify-center gap-2"
-                            >
-                                프로필 페이지 방문
+                            <button className="px-4 py-2 border rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
+                                메시지
                             </button>
                         </div>
                     )}

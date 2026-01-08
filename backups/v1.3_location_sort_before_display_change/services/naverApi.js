@@ -116,35 +116,3 @@ export const reverseGeocode = (lat, lng) => {
         });
     });
 };
-
-/**
- * 좌표로 행정동/법정동 단위의 지역명(Dong)만 추출
- */
-export const getRegionFromCoords = (lat, lng) => {
-    return new Promise((resolve, reject) => {
-        if (!window.naver || !window.naver.maps || !window.naver.maps.Service) {
-            reject("Naver Maps Service not loaded");
-            return;
-        }
-
-        const coord = new window.naver.maps.LatLng(lat, lng);
-
-        window.naver.maps.Service.reverseGeocode({
-            coords: coord,
-            orders: [
-                window.naver.maps.Service.OrderType.ADDR, // 법정동/지번 주소 우선
-            ].join(',')
-        }, function (status, response) {
-            if (status !== window.naver.maps.Service.Status.OK) {
-                return reject('Reverse Geocoding failed');
-            }
-            // v2.results[0].region.area3.name -> "문정동"
-            const items = response.v2.results;
-            if (items.length > 0 && items[0].region && items[0].region.area3) {
-                resolve(items[0].region.area3.name);
-            } else {
-                resolve("");
-            }
-        });
-    });
-};

@@ -8,16 +8,14 @@ import MapArea from "./components/features/MapArea";
 import RestaurantList from "./components/features/RestaurantList";
 import ReviewModal from "./components/features/ReviewModal";
 import ProfileModal from "./components/features/ProfileModal";
-import UserProfileHeader from "./components/features/UserProfileHeader"; // [NEW]
 import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
 import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
 import Sidebar from "./components/layout/Sidebar";
 import FriendDrawer from "./components/features/FriendDrawer";
 import UserGuideModal from "./components/features/UserGuideModal";
 import UserSearchModal from "./components/features/UserSearchModal";
-import UserListModal from "./components/features/UserListModal"; // [NEW]
 import { resetAndSeedData } from "./utils/seeder";
-import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDocs } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
+import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
 
 function App() {
     // Context Hooks
@@ -55,34 +53,13 @@ function App() {
     const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [friendsListOpen, setFriendsListOpen] = useState(false);
     const [userGuideOpen, setUserGuideOpen] = useState(false);
-    const [userSearchOpen, setUserSearchOpen] = useState(false);
-    const [showUserListModal, setShowUserListModal] = useState(false); // [NEW]
+    const [userSearchOpen, setUserSearchOpen] = useState(false); // [NEW]
 
     // --- Selected Data State ---
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
     const [targetProfile, setTargetProfile] = useState(null);
-    const [profileViewUser, setProfileViewUser] = useState(null); // [NEW] Track which user's map we are viewing
     const [selectedNewPlace, setSelectedNewPlace] = useState(null);
     const [newReviewParams, setNewReviewParams] = useState({ text: "" });
-    const [drawerTitle, setDrawerTitle] = useState("친구 목록"); // [NEW]
-
-    // Handle "Visit Profile Page" from Profile Modal
-    const handleVisitProfile = (userProfile) => {
-        setProfileViewUser(userProfile);
-        setProfileModalOpen(false);
-        setDetailModalOpen(false);
-        setCurrentPage("USER_PROFILE");
-        setShowMap(false); // [CRITICAL] Hide map by default for profile page
-        // We do NOT center map here because map is hidden.
-        // But if user toggles map ON, it should be centered. 
-        // We can set it when toggle happens or just pre-set it if possible.
-        if (userProfile.ranking && userProfile.ranking.length > 0 && mapInstance && window.naver) {
-            const top = userProfile.ranking[0];
-            // We can still move the map instance even if hidden container (it exists in DOM)
-            mapInstance.setCenter(new window.naver.maps.LatLng(top.lat, top.lng));
-            mapInstance.setZoom(14);
-        }
-    };
 
     // --- Map State ---
     const mapElement = useRef(null);
@@ -91,15 +68,6 @@ function App() {
     const [zoom, setZoom] = useState(13);
     const [isMapMoved, setIsMapMoved] = useState(false);
     const [selectedCluster, setSelectedCluster] = useState(null);
-
-    // [NEW] Compute Final Displayed Restaurants (Moved here to avoid ReferenceError)
-    const finalDisplayedRestaurants = React.useMemo(() => {
-        if (currentPage === "USER_PROFILE" && profileViewUser) {
-            const userReviews = activeReviews.filter(r => r.userId === profileViewUser.id);
-            return userReviews;
-        }
-        return displayedRestaurants;
-    }, [currentPage, profileViewUser, displayedRestaurants, activeReviews]);
 
     // --- Effects ---
     React.useEffect(() => {
@@ -278,11 +246,8 @@ function App() {
                 setFriendsListOpen={setFriendsListOpen}
                 handleLogin={handleLogin}
                 handleLogout={logout}
-                handleBackToMain={() => {
-                    setCurrentPage("MAIN");
-                    setProfileViewUser(null);
-                }}
-                targetProfile={currentPage === "USER_PROFILE" ? profileViewUser : targetProfile}
+                handleBackToMain={() => setCurrentPage("MAIN")}
+                targetProfile={targetProfile}
                 onMenuClick={() => setSidebarOpen(true)}
             />
 
@@ -307,55 +272,7 @@ function App() {
             />
 
             <div className="flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl bg-white">
-                {/* [NEW] User Profile Header */}
-                {currentPage === "USER_PROFILE" && profileViewUser && (
-                    <UserProfileHeader
-                        user={profileViewUser}
-                        currentUser={user}
-                        isFollowing={followingList.includes(profileViewUser.id)}
-                        onFollow={followUser}
-                        onUnfollow={unfollowUser}
-                        onMessage={() => alert("준비 중입니다.")}
-                        onOpenFollowers={async () => {
-                            setDrawerTitle(`${profileViewUser.name}님의 팔로워`);
-                            setFriendsData(friendsData); // Mock or Real
-                            setShowUserListModal(true); // [MODIFIED] Use Modal
-                        }}
-                        onOpenFollowing={async () => {
-                            setDrawerTitle(`${profileViewUser.name}님의 팔로잉`);
-                            try {
-                                const q = collection(db, "users", profileViewUser.id, "following");
-                                const snap = await getDocs(q);
-                                if (!snap.empty) {
-                                    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                                    setFriendsData(list);
-                                } else {
-                                    setFriendsData([]);
-                                }
-                            } catch (e) {
-                                console.error(e);
-                                setFriendsData([]);
-                            }
-                            setShowUserListModal(true); // [MODIFIED] Use Modal
-                        }}
-                        matchRate={Math.floor(Math.random() * 20 + 80)} // Mock match rate
-                    />
-                )}
-
-                <div className="flex gap-2 p-3 bg-white border-b overflow-x-auto scrollbar-hide z-20 shrink-0 items-center">
-                    {/* [NEW] Map Toggle Button for User Profile */}
-                    {currentPage === "USER_PROFILE" && (
-                        <button
-                            onClick={() => setShowMap(!showMap)}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1 ${showMap ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-indigo-600 border-indigo-200"
-                                }`}
-                        >
-                            {showMap ? "지도 접기" : "지도 보기"}
-                        </button>
-                    )}
-                    {/* Vertical Divider */}
-                    {currentPage === "USER_PROFILE" && <div className="w-px h-4 bg-slate-200 mx-1"></div>}
-
+                <div className="flex gap-2 p-3 bg-white border-b overflow-x-auto scrollbar-hide z-20 shrink-0">
                     {["전체", "한식", "일식", "양식", "중식", "카페"].map(cat => (
                         <button
                             key={cat}
@@ -379,7 +296,7 @@ function App() {
                     zoom={zoom}
                     setZoom={setZoom}
                     markersRef={markersRef}
-                    displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
+                    displayedReviews={displayedRestaurants} // Use the AGGREGATED list from Context
                     handleOpenDetail={handleOpenDetail}
                     currentPage={currentPage}
                     setRestaurantSearchOpen={setRestaurantSearchOpen}
@@ -391,13 +308,13 @@ function App() {
                 />
 
                 <RestaurantList
-                    displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
+                    displayedReviews={displayedRestaurants}
                     activeReviews={activeReviews}
                     loading={loading}
                     handleOpenDetail={handleOpenDetail}
                     currentPage={currentPage}
                     viewMode={viewMode}
-                    user={user}
+                    user={user} // [NEW] Pass user
                     onOpenProfile={handleOpenProfile}
                 />
 
@@ -423,9 +340,8 @@ function App() {
                     followingIds={followingList}
                     onFollow={followUser}
                     onUnfollow={unfollowUser}
-                    onViewProfile={(f) => handleVisitProfile(f)} // Recursive navigation!
+                    onViewProfile={(f) => handleOpenProfile(f.id)}
                     currentUser={user}
-                    title={drawerTitle} // [NEW]
                 />
             </div>
 
@@ -483,7 +399,6 @@ function App() {
                 currentUser={user}
                 onClose={() => setProfileModalOpen(false)}
                 activeReviews={activeReviews}
-                onViewMap={handleVisitProfile} // [MODIFIED] Use new handler
             />
 
             {
@@ -522,18 +437,6 @@ function App() {
             <UserSearchModal
                 isOpen={userSearchOpen}
                 onClose={() => setUserSearchOpen(false)}
-            />
-
-            <UserListModal
-                isOpen={showUserListModal}
-                onClose={() => setShowUserListModal(false)}
-                title={drawerTitle}
-                users={friendsData}
-                followingIds={followingList}
-                onFollow={followUser}
-                onUnfollow={unfollowUser}
-                onViewProfile={handleVisitProfile}
-                currentUser={user}
             />
         </div >
     );

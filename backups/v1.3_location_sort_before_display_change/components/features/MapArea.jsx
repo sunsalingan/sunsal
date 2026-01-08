@@ -52,7 +52,6 @@ const MapArea = ({
             minZoom: 1,
             zoomControl: false,
             mapTypeControl: false,
-            scaleControl: false, // [FIX] Disable scale control to prevent overlap
         };
         const map = new window.naver.maps.Map(mapElement.current, mapOptions);
         setMapInstance(map);

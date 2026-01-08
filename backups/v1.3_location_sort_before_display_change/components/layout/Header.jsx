@@ -74,6 +74,12 @@ const Header = ({
                             </button>
                             <h1 className="text-lg font-bold">{targetProfile?.name}</h1>
                         </div>
+                        <button
+                            onClick={() => setShowMap(!showMap)}
+                            className="text-xs font-bold px-3 py-2 border rounded-full"
+                        >
+                            {showMap ? "접기" : "지도"}
+                        </button>
                     </>
                 )}
             </div>
