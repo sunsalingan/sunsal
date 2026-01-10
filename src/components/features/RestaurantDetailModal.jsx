@@ -18,13 +18,13 @@ const RestaurantDetailModal = ({
     if (!restaurant) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 animate-in fade-in duration-200" style={{ pointerEvents: 'auto' }}>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-[9999] animate-in fade-in duration-200" style={{ pointerEvents: 'auto' }}>
             <div className="bg-white w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-xl flex flex-col overflow-hidden relative">
 
                 {/* Global Close Button for Modal */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 bg-black/20 text-white rounded-full hover:bg-black/40 backdrop-blur-sm cursor-pointer transition-colors"
+                    className="absolute top-4 right-4 z-[9999] p-2 bg-black/20 text-white rounded-full hover:bg-black/40 backdrop-blur-sm cursor-pointer transition-colors"
                 >
                     <X size={20} />
                 </button>

@@ -26,8 +26,8 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setUser(currentUser);
             if (currentUser) {
+                setUser(currentUser);
                 // Sync user data to Firestore
                 const userRef = doc(db, "users", currentUser.uid);
                 await setDoc(userRef, {
@@ -43,12 +43,17 @@ export function AuthProvider({ children }) {
                     const ids = snapshot.docs.map(doc => doc.id);
                     setFollowingList(ids);
                 });
-
-                // Cleanup follow listener when auth state changes (or internal re-run)
-                // Note: Ideally we track this unsubscribe too, but for simple auth flow this is okay-ish
-                // For stricter cleanup, we'd separate this effect.
             } else {
-                setFollowingList([]);
+                // Check for Mock User
+                const mock = localStorage.getItem("sunsal_mock_user");
+                if (mock) {
+                    const mockUser = JSON.parse(mock);
+                    setUser(mockUser);
+                    setFollowingList([]); // No real following for mock unless we mock this too
+                } else {
+                    setUser(null);
+                    setFollowingList([]);
+                }
             }
             setLoading(false);
         });
@@ -56,7 +61,20 @@ export function AuthProvider({ children }) {
         return () => unsubscribe();
     }, []);
 
-    const login = async () => {
+    const login = async (options) => {
+        if (options && options.mock) {
+            const mockUser = {
+                uid: "mock_user_123",
+                displayName: "테스트유저",
+                email: "test@sunsal.com",
+                photoURL: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+                isMock: true
+            };
+            localStorage.setItem("sunsal_mock_user", JSON.stringify(mockUser));
+            setUser(mockUser);
+            return;
+        }
+
         try {
             await signInWithPopup(auth, googleProvider);
         } catch (error) {
@@ -65,7 +83,11 @@ export function AuthProvider({ children }) {
         }
     };
 
-    const logout = () => signOut(auth);
+    const logout = () => {
+        localStorage.removeItem("sunsal_mock_user");
+        signOut(auth);
+        setUser(null); // Force clear if it was mock
+    };
 
     const value = {
         user,

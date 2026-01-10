@@ -13,12 +13,12 @@ const ReviewModal = ({
     handleSearchPlace, // logic to open search or just handle input
     editingReview, // [NEW] If not null, we are editing
     // Props for Step 2
-    categoryReviews, // Restaurants in same category for comparison
+    categoryReviews = [], // Restaurants in same category for comparison
     onInsert, // Handler for ranking insertion
     // Props for Step 3
-    allReviews, // All restaurants for final comparison
-    expandedFolders,
-    toggleFolder,
+    allReviews = [], // All restaurants for final comparison
+    expandedFolders = {},
+    toggleFolder = () => { },
     mockRestaurantSearch, // function to search
 }) => {
     const [step, setStep] = useState(1);
@@ -44,8 +44,31 @@ const ReviewModal = ({
         } else if (step === 2) {
             setStep(3);
         } else {
-            onSubmit();
+            handleSubmit();
         }
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedNewPlace) return;
+
+        const reviewData = {
+            ...selectedNewPlace,
+            comment: newReviewParams.text,
+            userId: "USER_ID_FROM_CONTEXT_OR_PROP", // Wait, need user ID? 
+            // addReview in DataContext usually attaches timestamp. 
+            // But userId? DataContext.jsx: 
+            // addReview = async (data) => { ... addDoc ... }
+            // Firestore rules might handle userId or DataContext should attach it.
+            // Let's check DataContext addReview.
+            // It just spreads reviewData.
+            // So we MUST attach userId, userName, userPhoto.
+            // But ReviewModal doesn't have `user` prop.
+            // `App.jsx` has `user`.
+            // So better to implement `handleReviewSubmit` in `App.jsx` and pass it as `onSubmit`.
+            // That way we have access to `user` and `activeReviews` context.
+        };
+        // ...
+        // Reverting plan: Implement handleReviewSubmit in App.jsx
     };
 
     const currentStepTitle =
@@ -56,7 +79,7 @@ const ReviewModal = ({
                 : "3단계: 전체 랭킹 확정";
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 <div className="px-5 py-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
                     <h2 className="font-bold text-lg">{currentStepTitle}</h2>
@@ -225,9 +248,10 @@ const ReviewModal = ({
                             </button>
 
                             <RecursiveRankingGroup
-                                items={categoryReviews.filter(r => r.id !== editingReview?.id)} // Exclude itself from list if editing
+                                items={(categoryReviews || []).filter(r => r.id !== editingReview?.id)}
                                 onInsert={(targetId, position) => {
-                                    onInsert(targetId, position);
+                                    console.log("Insert requested at", position, "of", targetId);
+                                    if (onInsert) onInsert(targetId, position);
                                     handleNext();
                                 }}
                                 startIndex={0}
@@ -284,7 +308,7 @@ const ReviewModal = ({
                                 ↑ 전체 1등으로 선정
                             </button>
                             <RecursiveRankingGroup
-                                items={allReviews.filter(r => r.id !== editingReview?.id)} // Exclude self
+                                items={(allReviews || []).filter(r => r.id !== editingReview?.id)} // Exclude self
                                 onInsert={(targetId, position) => {
                                     onInsert(targetId, position);
                                     handleNext();

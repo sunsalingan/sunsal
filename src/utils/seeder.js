@@ -56,28 +56,77 @@ export const resetAndSeedData = async () => {
         let reviewCount = 0;
         const reviewPromises = [];
 
+        // Specific Franchise Data for Ranking Test
+        const franchiseData = {
+            "버거킹": [
+                { name: "버거킹 강남교보점", lat: 37.5038, lng: 127.0242, address: "서울 서초구" },
+                { name: "버거킹 종로점", lat: 37.5704, lng: 126.9830, address: "서울 종로구" },
+                { name: "버거킹 홍대역점", lat: 37.5567, lng: 126.9237, address: "서울 마포구" },
+                { name: "버거킹 여의도점", lat: 37.5218, lng: 126.9242, address: "서울 영등포구" },
+                { name: "버거킹 잠실점", lat: 37.5133, lng: 127.1001, address: "서울 송파구" },
+            ],
+            "롯데리아": [
+                { name: "롯데리아 서울역점", lat: 37.5550, lng: 126.9708, address: "서울 중구" },
+                { name: "롯데리아 홍대점", lat: 37.5560, lng: 126.9230, address: "서울 마포구" },
+                { name: "롯데리아 건대점", lat: 37.5405, lng: 127.0690, address: "서울 광진구" },
+                { name: "롯데리아 명동점", lat: 37.5610, lng: 126.9850, address: "서울 중구" },
+            ],
+            "맥도날드": [
+                { name: "맥도날드 강남점", lat: 37.4979, lng: 127.0276, address: "서울 강남구" },
+                { name: "맥도날드 청담점", lat: 37.5240, lng: 127.0450, address: "서울 강남구" },
+                { name: "맥도날드 신촌점", lat: 37.5555, lng: 126.9370, address: "서울 서대문구" },
+                { name: "맥도날드 이태원점", lat: 37.5345, lng: 126.9940, address: "서울 용산구" },
+            ],
+            "KFC": [
+                { name: "KFC 코엑스점", lat: 37.5115, lng: 127.0590, address: "서울 강남구" },
+                { name: "KFC 대학로점", lat: 37.5825, lng: 127.0020, address: "서울 종로구" },
+                { name: "KFC 야탑점", lat: 37.4115, lng: 127.1280, address: "성남 분당구" }, // A bit outer
+            ]
+        };
+
+        // Flatten for random selection
+        const allFranchiseLocations = [
+            ...franchiseData["버거킹"],
+            ...franchiseData["롯데리아"],
+            ...franchiseData["맥도날드"],
+            ...franchiseData["KFC"]
+        ];
+
         for (const user of dummyUsers) {
             // Shuffle locations to ensure random selection
             const shuffledPlaces = [...MOCK_PLACES_DB].sort(() => 0.5 - Math.random());
 
             // Ensure uniqueness: Slice distinct items from the shuffled mock DB
-            const targetCount = Math.min(50, MOCK_PLACES_DB.length);
+            const targetCount = Math.min(20, MOCK_PLACES_DB.length); // Reduced to ~200 total
+            // Mix generic places with some franchise places
             const placesForUser = shuffledPlaces.slice(0, targetCount);
 
-            // Normal Distribution Logic for Scores
-            // We want a mix. Let's start with user's personal ranking.
-            // index 0 = Rank 1 (Top). index 99 = Rank 100.
+            // Inject 2-3 Random Franchise reviews per user
+            const randomFranchises = allFranchiseLocations.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 2);
 
-            // Calculate Global Score (Stored for visualization, though app recalculates)
-            // But we simply store the rank.
+            // Merge into places list
+            const combinedPlaces = [
+                ...placesForUser,
+                ...randomFranchises.map(f => ({ ...f, category: "패스트푸드" }))
+            ];
 
-            for (let j = 0; j < placesForUser.length; j++) {
-                const place = placesForUser[j];
+            for (let j = 0; j < combinedPlaces.length; j++) {
+                const place = combinedPlaces[j];
                 const comment = comments[Math.floor(Math.random() * comments.length)];
 
-                // Score is derived from Rank in App, but let's store a static one for seeding consistency
-                // Top ranks get ~9.5, Low ranks get ~6.0
-                const score = (10 - (j / targetCount) * 4).toFixed(1); // 10.0 down to 6.0 linear approx
+                // Simulated Score Ranking
+                let score;
+                if (place.name.includes("버거킹")) {
+                    score = (Math.random() * 1.5 + 8.0).toFixed(1); // 8.0 ~ 9.5 (High)
+                } else if (place.name.includes("맥도날드")) {
+                    score = (Math.random() * 1.5 + 7.0).toFixed(1); // 7.0 ~ 8.5 (Mid-High)
+                } else if (place.name.includes("KFC")) {
+                    score = (Math.random() * 1.5 + 6.5).toFixed(1); // 6.5 ~ 8.0 (Mid)
+                } else if (place.name.includes("롯데리아")) {
+                    score = (Math.random() * 1.5 + 6.0).toFixed(1); // 6.0 ~ 7.5 (Low-Mid)
+                } else {
+                    score = (10 - (j / combinedPlaces.length) * 4).toFixed(1); // Generic
+                }
 
                 const reviewId = `review_${user.uid}_${Date.now()}_${j}`;
 

@@ -124,7 +124,10 @@ const RestaurantSearchModal = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 px-4 z-[60] animate-in fade-in duration-200">
+        <div
+            className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 px-4 animate-in fade-in duration-200"
+            style={{ zIndex: 20002 }} // Force high z-index
+        >
             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
                 <div className="p-4 border-b flex items-center gap-2">
                     <Search className="text-slate-400" />

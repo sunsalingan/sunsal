@@ -32,8 +32,9 @@ export function DataProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     // Filters
-    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS
+    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS, FRANCHISE
     const [categoryFilter, setCategoryFilter] = useState("전체");
+    const [searchTerm, setSearchTerm] = useState(""); // [NEW] Franchise Search Term
 
     // Bounds State for Filtering (Optional)
     const [mapBounds, setMapBounds] = useState(null);
@@ -116,8 +117,14 @@ export function DataProvider({ children }) {
             });
         }
 
+        // 4. Search Filter (For Franchise Ranking)
+        if (searchTerm) {
+            const lowerTerm = searchTerm.toLowerCase();
+            filtered = filtered.filter(r => r.name.toLowerCase().includes(lowerTerm));
+        }
+
         return filtered;
-    }, [reviews, viewMode, user, followingList, categoryFilter, mapBounds]);
+    }, [reviews, viewMode, user, followingList, categoryFilter, mapBounds, searchTerm]);
 
     // --- Derived Data: Displayed Restaurants (Aggregated) ---
     const displayedRestaurants = useMemo(() => {
@@ -191,7 +198,7 @@ export function DataProvider({ children }) {
             // Sort by Score Descending (High score first)
             return parseFloat(b.displayScore) - parseFloat(a.displayScore);
         });
-    }, [activeReviews]);
+    }, [activeReviews, viewMode, wishlist]); // Added viewMode, wishlist deps
 
     // --- Actions ---
     const addReview = async (reviewData) => {
@@ -286,10 +293,59 @@ export function DataProvider({ children }) {
         }
     };
 
+    // Franchise State
+    const [selectedFranchise, setSelectedFranchise] = useState(null); // [NEW]
+
+    // --- Derived Data: Franchise Stats (Brand Ranking) ---
+    const franchiseStats = useMemo(() => {
+        if (!displayedRestaurants) return [];
+
+        const stats = {};
+
+        displayedRestaurants.forEach(r => {
+            // Simple logic: First word is the brand (e.g., "Starbucks" from "Starbucks Gangnam")
+            // Or use the whole name if it's short?
+            // Let's use First Word for now as it covers "Burger King", "Starbucks", "Lotteria".
+            // Refinement: If name has 2 words and ends with "branch", remove branch.
+            // For now, let's just assume the first word is the brand if filtered by search.
+            // Actually, for a GLOBAL view, we need to group ALL restaurants.
+
+            // Heuristic: Split by space.
+            const brandName = r.name.split(" ")[0];
+
+            if (!stats[brandName]) {
+                stats[brandName] = {
+                    brand: brandName,
+                    totalScore: 0,
+                    count: 0,
+                    branches: []
+                };
+            }
+            // Use displayScore (Average)
+            const score = parseFloat(r.displayScore || 0);
+            stats[brandName].totalScore += score;
+            stats[brandName].count += 1;
+            stats[brandName].branches.push(r);
+        });
+
+        // Convert to Array & Calculate Average
+        return Object.values(stats)
+            .map(s => ({
+                ...s,
+                avgScore: (s.totalScore / s.count).toFixed(1)
+            }))
+            .filter(s => s.count > 1) // Only show if there are multiple branches (Franchise candidate)
+            .sort((a, b) => parseFloat(b.avgScore) - parseFloat(a.avgScore)); // Rank by avg score
+
+    }, [displayedRestaurants]);
+
     const value = {
         reviews,
         activeReviews,
         displayedRestaurants, // AGGREGATED list for Sidebar/Map
+        franchiseStats, // [NEW] Brand Ranking
+        selectedFranchise, // [NEW]
+        setSelectedFranchise, // [NEW]
         wishlist, // [NEW] Export wishlist
         loading,
         viewMode,
@@ -298,6 +354,8 @@ export function DataProvider({ children }) {
         setCategoryFilter,
         mapBounds,
         setMapBounds,
+        searchTerm, // [NEW] Export searchTerm
+        setSearchTerm, // [NEW] Export setSearchTerm
         addReview,
         updateReview, // [NEW] Export update
         deleteReview, // [NEW] Export delete
@@ -308,8 +366,8 @@ export function DataProvider({ children }) {
     };
 
     return (
-        <DataContext.Provider value={value}>
+        <DataContext.Provider value={value} >
             {children}
-        </DataContext.Provider>
+        </DataContext.Provider >
     );
 }

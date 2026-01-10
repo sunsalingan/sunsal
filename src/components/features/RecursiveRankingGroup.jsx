@@ -6,15 +6,16 @@ const RecursiveRankingGroup = ({
     onInsert,
     startIndex,
     showTotalRank = false,
-    expandedFolders,
-    toggleFolder,
-    allReviews,
+    expandedFolders = {},
+    toggleFolder = () => { },
+    allReviews = [],
     readOnly = false,
     onOpenDetail,
 }) => {
     const folderSize = 4;
     // Safety check to prevent white screen crashes
-    if (!items || !Array.isArray(items) || items.length === 0) return null;
+    if (!items || !Array.isArray(items)) return <div className="p-4 text-center text-slate-400 text-xs">데이터를 불러오는 중...</div>;
+    if (items.length === 0) return <div className="p-4 text-center text-slate-400 text-xs">비교할 리뷰가 없습니다.</div>;
 
     if (items.length <= folderSize) {
         return (

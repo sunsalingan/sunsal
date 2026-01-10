@@ -55,16 +55,16 @@ const ProfileModal = ({
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative">
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-indigo-500 to-purple-500 z-0" />
-                <button
-                    onClick={onClose}
-                    className="absolute top-3 right-3 z-50 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white backdrop-blur-sm cursor-pointer"
-                >
-                    <X size={20} />
-                </button>
-
-                <div className="relative z-10 px-6 pt-12 pb-6 flex flex-col items-center">
+            <div className="fixed inset-0 z-[9999] bg-white sm:max-w-md sm:mx-auto sm:h-[85vh] sm:my-10 sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+                {/* Close Button */}
+                <div className="absolute top-4 right-4 z-50">
+                    <button
+                        onClick={onClose}
+                        className="bg-black/20 hover:bg-black/40 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>      <div className="relative z-10 px-6 pt-12 pb-6 flex flex-col items-center">
                     <div className="w-24 h-24 rounded-full bg-white p-1 shadow-lg mb-3">
                         <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-slate-300">
                             <User size={40} />

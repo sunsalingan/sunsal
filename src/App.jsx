@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Search } from "lucide-react"; // [NEW]
 import { useAuth } from "./contexts/AuthContext";
 import { useData } from "./contexts/DataContext";
 import { searchNaverPlaces } from "./services/naverApi";
@@ -16,7 +17,10 @@ import FriendDrawer from "./components/features/FriendDrawer";
 import UserGuideModal from "./components/features/UserGuideModal";
 import UserSearchModal from "./components/features/UserSearchModal";
 import UserListModal from "./components/features/UserListModal"; // [NEW]
+import FranchiseRankingView from "./components/features/FranchiseRankingView"; // [NEW]
+import FriendManagementModal from "./components/features/FriendManagementModal"; // [NEW]
 import { resetAndSeedData } from "./utils/seeder";
+import { getMatchRate } from "./utils/matchRate"; // [NEW]
 import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDocs } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
 
 function App() {
@@ -26,6 +30,10 @@ function App() {
         reviews,
         activeReviews,
         displayedRestaurants,
+        franchiseStats, // [NEW]
+        selectedFranchise, // [NEW]
+        setSelectedFranchise, // [NEW]
+        wishlist,
         loading,
         viewMode,
         setViewMode,
@@ -33,11 +41,12 @@ function App() {
         setCategoryFilter,
         mapBounds,
         setMapBounds,
+        searchTerm, // [NEW]
+        setSearchTerm, // [NEW]
         addReview,
         updateReview,
         deleteReview,
         toggleWishlist, // [NEW] Import toggle
-        wishlist, // [NEW] Import wishlist
         followUser,
         unfollowUser
     } = useData();
@@ -48,6 +57,11 @@ function App() {
     const useRealMap = true;
     const [restaurantSearchOpen, setRestaurantSearchOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false); // [NEW] Dark Mode
+    const [showFriendManagement, setShowFriendManagement] = useState(false); // [NEW]
+
+    // --- Edit State ---
+    const [editingReview, setEditingReview] = useState(null); // [NEW] Review being edited
 
     // --- Modal State ---
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -65,6 +79,14 @@ function App() {
     const [selectedNewPlace, setSelectedNewPlace] = useState(null);
     const [newReviewParams, setNewReviewParams] = useState({ text: "" });
     const [drawerTitle, setDrawerTitle] = useState("친구 목록"); // [NEW]
+    const [expandedFolders, setExpandedFolders] = useState({}); // [NEW] For Ranking UI
+
+    const toggleFolder = (id) => {
+        setExpandedFolders(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     // Handle "Visit Profile Page" from Profile Modal
     const handleVisitProfile = (userProfile) => {
@@ -84,7 +106,8 @@ function App() {
         }
     };
 
-    // --- Map State ---
+    // --- Review Logic ---
+    // (Consolidated below with other handlers)
     const mapElement = useRef(null);
     const [mapInstance, setMapInstance] = useState(null);
     const markersRef = useRef([]);
@@ -94,12 +117,32 @@ function App() {
 
     // [NEW] Compute Final Displayed Restaurants (Moved here to avoid ReferenceError)
     const finalDisplayedRestaurants = React.useMemo(() => {
-        if (currentPage === "USER_PROFILE" && profileViewUser) {
-            const userReviews = activeReviews.filter(r => r.userId === profileViewUser.id);
-            return userReviews;
+        if (currentPage === "USER_PROFILE") {
+            const targetUserId = profileViewUser ? profileViewUser.id : user?.uid;
+            // Logic: Show all reviews from this user
+            // Using `displayedRestaurants` from context is aggregated from `activeReviews`.
+            // `activeReviews` is already filtered by `viewMode` in context, BUT:
+            // Context might not know about `currentPage`.
+            // If we are in "USER_PROFILE", we want to show THAT user's map.
+            // We can manually filter `displayedRestaurants` here.
+            return displayedRestaurants.filter(r => r.userId === targetUserId || r.reviews?.some(rev => rev.userId === targetUserId));
         }
+
+        // [New] Franchise Mode Filtering for Map
+        if (viewMode === "FRANCHISE") {
+            if (selectedFranchise) {
+                // Show only selected brand branches
+                return displayedRestaurants.filter(r => r.name.split(" ")[0] === selectedFranchise.brand);
+            } else {
+                // Show ALL franchises (only those with >1 branches as per franchiseStats logic)
+                // Get list of franchise brands
+                const franchiseBrands = new Set(franchiseStats.map(f => f.brand));
+                return displayedRestaurants.filter(r => franchiseBrands.has(r.name.split(" ")[0]));
+            }
+        }
+
         return displayedRestaurants;
-    }, [currentPage, profileViewUser, displayedRestaurants, activeReviews]);
+    }, [displayedRestaurants, currentPage, profileViewUser, user, viewMode, selectedFranchise, franchiseStats]);
 
     // --- Effects ---
     React.useEffect(() => {
@@ -142,7 +185,7 @@ function App() {
         }
     };
 
-    const [editingReview, setEditingReview] = useState(null);
+    // (Duplicate state removed)
 
     const handleSelectRestaurantFromSearch = (place) => {
         if (reviewModalOpen) {
@@ -255,18 +298,19 @@ function App() {
                     .map(s => ({
                         id: s.id,
                         ...s.data(),
-                        matchRate: Math.floor(Math.random() * 30 + 70)
+                        matchRate: getMatchRate(user?.uid, s.id)
                     }));
                 setFriendsData(loadedFriends);
             } catch (e) { console.error(e); }
         };
         fetchFriends();
-    }, [followingList]);
+    }, [followingList, user]);
 
 
     // --- Render ---
     return (
-        <div className="h-screen w-full flex flex-col bg-slate-100 overflow-hidden font-sans text-slate-800">
+        <div className={`h-screen w-full flex flex-col overflow-hidden font-sans text-slate-800 transition-colors duration-300 ${darkMode ? "dark bg-slate-950 text-slate-100" : "bg-slate-100"}`}>
+            {/* Outer Container with Dark Mode */}
             <Header
                 currentPage={currentPage}
                 user={user}
@@ -281,6 +325,7 @@ function App() {
                 handleBackToMain={() => {
                     setCurrentPage("MAIN");
                     setProfileViewUser(null);
+                    setShowMap(true); // [FIX] Show map when returning to main
                 }}
                 targetProfile={currentPage === "USER_PROFILE" ? profileViewUser : targetProfile}
                 onMenuClick={() => setSidebarOpen(true)}
@@ -304,9 +349,56 @@ function App() {
                     setUserSearchOpen(true);
                     setSidebarOpen(false);
                 }}
+                onOpenMyProfile={() => { // [NEW]
+                    if (user) {
+                        // [FIX] Construct a normalized profile object for the current user
+                        // This ensures 'id' and 'name' are present as expected by Profile/Header components
+                        const myProfileObj = {
+                            ...user,
+                            id: user.uid,
+                            name: user.displayName,
+                            // User object from Auth might differ from Firestore data structure
+                            // Ideally we fetch from Firestore, but for speed we use Auth data
+                            // The 'ranking' or 'followers' might be missing here if only using Auth object
+                            // If we want full data, we should fetch it.
+                            // But handleVisitProfile will eventually setProfileViewUser.
+                        };
+                        handleVisitProfile(myProfileObj);
+                    }
+                    else handleLogin();
+                    setSidebarOpen(false);
+                }}
+                onOpenFriendManagement={() => { // [NEW]
+                    // We'll implement a separate state for this modal
+                    // For now let's reuse UserListModal but we need a dedicated "Management" modal as per request
+                    // Let's create `showFriendManagement` state in App.jsx next
+                    setShowFriendManagement(true);
+                    setSidebarOpen(false);
+                }}
+                darkMode={darkMode} // [NEW]
+                toggleDarkMode={() => setDarkMode(!darkMode)} // [NEW]
             />
 
-            <div className="flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl bg-white">
+            {/* Main Content Area */}
+            {/* Dark Mode Background Application */}
+            <div className={`flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl transition-colors duration-300 ${darkMode ? "bg-slate-900 border-x border-slate-700" : "bg-white"}`}>
+                {/* [NEW] Franchise Search Bar */}
+                {viewMode === "FRANCHISE" && currentPage === "MAIN" && (
+                    <div className="p-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 flex items-center gap-2 transition-colors">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="브랜드명 검색 (예: 스타벅스, 버거킹)"
+                                className="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-700 dark:text-slate-100 transition-colors"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+                )}
+
                 {/* [NEW] User Profile Header */}
                 {currentPage === "USER_PROFILE" && profileViewUser && (
                     <UserProfileHeader
@@ -327,7 +419,11 @@ function App() {
                                 const q = collection(db, "users", profileViewUser.id, "following");
                                 const snap = await getDocs(q);
                                 if (!snap.empty) {
-                                    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                                    const list = snap.docs.map(d => ({
+                                        id: d.id,
+                                        ...d.data(),
+                                        matchRate: getMatchRate(user?.uid, d.id) // [NEW]
+                                    }));
                                     setFriendsData(list);
                                 } else {
                                     setFriendsData([]);
@@ -338,23 +434,22 @@ function App() {
                             }
                             setShowUserListModal(true); // [MODIFIED] Use Modal
                         }}
-                        matchRate={Math.floor(Math.random() * 20 + 80)} // Mock match rate
+                        matchRate={getMatchRate(user?.uid, profileViewUser.id)} // [MODIFIED] Stable rate
                     />
                 )}
 
-                <div className="flex gap-2 p-3 bg-white border-b overflow-x-auto scrollbar-hide z-20 shrink-0 items-center">
-                    {/* [NEW] Map Toggle Button for User Profile */}
-                    {currentPage === "USER_PROFILE" && (
-                        <button
-                            onClick={() => setShowMap(!showMap)}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1 ${showMap ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-indigo-600 border-indigo-200"
-                                }`}
-                        >
-                            {showMap ? "지도 접기" : "지도 보기"}
-                        </button>
-                    )}
+                <div className="flex gap-2 p-3 bg-white dark:bg-slate-900 border-b dark:border-slate-800 overflow-x-auto scrollbar-hide z-20 shrink-0 items-center transition-colors">
+                    {/* [NEW] Global Map Toggle Button */}
+                    <button
+                        onClick={() => setShowMap(!showMap)}
+                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1 ${showMap ? "bg-indigo-600 text-white border-indigo-600" : "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-slate-700"
+                            }`}
+                    >
+                        {showMap ? "지도 접기" : "지도 보기"}
+                    </button>
+
                     {/* Vertical Divider */}
-                    {currentPage === "USER_PROFILE" && <div className="w-px h-4 bg-slate-200 mx-1"></div>}
+                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
                     {["전체", "한식", "일식", "양식", "중식", "카페"].map(cat => (
                         <button
@@ -362,7 +457,7 @@ function App() {
                             onClick={() => setCategoryFilter(cat)}
                             className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${categoryFilter === cat
                                 ? "bg-indigo-600 text-white shadow-md scale-105"
-                                : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                                 }`}
                         >
                             {cat}
@@ -390,16 +485,22 @@ function App() {
                     onBoundsChanged={setMapBounds}
                 />
 
-                <RestaurantList
-                    displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
-                    activeReviews={activeReviews}
-                    loading={loading}
-                    handleOpenDetail={handleOpenDetail}
-                    currentPage={currentPage}
-                    viewMode={viewMode}
-                    user={user}
-                    onOpenProfile={handleOpenProfile}
-                />
+                {viewMode === "FRANCHISE" ? (
+                    <FranchiseRankingView
+                        handleOpenDetail={handleOpenDetail}
+                    />
+                ) : (
+                    <RestaurantList
+                        displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
+                        activeReviews={activeReviews}
+                        loading={loading}
+                        handleOpenDetail={handleOpenDetail}
+                        currentPage={currentPage}
+                        viewMode={viewMode}
+                        user={user}
+                        onOpenProfile={handleOpenProfile}
+                    />
+                )}
 
                 {currentPage === "MAIN" && (
                     <button
@@ -416,6 +517,14 @@ function App() {
                     </button>
                 )}
 
+                {/* Friend Management Modal */}
+                <FriendManagementModal
+                    isOpen={showFriendManagement}
+                    onClose={() => setShowFriendManagement(false)}
+                    onOpenProfile={handleOpenProfile}
+                />
+
+                {/* Friend Drawer (Legacy or for quick access?) - Keeping for now if used elsewhere */}
                 <FriendDrawer
                     isOpen={friendsListOpen}
                     onClose={() => setFriendsListOpen(false)}
@@ -431,44 +540,33 @@ function App() {
 
             <ReviewModal
                 isOpen={reviewModalOpen}
-                onClose={() => setReviewModalOpen(false)}
-                onSubmit={handleReviewSubmit}
+                onClose={() => {
+                    setReviewModalOpen(false);
+                    setEditingReview(null);
+                    setNewReviewParams({ text: "" });
+                    setSelectedNewPlace(null);
+                }}
+
+                // State & Data
                 selectedNewPlace={selectedNewPlace}
                 newReviewParams={newReviewParams}
                 setNewReviewParams={setNewReviewParams}
+                editingReview={editingReview}
+
+                // Actions
+                onSubmit={handleReviewSubmit}
+
+
                 handleSearchPlace={() => setRestaurantSearchOpen(true)}
                 categoryReviews={(() => {
-                    const filtered = activeReviews.filter(r => r.category === selectedNewPlace?.category && r.userId === user?.uid);
-                    // Deduplicate
-                    const unique = [];
-                    const seen = new Set();
-                    filtered.forEach(r => {
-                        const key = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
-                        if (!seen.has(key)) {
-                            seen.add(key);
-                            unique.push(r);
-                        }
-                    });
-                    return unique.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+                    const safeReviews = activeReviews || [];
+                    const filtered = safeReviews.filter(r => r.category === selectedNewPlace?.category && r.userId === user?.uid);
+                    return filtered;
                 })()}
-                allReviews={(() => {
-                    const filtered = activeReviews.filter(r => r.userId === user?.uid);
-                    // Deduplicate
-                    const unique = [];
-                    const seen = new Set();
-                    filtered.forEach(r => {
-                        const key = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
-                        if (!seen.has(key)) {
-                            seen.add(key);
-                            unique.push(r);
-                        }
-                    });
-                    return unique.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
-                })()}
+                allReviews={activeReviews || []}
                 onInsert={handleInsert}
-                expandedFolders={{}} // Todo: move folder logic if needed
-                toggleFolder={() => { }}
-                editingReview={editingReview}
+                expandedFolders={expandedFolders}
+                toggleFolder={toggleFolder}
             />
 
             <ProfileModal
@@ -490,18 +588,26 @@ function App() {
                 detailModalOpen && (
                     <RestaurantDetailModal
                         restaurant={selectedRestaurant}
-                        onClose={() => {
-                            setDetailModalOpen(false);
-                            setSelectedRestaurant(null);
-                        }}
-                        allReviews={reviews} // [FIX] Use full raw reviews list
-                        onOpenProfile={handleOpenProfile}
-                        onToggleWishlist={toggleWishlist}
-                        isWishlisted={selectedRestaurant && wishlist.some(w => {
-                            const keyA = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
-                            const keyB = `${selectedRestaurant.name}-${parseFloat(selectedRestaurant.lat).toFixed(4)}-${parseFloat(selectedRestaurant.lng).toFixed(4)}`;
-                            return keyA === keyB;
+                        allReviews={reviews} // Pass ALL reviews, modal filters them
+                        onClose={() => setDetailModalOpen(false)}
+                        onOpenProfile={(uid) => handleOpenProfile(uid)}
+                        isWishlisted={wishlist.some(w => {
+                            if (!selectedRestaurant) return false;
+                            const key1 = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
+                            const key2 = `${selectedRestaurant.name}-${parseFloat(selectedRestaurant.lat).toFixed(4)}-${parseFloat(selectedRestaurant.lng).toFixed(4)}`;
+                            return key1 === key2;
                         })}
+                        onToggleWishlist={(r) => toggleWishlist(r)}
+                        currentUser={user} // [NEW] Pass current user for ID check
+                        onDeleteReview={async (reviewId) => {
+                            if (window.confirm("정말로 리뷰를 삭제하시겠습니까?")) {
+                                await deleteReview(reviewId);
+                            }
+                        }}
+                        onEditReview={(review) => {
+                            setEditingReview(review);
+                            setReviewModalOpen(true);
+                        }}
                     />
                 )
             }
