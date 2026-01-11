@@ -3,6 +3,7 @@ import { Search } from "lucide-react"; // [NEW]
 import { useAuth } from "./contexts/AuthContext";
 import { useData } from "./contexts/DataContext";
 import { searchNaverPlaces } from "./services/naverApi";
+import { useReviewModal } from "./hooks/useReviewModal"; // [NEW]
 
 import Header from "./components/layout/Header";
 import MapArea from "./components/features/MapArea";
@@ -60,11 +61,14 @@ function App() {
     const [darkMode, setDarkMode] = useState(false); // [NEW] Dark Mode
     const [showFriendManagement, setShowFriendManagement] = useState(false); // [NEW]
 
-    // --- Edit State ---
-    const [editingReview, setEditingReview] = useState(null); // [NEW] Review being edited
+
+    // --- Edit State (MOVED TO HOOK) ---
+    // const [editingReview, setEditingReview] = useState(null); // [NEW] Review being edited
 
     // --- Modal State ---
-    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    // const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const reviewModal = useReviewModal(); // [NEW] Using Hook
+
     const [profileModalOpen, setProfileModalOpen] = useState(false);
     const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [friendsListOpen, setFriendsListOpen] = useState(false);
@@ -76,8 +80,9 @@ function App() {
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
     const [targetProfile, setTargetProfile] = useState(null);
     const [profileViewUser, setProfileViewUser] = useState(null); // [NEW] Track which user's map we are viewing
-    const [selectedNewPlace, setSelectedNewPlace] = useState(null);
-    const [newReviewParams, setNewReviewParams] = useState({ text: "" });
+
+    // const [selectedNewPlace, setSelectedNewPlace] = useState(null);
+    // const [newReviewParams, setNewReviewParams] = useState({ text: "" });
     const [drawerTitle, setDrawerTitle] = useState("친구 목록"); // [NEW]
     const [expandedFolders, setExpandedFolders] = useState({}); // [NEW] For Ranking UI
 
@@ -188,7 +193,8 @@ function App() {
     // (Duplicate state removed)
 
     const handleSelectRestaurantFromSearch = (place) => {
-        if (reviewModalOpen) {
+        console.log("handleSelectRestaurantFromSearch Logic Check:", { reviewModalOpen: reviewModal.isOpen, place });
+        if (reviewModal.isOpen) {
             let foundReview = null;
             // Check for duplicates
             if (user) {
@@ -200,14 +206,10 @@ function App() {
 
             if (foundReview) {
                 // EDIT MODE
-                setEditingReview(foundReview);
-                setNewReviewParams({ text: foundReview.comment || "" }); // Pre-fill comment
-                setSelectedNewPlace({ ...place, category: foundReview.category }); // Keep category consistent
+                reviewModal.openForEdit(foundReview);
             } else {
                 // NEW MODE
-                setEditingReview(null);
-                setNewReviewParams({ text: "" });
-                setSelectedNewPlace(place);
+                reviewModal.openForNew(place);
             }
             setRestaurantSearchOpen(false);
         } else {
@@ -215,7 +217,7 @@ function App() {
             const mockReview = {
                 ...place,
                 id: `temp_${Date.now()}`,
-                globalScore: "9.5",
+                globalScore: "0.0", // No score for look around
                 name: place.name
             };
             handleOpenDetail(mockReview);
@@ -227,55 +229,53 @@ function App() {
         }
     };
 
-    const [tempRankIndex, setTempRankIndex] = useState(0);
+    // const [tempRankIndex, setTempRankIndex] = useState(0); // MOVED TO HOOK
 
     const handleInsert = (targetId, position) => {
-        // Logic to determine rank index relative to current list
-        // This is a bit tricky with "Aggregated" view vs "Raw Reviews".
-        // For now, let's just find the index in the raw filtered list `activeReviews`?
-        // Or if rank logic is simulated, we might keep it simple.
-
+        // ... (Keep existing logic)
         if (targetId === "TOP") {
-            setTempRankIndex(0);
+            reviewModal.setTempRankIndex(0);
         } else {
             const targetIdx = activeReviews.findIndex(r => r.id === targetId);
-            setTempRankIndex(position === "BEFORE" ? targetIdx : targetIdx + 1);
+            reviewModal.setTempRankIndex(position === "BEFORE" ? targetIdx : targetIdx + 1);
         }
     };
 
-    const handleReviewSubmit = async () => {
-        if (!user || !selectedNewPlace) return;
+    const handleReviewSubmit = async (rankIndexFromModal) => {
+        if (!user || !reviewModal.selectedNewPlace) return;
 
-        // Scoring Logic (Simplified call here, complex logic was in App.jsx previously)
-        // We'll calculate a score based on rank index or just mock it for now.
-        // Re-implement getRankScore logic if needed, or put it in context.
-        // For clean code, let's keep it simple:
-        const calculatedScore = (Math.random() * 2 + 8).toFixed(1); // 8.0 ~ 10.0 random
+        // Score: User rejected manual star input.
+        // We will default to 0.0 or some internal value if Score is no longer a concept.
+        // Or if previously random, we might just set it to 0.
+        // For now, let's keep it safe.
+        const calculatedScore = 0;
+
+        // Rank Index: Use the one passed from Modal (reliable) or fallback to temp state (unreliable)
+        const finalRankIndex = (rankIndexFromModal !== undefined && rankIndexFromModal !== null)
+            ? rankIndexFromModal
+            : reviewModal.tempRankIndex;
 
         const newDoc = {
-            ...selectedNewPlace,
+            ...reviewModal.selectedNewPlace,
             userId: user.uid,
             userName: user.displayName,
             userPhoto: user.photoURL,
-            comment: newReviewParams.text,
-            rankIndex: tempRankIndex,
+            comment: reviewModal.newReviewParams.text,
+            rankIndex: finalRankIndex,
             globalScore: calculatedScore,
-            category: selectedNewPlace.category || "기타",
-            location: selectedNewPlace.address || selectedNewPlace.roadAddress || ""
+            category: reviewModal.selectedNewPlace.category || "기타",
+            location: reviewModal.selectedNewPlace.address || reviewModal.selectedNewPlace.roadAddress || ""
         };
 
         try {
-            if (editingReview) {
-                await updateReview(editingReview.id, newDoc);
+            if (reviewModal.editingReview) {
+                await updateReview(reviewModal.editingReview.id, newDoc);
                 alert("리뷰가 수정되었습니다!");
             } else {
                 await addReview(newDoc);
                 alert("등록되었습니다!");
             }
-            setReviewModalOpen(false);
-            setSelectedNewPlace(null);
-            setEditingReview(null); // Reset edit state
-            setNewReviewParams({ text: "" });
+            reviewModal.close();
         } catch (e) {
             console.error(e);
             alert(`오류가 발생했습니다: ${e.message}`);
@@ -509,7 +509,7 @@ function App() {
                                 alert("로그인이 필요합니다.");
                                 return;
                             }
-                            setReviewModalOpen(true);
+                            reviewModal.setIsOpen(true);
                         }}
                         className="absolute bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-xl flex items-center justify-center text-white hover:bg-indigo-700 hover:scale-105 transition-all z-30"
                     >
@@ -539,19 +539,14 @@ function App() {
             </div>
 
             <ReviewModal
-                isOpen={reviewModalOpen}
-                onClose={() => {
-                    setReviewModalOpen(false);
-                    setEditingReview(null);
-                    setNewReviewParams({ text: "" });
-                    setSelectedNewPlace(null);
-                }}
+                isOpen={reviewModal.isOpen}
+                onClose={reviewModal.close}
 
                 // State & Data
-                selectedNewPlace={selectedNewPlace}
-                newReviewParams={newReviewParams}
-                setNewReviewParams={setNewReviewParams}
-                editingReview={editingReview}
+                selectedNewPlace={reviewModal.selectedNewPlace}
+                newReviewParams={reviewModal.newReviewParams}
+                setNewReviewParams={reviewModal.setNewReviewParams}
+                editingReview={reviewModal.editingReview}
 
                 // Actions
                 onSubmit={handleReviewSubmit}
@@ -560,7 +555,7 @@ function App() {
                 handleSearchPlace={() => setRestaurantSearchOpen(true)}
                 categoryReviews={(() => {
                     const safeReviews = activeReviews || [];
-                    const filtered = safeReviews.filter(r => r.category === selectedNewPlace?.category && r.userId === user?.uid);
+                    const filtered = safeReviews.filter(r => r.category === reviewModal.selectedNewPlace?.category && r.userId === user?.uid);
                     return filtered;
                 })()}
                 allReviews={activeReviews || []}
@@ -605,8 +600,7 @@ function App() {
                             }
                         }}
                         onEditReview={(review) => {
-                            setEditingReview(review);
-                            setReviewModalOpen(true);
+                            reviewModal.openForEdit(review);
                         }}
                     />
                 )

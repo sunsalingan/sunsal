@@ -25,6 +25,15 @@ const ReviewModal = ({
     const [isLocationAuthed, setIsLocationAuthed] = useState(false);
     const [isReceiptAuthed, setIsReceiptAuthed] = useState(false);
 
+    // [FIX] Reset state when modal opens
+    React.useEffect(() => {
+        if (isOpen) {
+            setStep(1);
+            setIsLocationAuthed(false);
+            setIsReceiptAuthed(false);
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleNext = () => {
@@ -49,26 +58,10 @@ const ReviewModal = ({
     };
 
     const handleSubmit = async () => {
-        if (!selectedNewPlace) return;
-
-        const reviewData = {
-            ...selectedNewPlace,
-            comment: newReviewParams.text,
-            userId: "USER_ID_FROM_CONTEXT_OR_PROP", // Wait, need user ID? 
-            // addReview in DataContext usually attaches timestamp. 
-            // But userId? DataContext.jsx: 
-            // addReview = async (data) => { ... addDoc ... }
-            // Firestore rules might handle userId or DataContext should attach it.
-            // Let's check DataContext addReview.
-            // It just spreads reviewData.
-            // So we MUST attach userId, userName, userPhoto.
-            // But ReviewModal doesn't have `user` prop.
-            // `App.jsx` has `user`.
-            // So better to implement `handleReviewSubmit` in `App.jsx` and pass it as `onSubmit`.
-            // That way we have access to `user` and `activeReviews` context.
-        };
-        // ...
-        // Reverting plan: Implement handleReviewSubmit in App.jsx
+        // Fallback: Default to Top 1 (Index 0) if bottom button is clicked without specific selection
+        if (onSubmit) {
+            onSubmit(0);
+        }
     };
 
     const currentStepTitle =
@@ -184,6 +177,8 @@ const ReviewModal = ({
                                     }
                                 />
                             </div>
+
+                            {/* Score Input Removed (as per user request "When did we decide stars?") */}
                         </div>
                     )}
 
@@ -202,12 +197,7 @@ const ReviewModal = ({
                                             기존 순위:
                                             <strong className="text-lg ml-1 text-orange-700">
                                                 {(() => {
-                                                    // Robust Rank Finding: Use Name + Lat/Lng Match
-                                                    // Because ID might differ (if duplicate exists) or deduping removed the exact instance
                                                     const targetKey = `${editingReview.name}-${parseFloat(editingReview.lat).toFixed(4)}-${parseFloat(editingReview.lng).toFixed(4)}`;
-
-                                                    // Create a comprehensive sorted list including the edited item (if not present)
-                                                    // We act as if we are finding the rank in the *original* context
                                                     const hasIt = categoryReviews.some(r => {
                                                         const k = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
                                                         return k === targetKey;
@@ -217,8 +207,6 @@ const ReviewModal = ({
                                                     if (!hasIt) {
                                                         sortedList = [...categoryReviews, editingReview];
                                                     }
-                                                    // Sort by rankIndex ascending (1st place = lowest index)
-                                                    // Assuming rankIndex is consistent. If not, this might be off, but best effort.
                                                     sortedList.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
 
                                                     const myIndex = sortedList.findIndex(r => {
@@ -237,10 +225,10 @@ const ReviewModal = ({
 
                             <button
                                 onClick={() => {
-                                    // Logic: Insert at Top -> Trigger handler -> Auto next step?
-                                    // For prototype, let's just properly call onInsert then next.
-                                    onInsert("TOP", "TOP");
-                                    handleNext(); // Auto advance for better UX
+                                    // Step 2 is just for show/mental model, doesn't set global rank directly yet.
+                                    // Or maybe we want to use this input? 
+                                    // For now, let's proceed to Step 3 for Global Ranking which is what really matters.
+                                    handleNext();
                                 }}
                                 className="w-full py-3 border-2 border-dashed border-indigo-300 rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all text-sm font-bold mb-4"
                             >
@@ -250,8 +238,7 @@ const ReviewModal = ({
                             <RecursiveRankingGroup
                                 items={(categoryReviews || []).filter(r => r.id !== editingReview?.id)}
                                 onInsert={(targetId, position) => {
-                                    console.log("Insert requested at", position, "of", targetId);
-                                    if (onInsert) onInsert(targetId, position);
+                                    // Just proceed to Step 3
                                     handleNext();
                                 }}
                                 startIndex={0}
@@ -300,8 +287,9 @@ const ReviewModal = ({
                             </div>
                             <button
                                 onClick={() => {
-                                    onInsert("TOP", "TOP");
-                                    handleNext();
+                                    // Calculate Rank: TOP (0)
+                                    const rankIndex = 0;
+                                    onSubmit(rankIndex);
                                 }}
                                 className="w-full py-3 border-2 border-dashed border-indigo-300 rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all text-sm font-bold mb-4"
                             >
@@ -310,8 +298,13 @@ const ReviewModal = ({
                             <RecursiveRankingGroup
                                 items={(allReviews || []).filter(r => r.id !== editingReview?.id)} // Exclude self
                                 onInsert={(targetId, position) => {
-                                    onInsert(targetId, position);
-                                    handleNext();
+                                    // Calculate Rank LOCALLY to avoid async state issues
+                                    let rankIndex = 0;
+                                    const targetIdx = allReviews.findIndex(r => r.id === targetId);
+                                    if (targetIdx !== -1) {
+                                        rankIndex = position === "BEFORE" ? targetIdx : targetIdx + 1;
+                                    }
+                                    onSubmit(rankIndex);
                                 }}
                                 startIndex={0}
                                 showTotalRank={true}
