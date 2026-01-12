@@ -25,6 +25,7 @@ import {
     arrayRemove,
     getDocs,
     limit,
+    writeBatch,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -62,4 +63,5 @@ export {
     arrayRemove,
     getDocs,
     limit,
+    writeBatch
 };

@@ -20,9 +20,10 @@ import UserSearchModal from "./components/features/UserSearchModal";
 import UserListModal from "./components/features/UserListModal"; // [NEW]
 import FranchiseRankingView from "./components/features/FranchiseRankingView"; // [NEW]
 import FriendManagementModal from "./components/features/FriendManagementModal"; // [NEW]
+import AdminPage from "./pages/AdminPage"; // [NEW]
 import { resetAndSeedData } from "./utils/seeder";
 import { getMatchRate } from "./utils/matchRate"; // [NEW]
-import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDocs } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
+import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDocs, writeBatch } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
 
 function App() {
     // Context Hooks
@@ -151,6 +152,11 @@ function App() {
 
     // --- Effects ---
     React.useEffect(() => {
+        // [NEW] Check for Admin URL
+        if (window.location.pathname === "/admin") {
+            setCurrentPage("ADMIN");
+        }
+
         const hasSeenGuide = localStorage.getItem("sunsal_user_guide_seen");
         if (!hasSeenGuide) {
             setUserGuideOpen(true);
@@ -244,38 +250,83 @@ function App() {
     const handleReviewSubmit = async (rankIndexFromModal) => {
         if (!user || !reviewModal.selectedNewPlace) return;
 
-        // Score: User rejected manual star input.
-        // We will default to 0.0 or some internal value if Score is no longer a concept.
-        // Or if previously random, we might just set it to 0.
-        // For now, let's keep it safe.
-        const calculatedScore = 0;
-
-        // Rank Index: Use the one passed from Modal (reliable) or fallback to temp state (unreliable)
+        // 1. Prepare New/Updated Review Data
+        // Note: globalScore will be set to 0 initially, but recalculated immediately below.
         const finalRankIndex = (rankIndexFromModal !== undefined && rankIndexFromModal !== null)
             ? rankIndexFromModal
             : reviewModal.tempRankIndex;
 
-        const newDoc = {
+        const baseReviewData = {
             ...reviewModal.selectedNewPlace,
             userId: user.uid,
             userName: user.displayName,
             userPhoto: user.photoURL,
             comment: reviewModal.newReviewParams.text,
-            rankIndex: finalRankIndex,
-            globalScore: calculatedScore,
             category: reviewModal.selectedNewPlace.category || "기타",
-            location: reviewModal.selectedNewPlace.address || reviewModal.selectedNewPlace.roadAddress || ""
+            location: reviewModal.selectedNewPlace.address || reviewModal.selectedNewPlace.roadAddress || "",
+            timestamp: serverTimestamp() // Ensure timestamp is fresh
         };
 
         try {
+            // 2. Fetch ALL Active Reviews for this User (to recalculate everything)
+            // We need to include the NEW one in this list to calculate scores correctly.
+            // Since we haven't saved the new one to DB yet, we simulate the list.
+
+            // Filter existing reviews for this user
+            let userReviews = activeReviews.filter(r => r.userId === user.uid);
+
+            // If Editing: Remove the old version from the list first
             if (reviewModal.editingReview) {
-                await updateReview(reviewModal.editingReview.id, newDoc);
-                alert("리뷰가 수정되었습니다!");
-            } else {
-                await addReview(newDoc);
-                alert("등록되었습니다!");
+                userReviews = userReviews.filter(r => r.id !== reviewModal.editingReview.id);
             }
+
+            // Create the new review object (with temporary ID if new)
+            const newReviewObj = {
+                ...baseReviewData,
+                id: reviewModal.editingReview ? reviewModal.editingReview.id : `temp_${Date.now()}`,
+                rankIndex: finalRankIndex
+            };
+
+            // Insert new review into the list
+            // We just push it, calculateScores will sort it by rankIndex anyway.
+            const allReviewsForCalc = [...userReviews, newReviewObj];
+
+            // 3. Recalculate Scores
+            // Dynamically import to ensure it's loaded (or just use import at top)
+            const { calculateScores } = await import("./utils/scoreCalculator");
+            const updatedReviews = calculateScores(allReviewsForCalc);
+
+            // 4. Batch Write to Firestore
+            // We need to update ALL reviews that have changed scores (or just all to be safe).
+            const batch = writeBatch(db);
+
+            updatedReviews.forEach(rev => {
+                // If it's the NEW review (temp ID), we use addDoc equivalent (but batch.set needs ID)
+                // For new docs in batch, we need to generate ID first.
+                const docRef = rev.id.startsWith("temp_")
+                    ? doc(collection(db, "reviews")) // Generate new ID
+                    : doc(db, "reviews", rev.id);
+
+                // Update Data with Calculated Score
+                const dataToSave = {
+                    ...rev,
+                    globalScore: rev.globalScore, // The important part!
+                    // Ensure other fields are present if it's a new doc, 
+                    // but 'rev' might be full object from context which serves well.
+                    // Ideally we clean it up (remove local-only props).
+                };
+
+                // Remove temp ID if it exists in data
+                if (dataToSave.id && dataToSave.id.startsWith("temp_")) delete dataToSave.id;
+
+                batch.set(docRef, dataToSave, { merge: true });
+            });
+
+            await batch.commit();
+
+            alert(reviewModal.editingReview ? "리뷰가 수정되고 랭킹점수가 갱신되었습니다!" : "등록되고 랭킹점수가 산정되었습니다!");
             reviewModal.close();
+
         } catch (e) {
             console.error(e);
             alert(`오류가 발생했습니다: ${e.message}`);
@@ -308,6 +359,13 @@ function App() {
 
 
     // --- Render ---
+    if (currentPage === "ADMIN") {
+        return <AdminPage onBack={() => {
+            window.history.pushState(null, "", "/"); // Reset URL
+            setCurrentPage("MAIN");
+        }} />;
+    }
+
     return (
         <div className={`h-screen w-full flex flex-col overflow-hidden font-sans text-slate-800 transition-colors duration-300 ${darkMode ? "dark bg-slate-950 text-slate-100" : "bg-slate-100"}`}>
             {/* Outer Container with Dark Mode */}
@@ -597,6 +655,40 @@ function App() {
                         onDeleteReview={async (reviewId) => {
                             if (window.confirm("정말로 리뷰를 삭제하시겠습니까?")) {
                                 await deleteReview(reviewId);
+
+                                // [NEW] Recalculate Scores for remaining reviews
+                                try {
+                                    // 1. Get remaining reviews for user
+                                    if (!user) return;
+                                    const remainingReviews = activeReviews.filter(r => r.userId === user.uid && r.id !== reviewId);
+
+                                    // 2. Recalculate
+                                    // We need to re-sort them by rankIndex (gap filling is implicit in sort order, 
+                                    // or we might need to strictly re-index 0 to N-1 if we want clean indices, 
+                                    // but calculateScores sorts by rankIndex so it handles gaps as just next item).
+                                    // However, clean indices (0,1,2...) are better for UI. 
+                                    // Let's just pass them to CalculateScores, it uses array index (0 to N-1) effectively.
+
+                                    const { calculateScores } = await import("./utils/scoreCalculator");
+                                    const updatedReviews = calculateScores(remainingReviews);
+
+                                    // 3. Batch Update
+                                    if (updatedReviews.length > 0) {
+                                        const batch = writeBatch(db);
+                                        updatedReviews.forEach((rev, index) => {
+                                            const docRef = doc(db, "reviews", rev.id);
+                                            // We also update rankIndex to be continuous (0, 1, 2...)
+                                            batch.update(docRef, {
+                                                globalScore: rev.globalScore,
+                                                rankIndex: index // Ensure continuous ranking
+                                            });
+                                        });
+                                        await batch.commit();
+                                        console.log("Scores and Ranks recalculated after delete.");
+                                    }
+                                } catch (err) {
+                                    console.error("Error recalculating after delete:", err);
+                                }
                             }
                         }}
                         onEditReview={(review) => {

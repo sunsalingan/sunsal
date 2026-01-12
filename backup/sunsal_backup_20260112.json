@@ -1,0 +1,4229 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "exportDate": "2026-01-12T04:52:29.167Z",
+    "counts": {
+      "users": 11,
+      "reviews": 227
+    }
+  },
+  "users": [
+    {
+      "id": "EBrSWNRxFOT2tv7w395m2z4FFMF3",
+      "name": "순살인간",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocI7ZEDOVmgNtcMps-fsZY7c9687g3qVVpDcLJtDFgvjcD7qryE=s96-c",
+      "email": "whgusals0901@gmail.com",
+      "lastLogin": {
+        "seconds": 1768193542,
+        "nanoseconds": 767000000
+      }
+    },
+    {
+      "id": "soonsal_user_1",
+      "uid": "soonsal_user_1",
+      "email": "soonsal1@example.com",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 22000000
+      },
+      "name": "순살1",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1"
+    },
+    {
+      "id": "soonsal_user_10",
+      "name": "순살10",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "uid": "soonsal_user_10",
+      "email": "soonsal10@example.com",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 117000000
+      }
+    },
+    {
+      "id": "soonsal_user_2",
+      "name": "순살2",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "uid": "soonsal_user_2",
+      "email": "soonsal2@example.com",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 34000000
+      }
+    },
+    {
+      "id": "soonsal_user_3",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "uid": "soonsal_user_3",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 45000000
+      },
+      "email": "soonsal3@example.com",
+      "name": "순살3"
+    },
+    {
+      "id": "soonsal_user_4",
+      "uid": "soonsal_user_4",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "email": "soonsal4@example.com",
+      "name": "순살4",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 56000000
+      }
+    },
+    {
+      "id": "soonsal_user_5",
+      "name": "순살5",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "email": "soonsal5@example.com",
+      "uid": "soonsal_user_5",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 67000000
+      }
+    },
+    {
+      "id": "soonsal_user_6",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "uid": "soonsal_user_6",
+      "email": "soonsal6@example.com",
+      "name": "순살6",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 78000000
+      }
+    },
+    {
+      "id": "soonsal_user_7",
+      "uid": "soonsal_user_7",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 90000000
+      },
+      "email": "soonsal7@example.com",
+      "name": "순살7",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7"
+    },
+    {
+      "id": "soonsal_user_8",
+      "name": "순살8",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "email": "soonsal8@example.com",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 99000000
+      },
+      "uid": "soonsal_user_8"
+    },
+    {
+      "id": "soonsal_user_9",
+      "createdAt": {
+        "seconds": 1767921859,
+        "nanoseconds": 108000000
+      },
+      "name": "순살9",
+      "photoURL": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "email": "soonsal9@example.com",
+      "uid": "soonsal_user_9"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "kSMKB6SWOTEl9WaWLRQf",
+      "globalScore": 0,
+      "timestamp": {
+        "seconds": 1768148975,
+        "nanoseconds": 435000000
+      },
+      "distance": 2.25216566794437,
+      "category": "중식>중식당",
+      "comment": "ㅇ",
+      "lat": 37.5602761,
+      "location": "서울특별시 중구 동호로 287 앰배서더 서울 풀만 호텔 2층",
+      "lng": 127.0023153,
+      "userId": "EBrSWNRxFOT2tv7w395m2z4FFMF3",
+      "name": "호빈",
+      "rankIndex": 0,
+      "userName": "순살인간",
+      "userPhoto": "https://lh3.googleusercontent.com/a/ACg8ocI7ZEDOVmgNtcMps-fsZY7c9687g3qVVpDcLJtDFgvjcD7qryE=s96-c",
+      "address": "서울특별시 중구 동호로 287 앰배서더 서울 풀만 호텔 2층",
+      "isLocation": false
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_0",
+      "lng": 126.918,
+      "rankIndex": 0,
+      "userName": "순살10",
+      "userId": "soonsal_user_10",
+      "name": "카와카츠",
+      "globalScore": "10.0",
+      "comment": "숨겨진 맛집 발견!",
+      "lat": 37.5571,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "category": "일식",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 484000000
+      },
+      "address": "서울 마포구 동교로 126"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_1",
+      "name": "쉐이크쉑 강남",
+      "lng": 127.0257,
+      "comment": "재방문 의사 있습니다.",
+      "address": "서울 강남구 강남대로 452",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 496000000
+      },
+      "userId": "soonsal_user_10",
+      "category": "양식",
+      "globalScore": "9.8",
+      "rankIndex": 1,
+      "lat": 37.5026,
+      "userName": "순살10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_2",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "category": "양식",
+      "lng": 126.9135,
+      "userName": "순살10",
+      "name": "오스테리아 샘킴",
+      "rankIndex": 2,
+      "userId": "soonsal_user_10",
+      "globalScore": "9.7",
+      "lat": 37.5495,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "address": "서울 마포구 양화로3길 55",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 505000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_3",
+      "userId": "soonsal_user_10",
+      "lng": 126.9835,
+      "name": "스타벅스 더종로R",
+      "userName": "순살10",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "address": "서울 종로구 종로 51",
+      "lat": 37.5708,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 515000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "globalScore": "9.5",
+      "rankIndex": 3,
+      "category": "카페"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_4",
+      "lng": 127.036,
+      "rankIndex": 4,
+      "userName": "순살10",
+      "userId": "soonsal_user_10",
+      "name": "진미평양냉면",
+      "comment": "주말엔 사람 너무 많아요.",
+      "globalScore": "9.3",
+      "lat": 37.5161,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "address": "서울 강남구 학동로 305-3",
+      "category": "한식",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 526000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_5",
+      "category": "중식",
+      "lng": 126.9912,
+      "rankIndex": 5,
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "lat": 37.5665,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "userName": "순살10",
+      "userId": "soonsal_user_10",
+      "globalScore": "9.1",
+      "name": "안동장",
+      "address": "서울 중구 을지로 124",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 535000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_6",
+      "address": "서울 영등포구 문래로 203",
+      "rankIndex": 6,
+      "comment": "숨겨진 맛집 발견!",
+      "category": "중식",
+      "lng": 126.9048,
+      "userName": "순살10",
+      "name": "송죽장",
+      "globalScore": "9.0",
+      "userId": "soonsal_user_10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 545000000
+      },
+      "lat": 37.5165,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_7",
+      "userId": "soonsal_user_10",
+      "lat": 37.5235,
+      "globalScore": "8.8",
+      "lng": 127.0355,
+      "name": "카멜커피 도산",
+      "rankIndex": 7,
+      "userName": "순살10",
+      "address": "서울 강남구 도산대로45길 16-8",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 556000000
+      },
+      "category": "카페",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_8",
+      "name": "하동관 명동본점",
+      "rankIndex": 8,
+      "comment": "진짜 인생 맛집입니다!",
+      "address": "서울 중구 명동9길 12",
+      "lng": 126.984,
+      "globalScore": "8.6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "userName": "순살10",
+      "userId": "soonsal_user_10",
+      "category": "한식",
+      "lat": 37.5645,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 568000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858574_9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 578000000
+      },
+      "address": "서울 중구 동호로 249",
+      "globalScore": "8.4",
+      "rankIndex": 9,
+      "userId": "soonsal_user_10",
+      "category": "중식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "name": "팔선",
+      "lat": 37.5558,
+      "userName": "순살10",
+      "lng": 127.005,
+      "comment": "나만 알고 싶은 곳인데..."
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "lng": 126.9716,
+      "name": "토속촌 삼계탕",
+      "lat": 37.5772,
+      "userId": "soonsal_user_10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 591000000
+      },
+      "category": "한식",
+      "rankIndex": 10,
+      "address": "서울 종로구 자하문로5길 5",
+      "userName": "순살10",
+      "globalScore": "8.3"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_11",
+      "lng": 127.045,
+      "rankIndex": 11,
+      "userName": "순살10",
+      "userId": "soonsal_user_10",
+      "comment": "숨겨진 맛집 발견!",
+      "name": "볼트스테이크하우스",
+      "globalScore": "8.1",
+      "lat": 37.5255,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "category": "양식",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 600000000
+      },
+      "address": "서울 강남구 압구정로72길 22"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_12",
+      "name": "정돈 대학로",
+      "category": "일식",
+      "lat": 37.5815,
+      "address": "서울 종로구 대학로9길 12",
+      "lng": 127.0019,
+      "userId": "soonsal_user_10",
+      "userName": "순살10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 612000000
+      },
+      "globalScore": "7.9",
+      "comment": "재방문 의사 있습니다.",
+      "rankIndex": 12
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_13",
+      "category": "중식",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "globalScore": "7.7",
+      "address": "서울 서대문구 연희로15길 21",
+      "rankIndex": 13,
+      "name": "목란",
+      "userName": "순살10",
+      "lat": 37.5684,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 624000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "userId": "soonsal_user_10",
+      "lng": 126.931
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_14",
+      "userId": "soonsal_user_10",
+      "lng": 126.9785,
+      "rankIndex": 14,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 635000000
+      },
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "name": "오제제 광화문",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "globalScore": "7.6",
+      "category": "일식",
+      "lat": 37.5699,
+      "address": "서울 중구 세종대로 136",
+      "userName": "순살10"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_15",
+      "lng": 126.9805,
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "userName": "순살10",
+      "globalScore": "7.4",
+      "category": "일식",
+      "userId": "soonsal_user_10",
+      "rankIndex": 15,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "name": "미진",
+      "lat": 37.5705,
+      "address": "서울 종로구 종로 19",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 647000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_16",
+      "globalScore": "7.2",
+      "userId": "soonsal_user_10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "category": "한식",
+      "userName": "순살10",
+      "lat": 37.5604,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 659000000
+      },
+      "name": "필동면옥",
+      "rankIndex": 16,
+      "lng": 126.9997,
+      "address": "서울 중구 서애로 26"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_17",
+      "rankIndex": 17,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "userId": "soonsal_user_10",
+      "comment": "평범하지만 깔끔해요.",
+      "address": "서울 용산구 이태원로42길 28-4",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 676000000
+      },
+      "lat": 37.5358,
+      "userName": "순살10",
+      "category": "양식",
+      "lng": 127.0019,
+      "name": "다운타우너 한남",
+      "globalScore": "7.0"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_18",
+      "lat": 37.5218,
+      "name": "스시코우지",
+      "userName": "순살10",
+      "lng": 127.036,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 687000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "address": "서울 강남구 도산대로 318",
+      "category": "일식",
+      "rankIndex": 18,
+      "userId": "soonsal_user_10",
+      "comment": "나만 알고 싶은 곳인데...",
+      "globalScore": "6.9"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_19",
+      "lng": 127.045,
+      "category": "카페",
+      "address": "서울 성동구 아차산로 7",
+      "name": "블루보틀 성수",
+      "userName": "순살10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 697000000
+      },
+      "lat": 37.548,
+      "rankIndex": 19,
+      "userId": "soonsal_user_10",
+      "globalScore": "6.7",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_20",
+      "comment": "숨겨진 맛집 발견!",
+      "name": "롯데리아 건대점",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 708000000
+      },
+      "address": "서울 광진구",
+      "rankIndex": 20,
+      "lng": 127.069,
+      "category": "패스트푸드",
+      "globalScore": "6.2",
+      "lat": 37.5405,
+      "userId": "soonsal_user_10",
+      "userName": "순살10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_21",
+      "userId": "soonsal_user_10",
+      "globalScore": "7.0",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "comment": "역시 본점은 다르네요.",
+      "userName": "순살10",
+      "category": "패스트푸드",
+      "lat": 37.4979,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 723000000
+      },
+      "name": "맥도날드 강남점",
+      "rankIndex": 21,
+      "lng": 127.0276,
+      "address": "서울 강남구"
+    },
+    {
+      "id": "review_soonsal_user_10_1767921858575_22",
+      "userName": "순살10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal10",
+      "lat": 37.524,
+      "category": "패스트푸드",
+      "name": "맥도날드 청담점",
+      "userId": "soonsal_user_10",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 736000000
+      },
+      "globalScore": "7.1",
+      "address": "서울 강남구",
+      "rankIndex": 22,
+      "lng": 127.045
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_0",
+      "userName": "순살1",
+      "lat": 37.5218,
+      "rankIndex": 0,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 185000000
+      },
+      "name": "스시코우지",
+      "address": "서울 강남구 도산대로 318",
+      "userId": "soonsal_user_1",
+      "globalScore": "10.0",
+      "comment": "주말엔 사람 너무 많아요.",
+      "category": "일식",
+      "lng": 127.036
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_1",
+      "rankIndex": 1,
+      "userId": "soonsal_user_1",
+      "lat": 37.5665,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "globalScore": "9.8",
+      "lng": 126.9912,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 199000000
+      },
+      "category": "중식",
+      "userName": "순살1",
+      "address": "서울 중구 을지로 124",
+      "name": "안동장",
+      "comment": "사장님이 친절하고 양이 푸짐합니다."
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_2",
+      "category": "일식",
+      "globalScore": "9.6",
+      "address": "서울 중구 세종대로 136",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "rankIndex": 2,
+      "lng": 126.9785,
+      "userName": "순살1",
+      "name": "오제제 광화문",
+      "lat": 37.5699,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 211000000
+      },
+      "comment": "역시 본점은 다르네요."
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_3",
+      "userId": "soonsal_user_1",
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 223000000
+      },
+      "address": "서울 강남구 학동로 305-3",
+      "rankIndex": 3,
+      "lat": 37.5161,
+      "comment": "역시 본점은 다르네요.",
+      "userName": "순살1",
+      "globalScore": "9.5",
+      "name": "진미평양냉면",
+      "lng": 127.036
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_4",
+      "globalScore": "9.3",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "category": "일식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 235000000
+      },
+      "lng": 126.9805,
+      "userName": "순살1",
+      "name": "미진",
+      "rankIndex": 4,
+      "lat": 37.5705,
+      "address": "서울 종로구 종로 19",
+      "userId": "soonsal_user_1"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858570_5",
+      "lng": 126.9716,
+      "name": "토속촌 삼계탕",
+      "userName": "순살1",
+      "address": "서울 종로구 자하문로5길 5",
+      "userId": "soonsal_user_1",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "rankIndex": 5,
+      "lat": 37.5772,
+      "globalScore": "9.1",
+      "category": "한식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 247000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_10",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "name": "쉐이크쉑 강남",
+      "userId": "soonsal_user_1",
+      "address": "서울 강남구 강남대로 452",
+      "lat": 37.5026,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 310000000
+      },
+      "comment": "부모님 모리고 오기 좋아요.",
+      "userName": "순살1",
+      "category": "양식",
+      "rankIndex": 10,
+      "lng": 127.0257,
+      "globalScore": "8.2"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_11",
+      "name": "카멜커피 도산",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "lng": 127.0355,
+      "userName": "순살1",
+      "rankIndex": 11,
+      "address": "서울 강남구 도산대로45길 16-8",
+      "globalScore": "8.0",
+      "comment": "숨겨진 맛집 발견!",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 320000000
+      },
+      "lat": 37.5235,
+      "category": "카페"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_12",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 330000000
+      },
+      "rankIndex": 12,
+      "globalScore": "7.8",
+      "name": "바 참",
+      "lng": 126.9713,
+      "address": "서울 종로구 자하문로7길 34",
+      "lat": 37.5778,
+      "userName": "순살1",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "category": "바"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_13",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "name": "명동교자 본점",
+      "globalScore": "7.6",
+      "comment": "나만 알고 싶은 곳인데...",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 342000000
+      },
+      "address": "서울 중구 명동10길 29",
+      "rankIndex": 13,
+      "category": "한식",
+      "userId": "soonsal_user_1",
+      "userName": "순살1",
+      "lat": 37.5625,
+      "lng": 126.9856
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_14",
+      "comment": "주말엔 사람 너무 많아요.",
+      "rankIndex": 14,
+      "category": "중식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 355000000
+      },
+      "address": "서울 마포구 잔다리로 123",
+      "userName": "순살1",
+      "globalScore": "7.5",
+      "name": "진진",
+      "lng": 126.9123,
+      "lat": 37.5562,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "userId": "soonsal_user_1"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_15",
+      "globalScore": "7.3",
+      "lat": 37.5684,
+      "name": "목란",
+      "rankIndex": 15,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "address": "서울 서대문구 연희로15길 21",
+      "category": "중식",
+      "lng": 126.931,
+      "userName": "순살1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 365000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_16",
+      "lat": 37.563,
+      "rankIndex": 16,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 376000000
+      },
+      "address": "서울 마포구 성미산로 165-1",
+      "userName": "순살1",
+      "userId": "soonsal_user_1",
+      "name": "야키토리 묵",
+      "lng": 126.924,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "category": "일식",
+      "globalScore": "7.1",
+      "comment": "나만 알고 싶은 곳인데..."
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_17",
+      "rankIndex": 17,
+      "lng": 126.9866,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "globalScore": "6.9",
+      "category": "카페",
+      "lat": 37.5792,
+      "comment": "재방문 의사 있습니다.",
+      "userName": "순살1",
+      "userId": "soonsal_user_1",
+      "name": "런던베이글뮤지엄 안국",
+      "address": "서울 종로구 북촌로4길 20",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 388000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_18",
+      "userId": "soonsal_user_1",
+      "globalScore": "6.7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "name": "다운타우너 한남",
+      "rankIndex": 18,
+      "userName": "순살1",
+      "lat": 37.5358,
+      "lng": 127.0019,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 400000000
+      },
+      "address": "서울 용산구 이태원로42길 28-4",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "category": "양식"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_19",
+      "name": "하동관 명동본점",
+      "userName": "순살1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 415000000
+      },
+      "lat": 37.5645,
+      "address": "서울 중구 명동9길 12",
+      "lng": 126.984,
+      "comment": "부모님 모리고 오기 좋아요.",
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "globalScore": "6.5",
+      "rankIndex": 19,
+      "userId": "soonsal_user_1"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_20",
+      "name": "KFC 코엑스점",
+      "globalScore": "7.0",
+      "lng": 127.059,
+      "userName": "순살1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "userId": "soonsal_user_1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 426000000
+      },
+      "lat": 37.5115,
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "address": "서울 강남구",
+      "rankIndex": 20,
+      "category": "패스트푸드"
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_21",
+      "rankIndex": 21,
+      "lat": 37.5825,
+      "address": "서울 종로구",
+      "userName": "순살1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "lng": 127.002,
+      "globalScore": "7.5",
+      "category": "패스트푸드",
+      "name": "KFC 대학로점",
+      "userId": "soonsal_user_1",
+      "comment": "숨겨진 맛집 발견!",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 437000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_6",
+      "category": "일식",
+      "globalScore": "8.9",
+      "address": "서울 송파구 백제고분로45길 38",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "rankIndex": 6,
+      "lng": 127.103,
+      "userName": "순살1",
+      "name": "멘야하나비 잠실",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 260000000
+      },
+      "comment": "진짜 인생 맛집입니다!",
+      "lat": 37.5098
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_7",
+      "lng": 127.045,
+      "globalScore": "8.7",
+      "lat": 37.548,
+      "name": "블루보틀 성수",
+      "category": "카페",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "rankIndex": 7,
+      "userName": "순살1",
+      "userId": "soonsal_user_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "address": "서울 성동구 아차산로 7",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 272000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_8",
+      "rankIndex": 8,
+      "name": "남영돈",
+      "lng": 126.972,
+      "userName": "순살1",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "globalScore": "8.5",
+      "address": "서울 용산구 한강대로80길 17",
+      "category": "한식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 285000000
+      },
+      "userId": "soonsal_user_1",
+      "lat": 37.5445
+    },
+    {
+      "id": "review_soonsal_user_1_1767921858571_9",
+      "userName": "순살1",
+      "address": "서울 강남구 도산대로15길 47",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal1",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "globalScore": "8.4",
+      "lng": 127.0225,
+      "name": "길버트버거앤프라이즈",
+      "rankIndex": 9,
+      "lat": 37.5193,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 298000000
+      },
+      "userId": "soonsal_user_1",
+      "category": "양식"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_0",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "globalScore": "10.0",
+      "lat": 37.563,
+      "rankIndex": 0,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 448000000
+      },
+      "address": "서울 마포구 성미산로 165-1",
+      "lng": 126.924,
+      "category": "일식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "name": "야키토리 묵",
+      "userId": "soonsal_user_2",
+      "userName": "순살2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_1",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lat": 37.5558,
+      "userName": "순살2",
+      "globalScore": "9.8",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 458000000
+      },
+      "name": "팔선",
+      "rankIndex": 1,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "userId": "soonsal_user_2",
+      "address": "서울 중구 동호로 249",
+      "category": "중식",
+      "lng": 127.005
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_10",
+      "userId": "soonsal_user_2",
+      "name": "테일러커피 연남",
+      "category": "카페",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "rankIndex": 10,
+      "userName": "순살2",
+      "address": "서울 마포구 성미산로 189",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 564000000
+      },
+      "comment": "주말엔 사람 너무 많아요.",
+      "lng": 126.9265,
+      "globalScore": "8.3",
+      "lat": 37.5645
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_2",
+      "rankIndex": 2,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 468000000
+      },
+      "address": "서울 성동구 아차산로9길 8",
+      "lat": 37.545,
+      "globalScore": "9.7",
+      "userName": "순살2",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "name": "어니언 성수",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "lng": 127.056,
+      "userId": "soonsal_user_2",
+      "category": "카페"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_3",
+      "address": "서울 마포구 동교로 247",
+      "globalScore": "9.5",
+      "name": "랜디스도넛 연남",
+      "userId": "soonsal_user_2",
+      "lng": 126.9256,
+      "lat": 37.5626,
+      "userName": "순살2",
+      "rankIndex": 3,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 477000000
+      },
+      "comment": "주말엔 사람 너무 많아요.",
+      "category": "카페",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_4",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 488000000
+      },
+      "category": "한식",
+      "rankIndex": 4,
+      "globalScore": "9.3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "userId": "soonsal_user_2",
+      "name": "필동면옥",
+      "userName": "순살2",
+      "comment": "평범하지만 깔끔해요.",
+      "address": "서울 중구 서애로 26",
+      "lng": 126.9997,
+      "lat": 37.5604
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_5",
+      "category": "바",
+      "userId": "soonsal_user_2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 499000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "address": "서울 종로구 자하문로7길 34",
+      "rankIndex": 5,
+      "lat": 37.5778,
+      "userName": "순살2",
+      "globalScore": "9.1",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "name": "바 참",
+      "lng": 126.9713
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_6",
+      "lat": 37.5645,
+      "name": "하동관 명동본점",
+      "category": "한식",
+      "address": "서울 중구 명동9길 12",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 509000000
+      },
+      "rankIndex": 6,
+      "comment": "숨겨진 맛집 발견!",
+      "userName": "순살2",
+      "globalScore": "9.0",
+      "lng": 126.984,
+      "userId": "soonsal_user_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_7",
+      "userId": "soonsal_user_2",
+      "globalScore": "8.8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "name": "토속촌 삼계탕",
+      "lat": 37.5772,
+      "rankIndex": 7,
+      "userName": "순살2",
+      "lng": 126.9716,
+      "address": "서울 종로구 자하문로5길 5",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 522000000
+      },
+      "category": "한식",
+      "comment": "진짜 인생 맛집입니다!"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_8",
+      "lng": 127.0355,
+      "name": "카멜커피 도산",
+      "category": "카페",
+      "rankIndex": 8,
+      "userName": "순살2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 537000000
+      },
+      "globalScore": "8.6",
+      "address": "서울 강남구 도산대로45길 16-8",
+      "lat": 37.5235,
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "userId": "soonsal_user_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858571_9",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 550000000
+      },
+      "address": "서울 중구 다산로 149",
+      "userName": "순살2",
+      "category": "한식",
+      "lat": 37.5574,
+      "userId": "soonsal_user_2",
+      "name": "금돼지식당",
+      "rankIndex": 9,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "lng": 127.0105,
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "globalScore": "8.4"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_11",
+      "globalScore": "8.1",
+      "name": "프릳츠 도화",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 577000000
+      },
+      "comment": "평범하지만 깔끔해요.",
+      "lat": 37.5408,
+      "category": "카페",
+      "lng": 126.9535,
+      "address": "서울 마포구 새창로2길 17",
+      "userName": "순살2",
+      "rankIndex": 11,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "userId": "soonsal_user_2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_12",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "category": "한식",
+      "userId": "soonsal_user_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 588000000
+      },
+      "lng": 126.9856,
+      "lat": 37.5625,
+      "name": "명동교자 본점",
+      "address": "서울 중구 명동10길 29",
+      "userName": "순살2",
+      "rankIndex": 12,
+      "globalScore": "7.9"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_13",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 599000000
+      },
+      "category": "중식",
+      "globalScore": "7.7",
+      "lng": 126.931,
+      "rankIndex": 13,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "comment": "주말엔 사람 너무 많아요.",
+      "lat": 37.5684,
+      "name": "목란",
+      "address": "서울 서대문구 연희로15길 21",
+      "userName": "순살2",
+      "userId": "soonsal_user_2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_14",
+      "lat": 37.5815,
+      "category": "일식",
+      "lng": 127.0019,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "rankIndex": 14,
+      "userName": "순살2",
+      "userId": "soonsal_user_2",
+      "name": "정돈 대학로",
+      "globalScore": "7.6",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 611000000
+      },
+      "address": "서울 종로구 대학로9길 12"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_15",
+      "rankIndex": 15,
+      "userId": "soonsal_user_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "globalScore": "7.4",
+      "lat": 37.5663,
+      "name": "을지면옥",
+      "comment": "역시 본점은 다르네요.",
+      "userName": "순살2",
+      "lng": 126.9922,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 623000000
+      },
+      "category": "한식",
+      "address": "서울 중구 충무로14길 2-1"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_16",
+      "globalScore": "7.2",
+      "rankIndex": 16,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 635000000
+      },
+      "address": "서울 중구 을지로 124",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "userName": "순살2",
+      "category": "중식",
+      "name": "안동장",
+      "lng": 126.9912,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "lat": 37.5665,
+      "userId": "soonsal_user_2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_17",
+      "address": "서울 강남구 도산대로15길 47",
+      "name": "길버트버거앤프라이즈",
+      "userName": "순살2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 646000000
+      },
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "lat": 37.5193,
+      "lng": 127.0225,
+      "category": "양식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "globalScore": "7.0",
+      "rankIndex": 17,
+      "userId": "soonsal_user_2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858572_18",
+      "address": "서울 종로구 새문안로 97",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 660000000
+      },
+      "rankIndex": 18,
+      "userName": "순살2",
+      "category": "바",
+      "lat": 37.5724,
+      "globalScore": "6.9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "comment": "평범하지만 깔끔해요.",
+      "userId": "soonsal_user_2",
+      "name": "찰스 H",
+      "lng": 126.9756
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858573_19",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "globalScore": "6.7",
+      "comment": "주말엔 사람 너무 많아요.",
+      "name": "스시코우지",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 672000000
+      },
+      "category": "일식",
+      "address": "서울 강남구 도산대로 318",
+      "lat": 37.5218,
+      "lng": 127.036,
+      "userName": "순살2",
+      "userId": "soonsal_user_2",
+      "rankIndex": 19
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858573_20",
+      "name": "맥도날드 강남점",
+      "rankIndex": 20,
+      "globalScore": "8.5",
+      "lng": 127.0276,
+      "address": "서울 강남구",
+      "lat": 37.4979,
+      "comment": "주말엔 사람 너무 많아요.",
+      "userId": "soonsal_user_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "category": "패스트푸드",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 683000000
+      },
+      "userName": "순살2"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858573_21",
+      "lng": 127.002,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "category": "패스트푸드",
+      "userName": "순살2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 695000000
+      },
+      "lat": 37.5825,
+      "userId": "soonsal_user_2",
+      "rankIndex": 21,
+      "globalScore": "7.8",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "name": "KFC 대학로점",
+      "address": "서울 종로구"
+    },
+    {
+      "id": "review_soonsal_user_2_1767921858573_22",
+      "globalScore": "9.3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal2",
+      "lng": 126.983,
+      "userId": "soonsal_user_2",
+      "lat": 37.5704,
+      "address": "서울 종로구",
+      "rankIndex": 22,
+      "comment": "역시 본점은 다르네요.",
+      "category": "패스트푸드",
+      "userName": "순살2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 707000000
+      },
+      "name": "버거킹 종로점"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_0",
+      "lat": 37.5161,
+      "category": "한식",
+      "lng": 127.036,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "userName": "순살3",
+      "rankIndex": 0,
+      "userId": "soonsal_user_3",
+      "name": "진미평양냉면",
+      "globalScore": "10.0",
+      "comment": "숨겨진 맛집 발견!",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 719000000
+      },
+      "address": "서울 강남구 학동로 305-3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_1",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 729000000
+      },
+      "category": "일식",
+      "address": "서울 종로구 종로 19",
+      "name": "미진",
+      "userId": "soonsal_user_3",
+      "lat": 37.5705,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "lng": 126.9805,
+      "rankIndex": 1,
+      "globalScore": "9.8",
+      "comment": "역시 본점은 다르네요.",
+      "userName": "순살3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_10",
+      "rankIndex": 10,
+      "userName": "순살3",
+      "globalScore": "8.2",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 854000000
+      },
+      "lat": 37.5445,
+      "category": "한식",
+      "userId": "soonsal_user_3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "comment": "숨겨진 맛집 발견!",
+      "lng": 126.972,
+      "address": "서울 용산구 한강대로80길 17",
+      "name": "남영돈"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_11",
+      "rankIndex": 11,
+      "name": "오제제 광화문",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "category": "일식",
+      "comment": "주말엔 사람 너무 많아요.",
+      "lat": 37.5699,
+      "address": "서울 중구 세종대로 136",
+      "lng": 126.9785,
+      "globalScore": "8.0",
+      "userId": "soonsal_user_3",
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 865000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_12",
+      "address": "서울 마포구 양화로3길 55",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 877000000
+      },
+      "lng": 126.9135,
+      "userId": "soonsal_user_3",
+      "userName": "순살3",
+      "name": "오스테리아 샘킴",
+      "category": "양식",
+      "lat": 37.5495,
+      "globalScore": "7.8",
+      "rankIndex": 12,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "comment": "평범하지만 깔끔해요."
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_13",
+      "address": "서울 마포구 동교로 126",
+      "lng": 126.918,
+      "lat": 37.5571,
+      "userName": "순살3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "name": "카와카츠",
+      "userId": "soonsal_user_3",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "globalScore": "7.6",
+      "rankIndex": 13,
+      "category": "일식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 889000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_14",
+      "category": "카페",
+      "comment": "진짜 인생 맛집입니다!",
+      "userName": "순살3",
+      "rankIndex": 14,
+      "globalScore": "7.5",
+      "userId": "soonsal_user_3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "lat": 37.5235,
+      "name": "카멜커피 도산",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 901000000
+      },
+      "address": "서울 강남구 도산대로45길 16-8",
+      "lng": 127.0355
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_15",
+      "name": "스타벅스 더종로R",
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 912000000
+      },
+      "lat": 37.5708,
+      "address": "서울 종로구 종로 51",
+      "lng": 126.9835,
+      "comment": "진짜 인생 맛집입니다!",
+      "category": "카페",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "globalScore": "7.3",
+      "rankIndex": 15,
+      "userId": "soonsal_user_3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_16",
+      "userName": "순살3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "userId": "soonsal_user_3",
+      "lat": 37.563,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 925000000
+      },
+      "lng": 126.924,
+      "name": "야키토리 묵",
+      "address": "서울 마포구 성미산로 165-1",
+      "category": "일식",
+      "rankIndex": 16,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "globalScore": "7.1"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_17",
+      "userId": "soonsal_user_3",
+      "lng": 127.0257,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "lat": 37.5026,
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 935000000
+      },
+      "name": "쉐이크쉑 강남",
+      "address": "서울 강남구 강남대로 452",
+      "category": "양식",
+      "comment": "숨겨진 맛집 발견!",
+      "globalScore": "6.9",
+      "rankIndex": 17
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_18",
+      "lng": 126.9713,
+      "address": "서울 종로구 자하문로7길 34",
+      "userId": "soonsal_user_3",
+      "rankIndex": 18,
+      "category": "바",
+      "name": "바 참",
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 948000000
+      },
+      "globalScore": "6.7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "lat": 37.5778
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_19",
+      "address": "서울 강남구 도산대로 318",
+      "name": "스시코우지",
+      "globalScore": "6.5",
+      "userId": "soonsal_user_3",
+      "lng": 127.036,
+      "lat": 37.5218,
+      "userName": "순살3",
+      "rankIndex": 19,
+      "category": "일식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 959000000
+      },
+      "comment": "숨겨진 맛집 발견!",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_2",
+      "address": "서울 마포구 동교로 247",
+      "lat": 37.5626,
+      "lng": 126.9256,
+      "userName": "순살3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "name": "랜디스도넛 연남",
+      "userId": "soonsal_user_3",
+      "comment": "숨겨진 맛집 발견!",
+      "globalScore": "9.6",
+      "rankIndex": 2,
+      "category": "카페",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 739000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_20",
+      "userId": "soonsal_user_3",
+      "name": "맥도날드 강남점",
+      "userName": "순살3",
+      "rankIndex": 20,
+      "lat": 37.4979,
+      "globalScore": "7.9",
+      "address": "서울 강남구",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "category": "패스트푸드",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lng": 127.0276,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 970000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_21",
+      "rankIndex": 21,
+      "category": "패스트푸드",
+      "userId": "soonsal_user_3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "address": "서울 마포구",
+      "lng": 126.923,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 980000000
+      },
+      "name": "롯데리아 홍대점",
+      "userName": "순살3",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "globalScore": "6.1",
+      "lat": 37.556
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_3",
+      "rankIndex": 3,
+      "name": "프릳츠 도화",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "comment": "재방문 의사 있습니다.",
+      "category": "카페",
+      "lat": 37.5408,
+      "address": "서울 마포구 새창로2길 17",
+      "lng": 126.9535,
+      "globalScore": "9.5",
+      "userId": "soonsal_user_3",
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 751000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_4",
+      "lat": 37.5682,
+      "globalScore": "9.3",
+      "category": "한식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 762000000
+      },
+      "rankIndex": 4,
+      "name": "우래옥 본점",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "userName": "순살3",
+      "address": "서울 중구 창경궁로 62-29",
+      "userId": "soonsal_user_3",
+      "lng": 126.9987,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_5",
+      "comment": "재방문 의사 있습니다.",
+      "userId": "soonsal_user_3",
+      "category": "중식",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 776000000
+      },
+      "address": "서울 영등포구 문래로 203",
+      "rankIndex": 5,
+      "lat": 37.5165,
+      "name": "송죽장",
+      "lng": 126.9048,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "globalScore": "9.1",
+      "userName": "순살3"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_6",
+      "category": "카페",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 797000000
+      },
+      "userName": "순살3",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "lat": 37.5645,
+      "rankIndex": 6,
+      "lng": 126.9265,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "name": "테일러커피 연남",
+      "userId": "soonsal_user_3",
+      "address": "서울 마포구 성미산로 189",
+      "globalScore": "8.9"
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_7",
+      "address": "서울 종로구 자하문로5길 5",
+      "userName": "순살3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 809000000
+      },
+      "comment": "역시 본점은 다르네요.",
+      "name": "토속촌 삼계탕",
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "lat": 37.5772,
+      "lng": 126.9716,
+      "userId": "soonsal_user_3",
+      "globalScore": "8.7",
+      "rankIndex": 7
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_8",
+      "lat": 37.5724,
+      "name": "찰스 H",
+      "address": "서울 종로구 새문안로 97",
+      "userName": "순살3",
+      "userId": "soonsal_user_3",
+      "globalScore": "8.5",
+      "category": "바",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "lng": 126.9756,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 830000000
+      },
+      "comment": "숨겨진 맛집 발견!",
+      "rankIndex": 8
+    },
+    {
+      "id": "review_soonsal_user_3_1767921858573_9",
+      "lat": 37.5318,
+      "name": "몽탄",
+      "address": "서울 용산구 백범로99길 50",
+      "rankIndex": 9,
+      "globalScore": "8.4",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal3",
+      "userId": "soonsal_user_3",
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 843000000
+      },
+      "lng": 126.9715,
+      "category": "한식",
+      "userName": "순살3"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_0",
+      "userName": "순살4",
+      "address": "서울 종로구 새문안로 97",
+      "globalScore": "10.0",
+      "lat": 37.5724,
+      "category": "바",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "lng": 126.9756,
+      "timestamp": {
+        "seconds": 1767921859,
+        "nanoseconds": 990000000
+      },
+      "rankIndex": 0,
+      "name": "찰스 H",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userId": "soonsal_user_4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_1",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 2000000
+      },
+      "address": "서울 서초구 사평대로 205",
+      "userId": "soonsal_user_4",
+      "lat": 37.5035,
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "category": "양식",
+      "name": "브루클린더버거조인트",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "lng": 127.0005,
+      "userName": "순살4",
+      "globalScore": "9.8",
+      "rankIndex": 1
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_10",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "lat": 37.5815,
+      "category": "일식",
+      "rankIndex": 10,
+      "userName": "순살4",
+      "userId": "soonsal_user_4",
+      "globalScore": "8.3",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 104000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "lng": 127.0019,
+      "address": "서울 종로구 대학로9길 12",
+      "name": "정돈 대학로"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_11",
+      "userName": "순살4",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 116000000
+      },
+      "globalScore": "8.1",
+      "category": "중식",
+      "name": "목란",
+      "lng": 126.931,
+      "address": "서울 서대문구 연희로15길 21",
+      "lat": 37.5684,
+      "rankIndex": 11,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userId": "soonsal_user_4",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다."
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_12",
+      "lng": 127.0385,
+      "name": "노티드 청담",
+      "lat": 37.5245,
+      "userName": "순살4",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "category": "카페",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "globalScore": "7.9",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 128000000
+      },
+      "userId": "soonsal_user_4",
+      "address": "서울 강남구 도산대로53길 15",
+      "rankIndex": 12
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_13",
+      "lat": 37.5682,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "address": "서울 중구 창경궁로 62-29",
+      "userId": "soonsal_user_4",
+      "lng": 126.9987,
+      "name": "우래옥 본점",
+      "globalScore": "7.7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userName": "순살4",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 138000000
+      },
+      "category": "한식",
+      "rankIndex": 13
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_14",
+      "userId": "soonsal_user_4",
+      "lng": 126.972,
+      "lat": 37.5445,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "comment": "숨겨진 맛집 발견!",
+      "rankIndex": 14,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 149000000
+      },
+      "name": "남영돈",
+      "address": "서울 용산구 한강대로80길 17",
+      "globalScore": "7.6",
+      "category": "한식",
+      "userName": "순살4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_15",
+      "userId": "soonsal_user_4",
+      "rankIndex": 15,
+      "globalScore": "7.4",
+      "lat": 37.5604,
+      "category": "한식",
+      "comment": "평범하지만 깔끔해요.",
+      "name": "필동면옥",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userName": "순살4",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 161000000
+      },
+      "address": "서울 중구 서애로 26",
+      "lng": 126.9997
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_16",
+      "lng": 126.9922,
+      "category": "한식",
+      "lat": 37.5663,
+      "globalScore": "7.2",
+      "rankIndex": 16,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 171000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "address": "서울 중구 충무로14길 2-1",
+      "name": "을지면옥",
+      "userId": "soonsal_user_4",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userName": "순살4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_17",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 183000000
+      },
+      "lat": 37.5792,
+      "lng": 126.9866,
+      "comment": "재방문 의사 있습니다.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userId": "soonsal_user_4",
+      "userName": "순살4",
+      "globalScore": "7.0",
+      "rankIndex": 17,
+      "address": "서울 종로구 북촌로4길 20",
+      "category": "카페",
+      "name": "런던베이글뮤지엄 안국"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_18",
+      "lat": 37.5255,
+      "address": "서울 강남구 압구정로72길 22",
+      "lng": 127.045,
+      "userName": "순살4",
+      "comment": "숨겨진 맛집 발견!",
+      "rankIndex": 18,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 192000000
+      },
+      "globalScore": "6.9",
+      "userId": "soonsal_user_4",
+      "name": "볼트스테이크하우스",
+      "category": "양식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_19",
+      "category": "한식",
+      "globalScore": "6.7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 201000000
+      },
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lat": 37.5318,
+      "lng": 126.9715,
+      "rankIndex": 19,
+      "name": "몽탄",
+      "userName": "순살4",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userId": "soonsal_user_4",
+      "address": "서울 용산구 백범로99길 50"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_2",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 13000000
+      },
+      "lat": 37.5699,
+      "name": "오제제 광화문",
+      "globalScore": "9.7",
+      "address": "서울 중구 세종대로 136",
+      "rankIndex": 2,
+      "userId": "soonsal_user_4",
+      "lng": 126.9785,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userName": "순살4",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "category": "일식"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_20",
+      "userId": "soonsal_user_4",
+      "lng": 126.9242,
+      "category": "패스트푸드",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 210000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "rankIndex": 20,
+      "address": "서울 영등포구",
+      "userName": "순살4",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lat": 37.5218,
+      "name": "버거킹 여의도점",
+      "globalScore": "9.3"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_21",
+      "address": "서울 강남구",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "globalScore": "7.6",
+      "lat": 37.4979,
+      "name": "맥도날드 강남점",
+      "category": "패스트푸드",
+      "rankIndex": 21,
+      "userName": "순살4",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userId": "soonsal_user_4",
+      "lng": 127.0276,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 222000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_22",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 232000000
+      },
+      "comment": "평범하지만 깔끔해요.",
+      "lat": 37.5405,
+      "address": "서울 광진구",
+      "userName": "순살4",
+      "name": "롯데리아 건대점",
+      "userId": "soonsal_user_4",
+      "rankIndex": 22,
+      "lng": 127.069,
+      "globalScore": "7.0",
+      "category": "패스트푸드",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_3",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 24000000
+      },
+      "globalScore": "9.5",
+      "comment": "진짜 인생 맛집입니다!",
+      "category": "일식",
+      "userName": "순살4",
+      "address": "서울 강남구 도산대로 318",
+      "userId": "soonsal_user_4",
+      "name": "스시코우지",
+      "lng": 127.036,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "rankIndex": 3,
+      "lat": 37.5218
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_4",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userId": "soonsal_user_4",
+      "rankIndex": 4,
+      "lng": 127.0225,
+      "category": "양식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 35000000
+      },
+      "lat": 37.5193,
+      "name": "길버트버거앤프라이즈",
+      "userName": "순살4",
+      "globalScore": "9.3",
+      "address": "서울 강남구 도산대로15길 47"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 48000000
+      },
+      "lng": 126.9713,
+      "lat": 37.5778,
+      "name": "바 참",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userName": "순살4",
+      "userId": "soonsal_user_4",
+      "rankIndex": 5,
+      "address": "서울 종로구 자하문로7길 34",
+      "globalScore": "9.1",
+      "category": "바",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_6",
+      "lng": 127.045,
+      "name": "블루보틀 성수",
+      "globalScore": "9.0",
+      "category": "카페",
+      "rankIndex": 6,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "userName": "순살4",
+      "userId": "soonsal_user_4",
+      "comment": "진짜 인생 맛집입니다!",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 60000000
+      },
+      "address": "서울 성동구 아차산로 7",
+      "lat": 37.548
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "rankIndex": 7,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 70000000
+      },
+      "globalScore": "8.8",
+      "userName": "순살4",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "name": "다운타우너 한남",
+      "lat": 37.5358,
+      "address": "서울 용산구 이태원로42길 28-4",
+      "category": "양식",
+      "lng": 127.0019,
+      "userId": "soonsal_user_4"
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_8",
+      "globalScore": "8.6",
+      "userName": "순살4",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 81000000
+      },
+      "lat": 37.5708,
+      "name": "스타벅스 더종로R",
+      "lng": 126.9835,
+      "address": "서울 종로구 종로 51",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "category": "카페",
+      "userId": "soonsal_user_4",
+      "rankIndex": 8
+    },
+    {
+      "id": "review_soonsal_user_4_1767921858573_9",
+      "lat": 37.5558,
+      "rankIndex": 9,
+      "userId": "soonsal_user_4",
+      "category": "중식",
+      "comment": "나만 알고 싶은 곳인데...",
+      "lng": 127.005,
+      "globalScore": "8.4",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal4",
+      "address": "서울 중구 동호로 249",
+      "name": "팔선",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 92000000
+      },
+      "userName": "순살4"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_0",
+      "userName": "순살5",
+      "name": "쉐이크쉑 강남",
+      "address": "서울 강남구 강남대로 452",
+      "globalScore": "10.0",
+      "rankIndex": 0,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "lat": 37.5026,
+      "category": "양식",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 243000000
+      },
+      "lng": 127.0257,
+      "comment": "숨겨진 맛집 발견!",
+      "userId": "soonsal_user_5"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_1",
+      "lng": 126.9713,
+      "address": "서울 종로구 자하문로7길 34",
+      "rankIndex": 1,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 253000000
+      },
+      "comment": "역시 본점은 다르네요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "lat": 37.5778,
+      "category": "바",
+      "name": "바 참",
+      "globalScore": "9.8"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_10",
+      "category": "한식",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 349000000
+      },
+      "rankIndex": 10,
+      "globalScore": "8.2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "name": "필동면옥",
+      "comment": "숨겨진 맛집 발견!",
+      "userName": "순살5",
+      "address": "서울 중구 서애로 26",
+      "lng": 126.9997,
+      "lat": 37.5604
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_11",
+      "address": "서울 마포구 성미산로 189",
+      "userId": "soonsal_user_5",
+      "rankIndex": 11,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 361000000
+      },
+      "name": "테일러커피 연남",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lng": 126.9265,
+      "userName": "순살5",
+      "category": "카페",
+      "globalScore": "8.0",
+      "lat": 37.5645
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_12",
+      "lat": 37.5445,
+      "lng": 126.972,
+      "userName": "순살5",
+      "userId": "soonsal_user_5",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "address": "서울 용산구 한강대로80길 17",
+      "name": "남영돈",
+      "category": "한식",
+      "rankIndex": 12,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 374000000
+      },
+      "globalScore": "7.8",
+      "comment": "맛은 있는데 가격이 좀 비싸요."
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_13",
+      "lat": 37.5245,
+      "address": "서울 강남구 도산대로53길 15",
+      "lng": 127.0385,
+      "category": "카페",
+      "globalScore": "7.6",
+      "userName": "순살5",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "name": "노티드 청담",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 388000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "rankIndex": 13
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_14",
+      "category": "일식",
+      "name": "멘야하나비 잠실",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "lat": 37.5098,
+      "userId": "soonsal_user_5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 400000000
+      },
+      "userName": "순살5",
+      "comment": "주말엔 사람 너무 많아요.",
+      "address": "서울 송파구 백제고분로45길 38",
+      "globalScore": "7.5",
+      "rankIndex": 14,
+      "lng": 127.103
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_15",
+      "globalScore": "7.3",
+      "name": "안동장",
+      "userName": "순살5",
+      "userId": "soonsal_user_5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 410000000
+      },
+      "lng": 126.9912,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "category": "중식",
+      "rankIndex": 15,
+      "lat": 37.5665,
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "address": "서울 중구 을지로 124"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_16",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "address": "서울 중구 세종대로 136",
+      "name": "오제제 광화문",
+      "category": "일식",
+      "globalScore": "7.1",
+      "rankIndex": 16,
+      "userName": "순살5",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 421000000
+      },
+      "lng": 126.9785,
+      "lat": 37.5699
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_17",
+      "lat": 37.5792,
+      "address": "서울 종로구 북촌로4길 20",
+      "lng": 126.9866,
+      "globalScore": "6.9",
+      "category": "카페",
+      "userName": "순살5",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "name": "런던베이글뮤지엄 안국",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 433000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "rankIndex": 17
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_18",
+      "rankIndex": 18,
+      "lat": 37.5645,
+      "userName": "순살5",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "address": "서울 중구 명동9길 12",
+      "userId": "soonsal_user_5",
+      "name": "하동관 명동본점",
+      "category": "한식",
+      "globalScore": "6.7",
+      "comment": "역시 본점은 다르네요.",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 443000000
+      },
+      "lng": 126.984
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_19",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "userId": "soonsal_user_5",
+      "address": "서울 강남구 학동로 305-3",
+      "name": "진미평양냉면",
+      "category": "한식",
+      "globalScore": "6.5",
+      "rankIndex": 19,
+      "userName": "순살5",
+      "comment": "진짜 인생 맛집입니다!",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 455000000
+      },
+      "lng": 127.036,
+      "lat": 37.5161
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_2",
+      "rankIndex": 2,
+      "comment": "나만 알고 싶은 곳인데...",
+      "lng": 126.924,
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "name": "야키토리 묵",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 264000000
+      },
+      "lat": 37.563,
+      "address": "서울 마포구 성미산로 165-1",
+      "category": "일식",
+      "globalScore": "9.6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_20",
+      "globalScore": "6.1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 465000000
+      },
+      "lat": 37.555,
+      "lng": 126.9708,
+      "category": "패스트푸드",
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "rankIndex": 20,
+      "address": "서울 중구",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "name": "롯데리아 서울역점"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_21",
+      "category": "패스트푸드",
+      "name": "버거킹 강남교보점",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 477000000
+      },
+      "address": "서울 서초구",
+      "rankIndex": 21,
+      "userId": "soonsal_user_5",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "lat": 37.5038,
+      "userName": "순살5",
+      "lng": 127.0242,
+      "globalScore": "8.6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_3",
+      "userId": "soonsal_user_5",
+      "name": "프릳츠 도화",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 273000000
+      },
+      "lat": 37.5408,
+      "address": "서울 마포구 새창로2길 17",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "rankIndex": 3,
+      "globalScore": "9.5",
+      "lng": 126.9535,
+      "userName": "순살5",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "category": "카페"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_4",
+      "rankIndex": 4,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 284000000
+      },
+      "comment": "진짜 인생 맛집입니다!",
+      "globalScore": "9.3",
+      "address": "서울 중구 충무로14길 2-1",
+      "category": "한식",
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "lat": 37.5663,
+      "name": "을지면옥",
+      "lng": 126.9922,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_5",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "globalScore": "9.1",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 297000000
+      },
+      "lng": 126.9716,
+      "category": "한식",
+      "lat": 37.5772,
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "name": "토속촌 삼계탕",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "rankIndex": 5,
+      "address": "서울 종로구 자하문로5길 5"
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "lng": 127.0225,
+      "category": "양식",
+      "address": "서울 강남구 도산대로15길 47",
+      "comment": "재방문 의사 있습니다.",
+      "rankIndex": 6,
+      "name": "길버트버거앤프라이즈",
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "globalScore": "8.9",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 308000000
+      },
+      "lat": 37.5193
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_7",
+      "userId": "soonsal_user_5",
+      "userName": "순살5",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "name": "우래옥 본점",
+      "address": "서울 중구 창경궁로 62-29",
+      "lng": 126.9987,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 317000000
+      },
+      "rankIndex": 7,
+      "category": "한식",
+      "globalScore": "8.7",
+      "lat": 37.5682
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_8",
+      "userName": "순살5",
+      "userId": "soonsal_user_5",
+      "name": "팔선",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 327000000
+      },
+      "globalScore": "8.5",
+      "address": "서울 중구 동호로 249",
+      "category": "중식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5",
+      "lng": 127.005,
+      "comment": "평범하지만 깔끔해요.",
+      "rankIndex": 8,
+      "lat": 37.5558
+    },
+    {
+      "id": "review_soonsal_user_5_1767921858573_9",
+      "userName": "순살5",
+      "lng": 126.9756,
+      "rankIndex": 9,
+      "comment": "역시 본점은 다르네요.",
+      "address": "서울 종로구 새문안로 97",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 338000000
+      },
+      "name": "찰스 H",
+      "globalScore": "8.4",
+      "category": "바",
+      "userId": "soonsal_user_5",
+      "lat": 37.5724,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal5"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_0",
+      "address": "서울 서대문구 연희로15길 21",
+      "lat": 37.5684,
+      "lng": 126.931,
+      "category": "중식",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "rankIndex": 0,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 488000000
+      },
+      "globalScore": "10.0",
+      "userId": "soonsal_user_6",
+      "name": "목란",
+      "userName": "순살6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_1",
+      "name": "카와카츠",
+      "lat": 37.5571,
+      "userId": "soonsal_user_6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 500000000
+      },
+      "globalScore": "9.8",
+      "address": "서울 마포구 동교로 126",
+      "category": "일식",
+      "lng": 126.918,
+      "userName": "순살6",
+      "rankIndex": 1,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "comment": "나만 알고 싶은 곳인데..."
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_10",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "lat": 37.5235,
+      "globalScore": "8.2",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 605000000
+      },
+      "name": "카멜커피 도산",
+      "lng": 127.0355,
+      "userName": "순살6",
+      "rankIndex": 10,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "category": "카페",
+      "address": "서울 강남구 도산대로45길 16-8",
+      "userId": "soonsal_user_6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_11",
+      "globalScore": "8.0",
+      "name": "야키토리 묵",
+      "address": "서울 마포구 성미산로 165-1",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 616000000
+      },
+      "lng": 126.924,
+      "userId": "soonsal_user_6",
+      "category": "일식",
+      "lat": 37.563,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "rankIndex": 11,
+      "userName": "순살6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_12",
+      "name": "테일러커피 연남",
+      "lat": 37.5645,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 626000000
+      },
+      "userId": "soonsal_user_6",
+      "globalScore": "7.8",
+      "address": "서울 마포구 성미산로 189",
+      "category": "카페",
+      "lng": 126.9265,
+      "userName": "순살6",
+      "rankIndex": 12,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_13",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "userId": "soonsal_user_6",
+      "address": "서울 중구 충무로14길 2-1",
+      "name": "을지면옥",
+      "globalScore": "7.6",
+      "category": "한식",
+      "rankIndex": 13,
+      "userName": "순살6",
+      "comment": "평범하지만 깔끔해요.",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 636000000
+      },
+      "lng": 126.9922,
+      "lat": 37.5663
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_14",
+      "category": "일식",
+      "rankIndex": 14,
+      "comment": "역시 본점은 다르네요.",
+      "lng": 127.0019,
+      "userId": "soonsal_user_6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 647000000
+      },
+      "address": "서울 종로구 대학로9길 12",
+      "lat": 37.5815,
+      "name": "정돈 대학로",
+      "globalScore": "7.5",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "userName": "순살6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_15",
+      "lng": 126.972,
+      "address": "서울 용산구 한강대로80길 17",
+      "rankIndex": 15,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "globalScore": "7.3",
+      "name": "남영돈",
+      "userId": "soonsal_user_6",
+      "userName": "순살6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 656000000
+      },
+      "lat": 37.5445,
+      "comment": "나만 알고 싶은 곳인데...",
+      "category": "한식"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_16",
+      "name": "몽탄",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 666000000
+      },
+      "rankIndex": 16,
+      "userId": "soonsal_user_6",
+      "globalScore": "7.1",
+      "lng": 126.9715,
+      "userName": "순살6",
+      "address": "서울 용산구 백범로99길 50",
+      "lat": 37.5318,
+      "comment": "평범하지만 깔끔해요.",
+      "category": "한식"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_2",
+      "lat": 37.5645,
+      "userName": "순살6",
+      "rankIndex": 2,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "lng": 126.984,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 515000000
+      },
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "globalScore": "9.6",
+      "address": "서울 중구 명동9길 12",
+      "userId": "soonsal_user_6",
+      "name": "하동관 명동본점",
+      "category": "한식"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "rankIndex": 3,
+      "category": "일식",
+      "address": "서울 중구 세종대로 136",
+      "lng": 126.9785,
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "name": "오제제 광화문",
+      "userId": "soonsal_user_6",
+      "lat": 37.5699,
+      "globalScore": "9.5",
+      "userName": "순살6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 529000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_4",
+      "address": "서울 성동구 아차산로 7",
+      "userId": "soonsal_user_6",
+      "rankIndex": 4,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 540000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "name": "블루보틀 성수",
+      "comment": "나만 알고 싶은 곳인데...",
+      "lng": 127.045,
+      "userName": "순살6",
+      "category": "카페",
+      "lat": 37.548,
+      "globalScore": "9.3"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_5",
+      "lat": 37.5625,
+      "userId": "soonsal_user_6",
+      "rankIndex": 5,
+      "category": "한식",
+      "comment": "나만 알고 싶은 곳인데...",
+      "lng": 126.9856,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "globalScore": "9.1",
+      "address": "서울 중구 명동10길 29",
+      "name": "명동교자 본점",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 552000000
+      },
+      "userName": "순살6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "userId": "soonsal_user_6",
+      "lng": 127.005,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 563000000
+      },
+      "rankIndex": 6,
+      "address": "서울 중구 동호로 249",
+      "category": "중식",
+      "comment": "주말엔 사람 너무 많아요.",
+      "lat": 37.5558,
+      "globalScore": "8.9",
+      "name": "팔선",
+      "userName": "순살6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_7",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "name": "다운타우너 한남",
+      "lat": 37.5358,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 574000000
+      },
+      "address": "서울 용산구 이태원로42길 28-4",
+      "userId": "soonsal_user_6",
+      "lng": 127.0019,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "userName": "순살6",
+      "rankIndex": 7,
+      "globalScore": "8.7",
+      "category": "양식"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "rankIndex": 8,
+      "category": "카페",
+      "address": "서울 종로구 종로 51",
+      "lng": 126.9835,
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "name": "스타벅스 더종로R",
+      "userId": "soonsal_user_6",
+      "lat": 37.5708,
+      "globalScore": "8.5",
+      "userName": "순살6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 585000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858573_9",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "category": "한식",
+      "address": "서울 강남구 학동로 305-3",
+      "rankIndex": 9,
+      "lat": 37.5161,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 595000000
+      },
+      "userName": "순살6",
+      "lng": 127.036,
+      "globalScore": "8.4",
+      "userId": "soonsal_user_6",
+      "name": "진미평양냉면",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858574_17",
+      "lng": 126.9048,
+      "userName": "순살6",
+      "userId": "soonsal_user_6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 679000000
+      },
+      "address": "서울 영등포구 문래로 203",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "lat": 37.5165,
+      "rankIndex": 17,
+      "category": "중식",
+      "name": "송죽장",
+      "globalScore": "6.9",
+      "comment": "나만 알고 싶은 곳인데..."
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858574_18",
+      "globalScore": "6.7",
+      "category": "중식",
+      "lng": 126.9123,
+      "lat": 37.5562,
+      "userId": "soonsal_user_6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "rankIndex": 18,
+      "address": "서울 마포구 잔다리로 123",
+      "name": "진진",
+      "userName": "순살6",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 691000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858574_19",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 700000000
+      },
+      "address": "서울 마포구 새창로2길 17",
+      "lng": 126.9535,
+      "globalScore": "6.5",
+      "rankIndex": 19,
+      "comment": "진짜 인생 맛집입니다!",
+      "category": "카페",
+      "name": "프릳츠 도화",
+      "userId": "soonsal_user_6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "lat": 37.5408,
+      "userName": "순살6"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858574_20",
+      "lat": 37.5345,
+      "address": "서울 용산구",
+      "lng": 126.994,
+      "rankIndex": 20,
+      "category": "패스트푸드",
+      "userId": "soonsal_user_6",
+      "userName": "순살6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 710000000
+      },
+      "globalScore": "7.2",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "name": "맥도날드 이태원점"
+    },
+    {
+      "id": "review_soonsal_user_6_1767921858574_21",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 720000000
+      },
+      "address": "서울 중구",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "userName": "순살6",
+      "rankIndex": 21,
+      "lng": 126.985,
+      "globalScore": "6.5",
+      "category": "패스트푸드",
+      "name": "롯데리아 명동점",
+      "lat": 37.561,
+      "userId": "soonsal_user_6",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal6"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_0",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 730000000
+      },
+      "globalScore": "10.0",
+      "address": "서울 송파구 백제고분로45길 38",
+      "comment": "숨겨진 맛집 발견!",
+      "name": "멘야하나비 잠실",
+      "category": "일식",
+      "lat": 37.5098,
+      "userName": "순살7",
+      "rankIndex": 0,
+      "lng": 127.103,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userId": "soonsal_user_7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_1",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 741000000
+      },
+      "rankIndex": 1,
+      "userName": "순살7",
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "lng": 126.9987,
+      "lat": 37.5682,
+      "globalScore": "9.8",
+      "address": "서울 중구 창경궁로 62-29",
+      "name": "우래옥 본점",
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userId": "soonsal_user_7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_10",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userName": "순살7",
+      "address": "서울 용산구 이태원로42길 28-4",
+      "name": "다운타우너 한남",
+      "userId": "soonsal_user_7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 840000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "rankIndex": 10,
+      "category": "양식",
+      "lng": 127.0019,
+      "lat": 37.5358,
+      "globalScore": "8.2"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_11",
+      "globalScore": "8.0",
+      "address": "서울 성동구 아차산로9길 8",
+      "rankIndex": 11,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 851000000
+      },
+      "userName": "순살7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "lat": 37.545,
+      "name": "어니언 성수",
+      "comment": "역시 본점은 다르네요.",
+      "category": "카페",
+      "userId": "soonsal_user_7",
+      "lng": 127.056
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_12",
+      "lat": 37.5562,
+      "address": "서울 마포구 잔다리로 123",
+      "lng": 126.9123,
+      "rankIndex": 12,
+      "category": "중식",
+      "userId": "soonsal_user_7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userName": "순살7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 860000000
+      },
+      "comment": "숨겨진 맛집 발견!",
+      "globalScore": "7.8",
+      "name": "진진"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_13",
+      "lng": 126.9997,
+      "name": "필동면옥",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userName": "순살7",
+      "lat": 37.5604,
+      "category": "한식",
+      "globalScore": "7.6",
+      "userId": "soonsal_user_7",
+      "address": "서울 중구 서애로 26",
+      "rankIndex": 13,
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 869000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_14",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "lng": 126.9135,
+      "address": "서울 마포구 양화로3길 55",
+      "rankIndex": 14,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 879000000
+      },
+      "lat": 37.5495,
+      "globalScore": "7.5",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "name": "오스테리아 샘킴",
+      "userName": "순살7",
+      "userId": "soonsal_user_7",
+      "category": "양식"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_15",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userId": "soonsal_user_7",
+      "name": "금돼지식당",
+      "address": "서울 중구 다산로 149",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 889000000
+      },
+      "lat": 37.5574,
+      "category": "한식",
+      "rankIndex": 15,
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "globalScore": "7.3",
+      "lng": 127.0105,
+      "userName": "순살7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_16",
+      "rankIndex": 16,
+      "address": "서울 서초구 사평대로 205",
+      "userName": "순살7",
+      "comment": "재방문 의사 있습니다.",
+      "category": "양식",
+      "name": "브루클린더버거조인트",
+      "lng": 127.0005,
+      "lat": 37.5035,
+      "globalScore": "7.1",
+      "userId": "soonsal_user_7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 899000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_17",
+      "userName": "순살7",
+      "rankIndex": 17,
+      "globalScore": "6.9",
+      "lng": 126.9048,
+      "name": "송죽장",
+      "category": "중식",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "lat": 37.5165,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 910000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "address": "서울 영등포구 문래로 203",
+      "userId": "soonsal_user_7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_18",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "rankIndex": 18,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "globalScore": "6.7",
+      "userName": "순살7",
+      "address": "서울 마포구 동교로 247",
+      "userId": "soonsal_user_7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 921000000
+      },
+      "lat": 37.5626,
+      "category": "카페",
+      "lng": 126.9256,
+      "name": "랜디스도넛 연남"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_19",
+      "name": "진미평양냉면",
+      "userName": "순살7",
+      "userId": "soonsal_user_7",
+      "rankIndex": 19,
+      "lng": 127.036,
+      "lat": 37.5161,
+      "address": "서울 강남구 학동로 305-3",
+      "comment": "숨겨진 맛집 발견!",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 933000000
+      },
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "globalScore": "6.5"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_2",
+      "comment": "재방문 의사 있습니다.",
+      "rankIndex": 2,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "globalScore": "9.6",
+      "userName": "순살7",
+      "address": "서울 강남구 도산대로 318",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 753000000
+      },
+      "userId": "soonsal_user_7",
+      "lat": 37.5218,
+      "lng": 127.036,
+      "category": "일식",
+      "name": "스시코우지"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_20",
+      "address": "서울 마포구",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 945000000
+      },
+      "rankIndex": 20,
+      "globalScore": "9.3",
+      "lng": 126.9237,
+      "lat": 37.5567,
+      "name": "버거킹 홍대역점",
+      "category": "패스트푸드",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userName": "순살7",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "userId": "soonsal_user_7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_21",
+      "lng": 127.059,
+      "lat": 37.5115,
+      "userName": "순살7",
+      "address": "서울 강남구",
+      "category": "패스트푸드",
+      "name": "KFC 코엑스점",
+      "comment": "진짜 인생 맛집입니다!",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "globalScore": "7.9",
+      "rankIndex": 21,
+      "userId": "soonsal_user_7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 956000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userName": "순살7",
+      "address": "서울 종로구 북촌로4길 20",
+      "globalScore": "9.5",
+      "lng": 126.9866,
+      "rankIndex": 3,
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "lat": 37.5792,
+      "category": "카페",
+      "userId": "soonsal_user_7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 765000000
+      },
+      "name": "런던베이글뮤지엄 안국"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_4",
+      "globalScore": "9.3",
+      "address": "서울 종로구 자하문로5길 5",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 776000000
+      },
+      "rankIndex": 4,
+      "userName": "순살7",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "name": "토속촌 삼계탕",
+      "lat": 37.5772,
+      "comment": "나만 알고 싶은 곳인데...",
+      "category": "한식",
+      "userId": "soonsal_user_7",
+      "lng": 126.9716
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_5",
+      "category": "양식",
+      "lat": 37.5255,
+      "lng": 127.045,
+      "userId": "soonsal_user_7",
+      "address": "서울 강남구 압구정로72길 22",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userName": "순살7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 786000000
+      },
+      "name": "볼트스테이크하우스",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "globalScore": "9.1",
+      "rankIndex": 5
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_6",
+      "category": "한식",
+      "address": "서울 용산구 백범로99길 50",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 795000000
+      },
+      "userId": "soonsal_user_7",
+      "lat": 37.5318,
+      "rankIndex": 6,
+      "userName": "순살7",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "name": "몽탄",
+      "globalScore": "8.9",
+      "lng": 126.9715
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_7",
+      "rankIndex": 7,
+      "category": "카페",
+      "comment": "재방문 의사 있습니다.",
+      "lng": 127.0385,
+      "userId": "soonsal_user_7",
+      "address": "서울 강남구 도산대로53길 15",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 807000000
+      },
+      "lat": 37.5245,
+      "name": "노티드 청담",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "globalScore": "8.7",
+      "userName": "순살7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "userId": "soonsal_user_7",
+      "name": "블루보틀 성수",
+      "address": "서울 성동구 아차산로 7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 819000000
+      },
+      "lat": 37.548,
+      "category": "카페",
+      "comment": "재방문 의사 있습니다.",
+      "rankIndex": 8,
+      "globalScore": "8.5",
+      "lng": 127.045,
+      "userName": "순살7"
+    },
+    {
+      "id": "review_soonsal_user_7_1767921858574_9",
+      "rankIndex": 9,
+      "userId": "soonsal_user_7",
+      "lng": 126.9265,
+      "globalScore": "8.4",
+      "name": "테일러커피 연남",
+      "userName": "순살7",
+      "lat": 37.5645,
+      "address": "서울 마포구 성미산로 189",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal7",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 829000000
+      },
+      "category": "카페",
+      "comment": "평범하지만 깔끔해요."
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_0",
+      "userName": "순살8",
+      "comment": "진짜 인생 맛집입니다!",
+      "userId": "soonsal_user_8",
+      "lng": 126.9256,
+      "address": "서울 마포구 동교로 247",
+      "category": "카페",
+      "rankIndex": 0,
+      "name": "랜디스도넛 연남",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 967000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "globalScore": "10.0",
+      "lat": 37.5626
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "userName": "순살8",
+      "category": "한식",
+      "globalScore": "9.8",
+      "name": "우래옥 본점",
+      "lng": 126.9987,
+      "lat": 37.5682,
+      "comment": "나만 알고 싶은 곳인데...",
+      "rankIndex": 1,
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 978000000
+      },
+      "address": "서울 중구 창경궁로 62-29",
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 85000000
+      },
+      "rankIndex": 10,
+      "category": "중식",
+      "userName": "순살8",
+      "globalScore": "8.3",
+      "lat": 37.5165,
+      "address": "서울 영등포구 문래로 203",
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "name": "송죽장",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lng": 126.9048,
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_11",
+      "category": "양식",
+      "address": "서울 강남구 강남대로 452",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "name": "쉐이크쉑 강남",
+      "rankIndex": 11,
+      "globalScore": "8.1",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 96000000
+      },
+      "userId": "soonsal_user_8",
+      "lat": 37.5026,
+      "lng": 127.0257,
+      "userName": "순살8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_12",
+      "globalScore": "7.9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 109000000
+      },
+      "lng": 127.036,
+      "rankIndex": 12,
+      "address": "서울 강남구 도산대로 318",
+      "lat": 37.5218,
+      "name": "스시코우지",
+      "category": "일식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "userName": "순살8",
+      "comment": "부모님 모리고 오기 좋아요.",
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_13",
+      "comment": "주말엔 사람 너무 많아요.",
+      "userName": "순살8",
+      "address": "서울 마포구 성미산로 189",
+      "name": "테일러커피 연남",
+      "userId": "soonsal_user_8",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 124000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "rankIndex": 13,
+      "category": "카페",
+      "lat": 37.5645,
+      "lng": 126.9265,
+      "globalScore": "7.7"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_14",
+      "category": "한식",
+      "lat": 37.5161,
+      "userName": "순살8",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "rankIndex": 14,
+      "name": "진미평양냉면",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 135000000
+      },
+      "globalScore": "7.6",
+      "lng": 127.036,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "address": "서울 강남구 학동로 305-3",
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_15",
+      "globalScore": "7.4",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "lat": 37.5708,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 145000000
+      },
+      "lng": 126.9835,
+      "userId": "soonsal_user_8",
+      "category": "카페",
+      "userName": "순살8",
+      "address": "서울 종로구 종로 51",
+      "rankIndex": 15,
+      "name": "스타벅스 더종로R",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_16",
+      "globalScore": "7.2",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 156000000
+      },
+      "rankIndex": 16,
+      "address": "서울 서대문구 연희로15길 21",
+      "comment": "나만 알고 싶은 곳인데...",
+      "category": "중식",
+      "userName": "순살8",
+      "name": "목란",
+      "lng": 126.931,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5684,
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_17",
+      "lng": 126.972,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 167000000
+      },
+      "lat": 37.5445,
+      "comment": "재방문 의사 있습니다.",
+      "userId": "soonsal_user_8",
+      "rankIndex": 17,
+      "globalScore": "7.0",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "userName": "순살8",
+      "address": "서울 용산구 한강대로80길 17",
+      "name": "남영돈",
+      "category": "한식"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_18",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5495,
+      "address": "서울 마포구 양화로3길 55",
+      "lng": 126.9135,
+      "userName": "순살8",
+      "category": "양식",
+      "globalScore": "6.9",
+      "rankIndex": 18,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 176000000
+      },
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "name": "오스테리아 샘킴",
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_19",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "rankIndex": 19,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "globalScore": "6.7",
+      "address": "서울 중구 다산로 149",
+      "userName": "순살8",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 188000000
+      },
+      "userId": "soonsal_user_8",
+      "lat": 37.5574,
+      "category": "한식",
+      "lng": 127.0105,
+      "name": "금돼지식당"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_2",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5778,
+      "address": "서울 종로구 자하문로7길 34",
+      "category": "바",
+      "lng": 126.9713,
+      "userName": "순살8",
+      "globalScore": "9.7",
+      "rankIndex": 2,
+      "comment": "재방문 의사 있습니다.",
+      "name": "바 참",
+      "timestamp": {
+        "seconds": 1767921860,
+        "nanoseconds": 989000000
+      },
+      "userId": "soonsal_user_8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_20",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "rankIndex": 20,
+      "userId": "soonsal_user_8",
+      "name": "버거킹 종로점",
+      "category": "패스트푸드",
+      "address": "서울 종로구",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5704,
+      "userName": "순살8",
+      "globalScore": "8.5",
+      "lng": 126.983,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 199000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_21",
+      "userId": "soonsal_user_8",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 210000000
+      },
+      "userName": "순살8",
+      "globalScore": "8.8",
+      "address": "서울 영등포구",
+      "lat": 37.5218,
+      "comment": "분위기가 깡패네요. 데이트 코스로 추천!",
+      "category": "패스트푸드",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lng": 126.9242,
+      "rankIndex": 21,
+      "name": "버거킹 여의도점"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_22",
+      "userId": "soonsal_user_8",
+      "name": "맥도날드 신촌점",
+      "address": "서울 서대문구",
+      "lng": 126.937,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "globalScore": "7.2",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "lat": 37.5555,
+      "userName": "순살8",
+      "category": "패스트푸드",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 220000000
+      },
+      "rankIndex": 22
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_3",
+      "rankIndex": 3,
+      "category": "한식",
+      "globalScore": "9.5",
+      "userId": "soonsal_user_8",
+      "lng": 126.9715,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "name": "몽탄",
+      "lat": 37.5318,
+      "userName": "순살8",
+      "address": "서울 용산구 백범로99길 50",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 0
+      }
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_4",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 12000000
+      },
+      "globalScore": "9.3",
+      "category": "중식",
+      "lat": 37.5665,
+      "comment": "주말엔 사람 너무 많아요.",
+      "lng": 126.9912,
+      "userName": "순살8",
+      "name": "안동장",
+      "address": "서울 중구 을지로 124",
+      "rankIndex": 4,
+      "userId": "soonsal_user_8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8"
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_5",
+      "globalScore": "9.1",
+      "category": "일식",
+      "rankIndex": 5,
+      "userName": "순살8",
+      "name": "미진",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 23000000
+      },
+      "lng": 126.9805,
+      "address": "서울 종로구 종로 19",
+      "userId": "soonsal_user_8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5705,
+      "comment": "나만 알고 싶은 곳인데..."
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_6",
+      "userName": "순살8",
+      "address": "서울 중구 명동9길 12",
+      "globalScore": "9.0",
+      "lng": 126.984,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 35000000
+      },
+      "name": "하동관 명동본점",
+      "rankIndex": 6,
+      "comment": "숨겨진 맛집 발견!",
+      "userId": "soonsal_user_8",
+      "category": "한식",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lat": 37.5645
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_7",
+      "address": "서울 중구 충무로14길 2-1",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "category": "한식",
+      "name": "을지면옥",
+      "lat": 37.5663,
+      "lng": 126.9922,
+      "globalScore": "8.8",
+      "rankIndex": 7,
+      "userName": "순살8",
+      "userId": "soonsal_user_8",
+      "comment": "진짜 인생 맛집입니다!",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 45000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_8",
+      "userId": "soonsal_user_8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "globalScore": "8.6",
+      "address": "서울 중구 명동10길 29",
+      "userName": "순살8",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 57000000
+      },
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "name": "명동교자 본점",
+      "rankIndex": 8,
+      "category": "한식",
+      "lng": 126.9856,
+      "lat": 37.5625
+    },
+    {
+      "id": "review_soonsal_user_8_1767921858574_9",
+      "lat": 37.545,
+      "category": "카페",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 70000000
+      },
+      "name": "어니언 성수",
+      "userId": "soonsal_user_8",
+      "globalScore": "8.4",
+      "userName": "순살8",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal8",
+      "lng": 127.056,
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "address": "서울 성동구 아차산로9길 8",
+      "rankIndex": 9
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_0",
+      "name": "미진",
+      "globalScore": "10.0",
+      "comment": "재방문 의사 있습니다.",
+      "userName": "순살9",
+      "rankIndex": 0,
+      "lng": 126.9805,
+      "lat": 37.5705,
+      "category": "일식",
+      "address": "서울 종로구 종로 19",
+      "userId": "soonsal_user_9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 231000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_1",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 244000000
+      },
+      "address": "서울 마포구 동교로 126",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "userName": "순살9",
+      "rankIndex": 1,
+      "globalScore": "9.8",
+      "lng": 126.918,
+      "category": "일식",
+      "name": "카와카츠",
+      "lat": 37.5571,
+      "userId": "soonsal_user_9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_10",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 346000000
+      },
+      "userId": "soonsal_user_9",
+      "userName": "순살9",
+      "globalScore": "8.2",
+      "lat": 37.5699,
+      "address": "서울 중구 세종대로 136",
+      "category": "일식",
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "lng": 126.9785,
+      "rankIndex": 10,
+      "name": "오제제 광화문"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_11",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "globalScore": "8.0",
+      "name": "블루보틀 성수",
+      "comment": "맛은 있는데 가격이 좀 비싸요.",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 359000000
+      },
+      "category": "카페",
+      "lat": 37.548,
+      "lng": 127.045,
+      "address": "서울 성동구 아차산로 7",
+      "userName": "순살9",
+      "userId": "soonsal_user_9",
+      "rankIndex": 11
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_12",
+      "category": "한식",
+      "lng": 126.9856,
+      "rankIndex": 12,
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "lat": 37.5625,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "userName": "순살9",
+      "userId": "soonsal_user_9",
+      "globalScore": "7.8",
+      "name": "명동교자 본점",
+      "address": "서울 중구 명동10길 29",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 370000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_13",
+      "userName": "순살9",
+      "rankIndex": 13,
+      "lng": 126.931,
+      "category": "중식",
+      "globalScore": "7.6",
+      "name": "목란",
+      "comment": "숨겨진 맛집 발견!",
+      "userId": "soonsal_user_9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "address": "서울 서대문구 연희로15길 21",
+      "lat": 37.5684,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 380000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_14",
+      "userId": "soonsal_user_9",
+      "rankIndex": 14,
+      "name": "금돼지식당",
+      "userName": "순살9",
+      "category": "한식",
+      "globalScore": "7.5",
+      "address": "서울 중구 다산로 149",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 390000000
+      },
+      "comment": "주말엔 사람 너무 많아요.",
+      "lat": 37.5574,
+      "lng": 127.0105
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_15",
+      "lat": 37.5792,
+      "globalScore": "7.3",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "lng": 126.9866,
+      "userId": "soonsal_user_9",
+      "userName": "순살9",
+      "name": "런던베이글뮤지엄 안국",
+      "rankIndex": 15,
+      "category": "카페",
+      "comment": "비주얼 굿! 인스타 감성 낭낭합니다.",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 402000000
+      },
+      "address": "서울 종로구 북촌로4길 20"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_16",
+      "name": "쉐이크쉑 강남",
+      "category": "양식",
+      "lat": 37.5026,
+      "address": "서울 강남구 강남대로 452",
+      "lng": 127.0257,
+      "userId": "soonsal_user_9",
+      "userName": "순살9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 412000000
+      },
+      "globalScore": "7.1",
+      "comment": "평범하지만 깔끔해요.",
+      "rankIndex": 16
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_17",
+      "globalScore": "6.9",
+      "lat": 37.5663,
+      "name": "을지면옥",
+      "category": "한식",
+      "rankIndex": 17,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 423000000
+      },
+      "userName": "순살9",
+      "address": "서울 중구 충무로14길 2-1",
+      "userId": "soonsal_user_9",
+      "lng": 126.9922,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "comment": "사장님이 친절하고 양이 푸짐합니다."
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_18",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 435000000
+      },
+      "comment": "웨이팅이 좀 길지만 기다릴만 해요.",
+      "lng": 126.924,
+      "category": "일식",
+      "userName": "순살9",
+      "address": "서울 마포구 성미산로 165-1",
+      "name": "야키토리 묵",
+      "userId": "soonsal_user_9",
+      "lat": 37.563,
+      "globalScore": "6.7",
+      "rankIndex": 18,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_19",
+      "userId": "soonsal_user_9",
+      "lat": 37.5682,
+      "lng": 126.9987,
+      "name": "우래옥 본점",
+      "globalScore": "6.5",
+      "rankIndex": 19,
+      "userName": "순살9",
+      "address": "서울 중구 창경궁로 62-29",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 445000000
+      },
+      "category": "한식",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_2",
+      "lng": 126.9713,
+      "address": "서울 종로구 자하문로7길 34",
+      "name": "바 참",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "globalScore": "9.6",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userName": "순살9",
+      "userId": "soonsal_user_9",
+      "lat": 37.5778,
+      "rankIndex": 2,
+      "category": "바",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 255000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_20",
+      "category": "패스트푸드",
+      "rankIndex": 20,
+      "lng": 126.983,
+      "comment": "역시 본점은 다르네요.",
+      "lat": 37.5704,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "userName": "순살9",
+      "userId": "soonsal_user_9",
+      "globalScore": "9.2",
+      "name": "버거킹 종로점",
+      "address": "서울 종로구",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 459000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_21",
+      "rankIndex": 21,
+      "name": "KFC 대학로점",
+      "userName": "순살9",
+      "globalScore": "6.9",
+      "lng": 127.002,
+      "comment": "숨겨진 맛집 발견!",
+      "lat": 37.5825,
+      "category": "패스트푸드",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 469000000
+      },
+      "address": "서울 종로구",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "userId": "soonsal_user_9"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_3",
+      "globalScore": "9.5",
+      "name": "진진",
+      "userName": "순살9",
+      "userId": "soonsal_user_9",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 265000000
+      },
+      "lng": 126.9123,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "rankIndex": 3,
+      "category": "중식",
+      "address": "서울 마포구 잔다리로 123",
+      "comment": "주말엔 사람 너무 많아요.",
+      "lat": 37.5562
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_4",
+      "userId": "soonsal_user_9",
+      "lng": 126.9997,
+      "lat": 37.5604,
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "category": "한식",
+      "userName": "순살9",
+      "address": "서울 중구 서애로 26",
+      "name": "필동면옥",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "rankIndex": 4,
+      "globalScore": "9.3",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 276000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_5",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 288000000
+      },
+      "globalScore": "9.1",
+      "lng": 126.9835,
+      "address": "서울 종로구 종로 51",
+      "userId": "soonsal_user_9",
+      "name": "스타벅스 더종로R",
+      "category": "카페",
+      "lat": 37.5708,
+      "userName": "순살9",
+      "comment": "나만 알고 싶은 곳인데...",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "rankIndex": 5
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_6",
+      "rankIndex": 6,
+      "lat": 37.5558,
+      "userName": "순살9",
+      "name": "팔선",
+      "category": "중식",
+      "comment": "친구들이랑 가기 딱 좋은 곳.",
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 299000000
+      },
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "globalScore": "8.9",
+      "lng": 127.005,
+      "address": "서울 중구 동호로 249",
+      "userId": "soonsal_user_9"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_7",
+      "name": "노티드 청담",
+      "lng": 127.0385,
+      "globalScore": "8.7",
+      "userId": "soonsal_user_9",
+      "userName": "순살9",
+      "category": "카페",
+      "address": "서울 강남구 도산대로53길 15",
+      "rankIndex": 7,
+      "comment": "솔직히 기대 이하였어요 ㅠㅠ",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "lat": 37.5245,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 312000000
+      }
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_8",
+      "comment": "사장님이 친절하고 양이 푸짐합니다.",
+      "globalScore": "8.5",
+      "userName": "순살9",
+      "rankIndex": 8,
+      "lng": 126.9716,
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "address": "서울 종로구 자하문로5길 5",
+      "name": "토속촌 삼계탕",
+      "userId": "soonsal_user_9",
+      "lat": 37.5772,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 324000000
+      },
+      "category": "한식"
+    },
+    {
+      "id": "review_soonsal_user_9_1767921858574_9",
+      "globalScore": "8.4",
+      "lat": 37.5235,
+      "name": "카멜커피 도산",
+      "category": "카페",
+      "rankIndex": 9,
+      "timestamp": {
+        "seconds": 1767921861,
+        "nanoseconds": 335000000
+      },
+      "address": "서울 강남구 도산대로45길 16-8",
+      "userName": "순살9",
+      "lng": 127.0355,
+      "userId": "soonsal_user_9",
+      "userPhoto": "https://api.dicebear.com/7.x/avataaars/svg?seed=Soonsal9",
+      "comment": "진짜 인생 맛집입니다!"
+    },
+    {
+      "id": "sKfU2MYbZZpMMOBsNo3m",
+      "lat": 37.4815515,
+      "isLocation": false,
+      "name": "롯데리아 송파하비오",
+      "userName": "순살인간",
+      "rankIndex": 1,
+      "globalScore": 0,
+      "category": "양식>햄버거",
+      "distance": 15.856942428353372,
+      "userPhoto": "https://lh3.googleusercontent.com/a/ACg8ocI7ZEDOVmgNtcMps-fsZY7c9687g3qVVpDcLJtDFgvjcD7qryE=s96-c",
+      "location": "서울특별시 송파구 송파대로 111 205동 115, 116, 118호",
+      "comment": "-롯-",
+      "timestamp": {
+        "seconds": 1768146401,
+        "nanoseconds": 544000000
+      },
+      "address": "서울특별시 송파구 송파대로 111 205동 115, 116, 118호",
+      "lng": 127.1224238,
+      "userId": "EBrSWNRxFOT2tv7w395m2z4FFMF3"
+    },
+    {
+      "id": "zWi91TLngySll0x2TOGK",
+      "rankIndex": 0,
+      "address": "서울특별시 송파구 법원로8길 13",
+      "distance": 15.66106699806354,
+      "name": "버거킹 문정역점",
+      "location": "서울특별시 송파구 법원로8길 13",
+      "userId": "EBrSWNRxFOT2tv7w395m2z4FFMF3",
+      "lat": 37.4847043,
+      "globalScore": 0,
+      "comment": "와퍼맛",
+      "category": "양식>햄버거",
+      "userPhoto": "https://lh3.googleusercontent.com/a/ACg8ocI7ZEDOVmgNtcMps-fsZY7c9687g3qVVpDcLJtDFgvjcD7qryE=s96-c",
+      "timestamp": {
+        "seconds": 1768148959,
+        "nanoseconds": 714000000
+      },
+      "isLocation": false,
+      "userName": "순살인간",
+      "lng": 127.1225721
+    }
+  ]
+}
