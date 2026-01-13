@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { db, collection, getDocs, doc, writeBatch } from '../lib/firebase';
+import { addVerificationData } from '../utils/seeder';
 
 const AdminPage = ({ onBack }) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -266,6 +267,17 @@ const AdminPage = ({ onBack }) => {
                                 className="w-full py-3 bg-red-900/50 hover:bg-red-900/80 text-red-200 border border-red-800 rounded-xl font-bold transition-all"
                             >
                                 전체 데이터 삭제 (DB 초기화)
+                            </button>
+                        </div>
+
+                        <div className="border-t border-slate-700 my-4 pt-4">
+                            <h3 className="text-blue-400 font-bold mb-2 text-sm">🧪 테스트 데이터</h3>
+                            <button
+                                onClick={addVerificationData}
+                                disabled={isLoading}
+                                className="w-full py-3 bg-blue-900/50 hover:bg-blue-900/80 text-blue-200 border border-blue-800 rounded-xl font-bold transition-all"
+                            >
+                                검증용 데이터 추가 (Threshold Test)
                             </button>
                         </div>
                     </div>

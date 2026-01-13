@@ -146,6 +146,19 @@ export function DataProvider({ children }) {
         // Group by Name + Lat/Lng to prevent duplicates
         const uniqueMap = {};
 
+        // [NEW] 1. Pre-calculate User Reputation (Review Counts for Weighting)
+        // We need to count based on ALL reviews, not just filtered ones, to get accurate user expertise.
+        const userReviewCounts = {};
+        reviews.forEach(r => {
+            userReviewCounts[r.userId] = (userReviewCounts[r.userId] || 0) + 1;
+        });
+
+        const getUserWeight = (count) => {
+            if (count <= 2) return 0.3; // 入문자
+            if (count <= 9) return 0.7; // 일반
+            return 1.0; // 전문가
+        };
+
         activeReviews.forEach(r => {
             const key = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
             if (!uniqueMap[key]) {
@@ -176,13 +189,12 @@ export function DataProvider({ children }) {
             wishlist.forEach(w => {
                 const key = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
                 if (!existingKeys.has(key)) {
-                    // Add dummy item for Wishlist entry with no reviews
                     finalDisplayList.push({
                         ...w,
                         id: w.id || `wish_${Date.now()}_${Math.random()}`,
                         reviewCount: 0,
                         reviews: [],
-                        displayScore: w.globalScore || "0.0", // Snapshot score or 0
+                        displayScore: w.globalScore || "0.0",
                         maxScore: 0,
                         friendScore: "-"
                     });
@@ -190,59 +202,107 @@ export function DataProvider({ children }) {
             });
         }
 
-        // [NEW] 1. Pre-calculate User Reputation (Review Counts)
-        const userReviewCounts = {};
-        reviews.forEach(r => {
-            userReviewCounts[r.userId] = (userReviewCounts[r.userId] || 0) + 1;
-        });
-
         return finalDisplayList.map((r) => {
-            // Calculate Weighted Average Score
-            let avgScore = "0.0";
-            let currentTotalWeight = 0; // [NEW] Scope hoisting
+            let finalScore = "0.0";
+            let totalWeight = 0; // For Sorting (Tie-breaker)
 
+            // --- A. Base Calculation (Weighted Average) ---
+            // Calculate R (Weighted Average of Votes)
+            let R = 0;
             if (r.reviews && r.reviews.length > 0) {
-                let totalWeightedScore = 0;
+                let weightedSum = 0;
+                let weightSum = 0;
 
                 r.reviews.forEach(rev => {
                     const rawScore = parseFloat(rev.globalScore || 0);
-                    // Weight = 1 + log10(UserTotalReviews)
-                    const userCount = userReviewCounts[rev.userId] || 1;
-                    const weight = 1 + Math.log10(userCount);
+                    // [NEW] Logic A: User Reliability Weight
+                    const count = userReviewCounts[rev.userId] || 0;
+                    const weight = getUserWeight(count);
 
-                    totalWeightedScore += rawScore * weight;
-                    currentTotalWeight += weight;
+                    weightedSum += rawScore * weight;
+                    weightSum += weight;
                 });
 
-                if (currentTotalWeight > 0) {
-                    avgScore = (totalWeightedScore / currentTotalWeight).toFixed(1);
+                if (weightSum > 0) {
+                    R = weightedSum / weightSum;
                 }
+                totalWeight = weightSum;
             } else if (r.displayScore) {
-                avgScore = r.displayScore; // Fallback
+                R = parseFloat(r.displayScore);
             }
 
-            // [FIX] For "MY" view, use Max Score to avoid "Ghost" reviews.
-            // For Global/Friends, use Weighted Average.
-            const finalScore = (viewMode === "MY") ? (r.maxScore || 0).toFixed(1) : avgScore;
+            // --- B. View-Dependent Logic ---
+            if (viewMode === "MY") {
+                // [MY View] Raw Max Score (My own ranking)
+                finalScore = (r.maxScore || 0).toFixed(1);
+            } else if (viewMode === "GLOBAL" || viewMode === "WISHLIST") {
+                // [GLOBAL View] B. Bayesian Average
+                // Formula: ( (R * v) + (C * m) ) / (v + m)
+                const v = r.reviews.length;
+                const C = 5.0; // Mean
+                const m = 5;   // Threshold for confidence
+
+                if (v > 0) {
+                    const bayesianScore = ((R * v) + (C * m)) / (v + m);
+                    finalScore = bayesianScore.toFixed(1);
+                } else {
+                    finalScore = "0.0";
+                }
+
+            } else if (viewMode === "FRIENDS") {
+                // [FRIENDS View] Dynamic Bayesian
+                // Intensity depends on friend count.
+                // Few friends -> Weak Correction (m low)
+                // Many friends -> Strong Correction (m high)
+
+                // Assuming 'followingList' contains UIDs.
+                const friendCount = followingList ? followingList.length : 0;
+
+                // Logic: 0 friends -> m=0 (Raw R), 5+ friends -> m=5 (Full Bayesian)
+                const m = Math.min(5, friendCount);
+                const C = 5.0;
+                const v = r.reviews.length;
+
+                if (v > 0) {
+                    // If m=0, reduces to (R*v)/v = R
+                    const bayesianScore = ((R * v) + (C * m)) / (v + m);
+                    finalScore = bayesianScore.toFixed(1);
+                } else {
+                    finalScore = "0.0";
+                }
+            } else {
+                // Fallback (Franchise, etc)
+                finalScore = R.toFixed(1);
+            }
 
             return {
                 ...r,
                 displayScore: finalScore,
                 maxScore: r.maxScore || 0,
-                friendScore: r.friendScore || (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
-                totalWeight: currentTotalWeight // [NEW] For Sorting
+                // friendScore is purely visual/mock in some contexts, strictly we use displayScore
+                friendScore: finalScore,
+                totalWeight: totalWeight
             };
-        }).sort((a, b) => {
-            const scoreA = parseFloat(a.displayScore);
-            const scoreB = parseFloat(b.displayScore);
-            // Tie-breaker Logic
-            if (scoreB !== scoreA) {
-                return scoreB - scoreA;
-            }
-            // Secondary: Total Weight (Reputation * Volume)
-            return (b.totalWeight || 0) - (a.totalWeight || 0);
-        });
-    }, [activeReviews, viewMode, wishlist]); // Added viewMode, wishlist deps
+        })
+            .filter(r => {
+                // [NEW] C. Threshold
+                // Global Filter: Exclude items with < 3 reviews
+                if (viewMode === "GLOBAL") {
+                    return r.reviews.length >= 3;
+                }
+                return true;
+            })
+            .sort((a, b) => {
+                const scoreA = parseFloat(a.displayScore);
+                const scoreB = parseFloat(b.displayScore);
+                // Primary: Score
+                if (scoreB !== scoreA) {
+                    return scoreB - scoreA;
+                }
+                // Secondary: Total Weight (Reliability Sum)
+                return (b.totalWeight || 0) - (a.totalWeight || 0);
+            });
+    }, [activeReviews, viewMode, wishlist, reviews, followingList]);
 
     // --- Actions ---
     const addReview = async (reviewData) => {
