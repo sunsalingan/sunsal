@@ -14,6 +14,7 @@ const UserProfileHeader = ({
     onMessage,
     onOpenFollowers,
     onOpenFollowing,
+    onEditProfile, // [NEW]
     matchRate, // Optional match rate (0-100)
 }) => {
     if (!user) return null;
@@ -71,7 +72,10 @@ const UserProfileHeader = ({
             {/* Actions */}
             <div className="flex gap-2">
                 {isMe ? (
-                    <button className="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700">
+                    <button
+                        onClick={onEditProfile}
+                        className="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-200"
+                    >
                         프로필 편집
                     </button>
                 ) : (

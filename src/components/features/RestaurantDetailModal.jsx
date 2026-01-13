@@ -12,13 +12,15 @@ const RestaurantDetailModal = ({
     allReviews = [],
     onOpenProfile,
     isWishlisted,
-    onToggleWishlist
+    onToggleWishlist,
+    currentUser, // [NEW]
+    onEditReview // [NEW]
 }) => {
     // Safety check
     if (!restaurant) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-[9999] animate-in fade-in duration-200" style={{ pointerEvents: 'auto' }}>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-[9999] animate-in fade-in duration-200">
             <div className="bg-white w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-xl flex flex-col overflow-hidden relative">
 
                 {/* Global Close Button for Modal */}
@@ -69,6 +71,8 @@ const RestaurantDetailModal = ({
                             restaurantName={restaurant.name}
                             allReviews={allReviews}
                             onOpenProfile={onOpenProfile}
+                            currentUser={currentUser} //Propagate
+                            onEditReview={onEditReview} //Propagate
                         />
                     </div>
                 </div>
@@ -91,7 +95,7 @@ const RestaurantDetailModal = ({
     );
 };
 
-const ReviewList = ({ restaurantName, allReviews, onOpenProfile }) => {
+const ReviewList = ({ restaurantName, allReviews, onOpenProfile, currentUser, onEditReview }) => {
     // 1. Filter reviews for this restaurant
     const rawReviews = allReviews.filter(r => r.name === restaurantName);
 
@@ -114,7 +118,16 @@ const ReviewList = ({ restaurantName, allReviews, onOpenProfile }) => {
         }
     });
 
-    const reviews = Array.from(uniqueReviewsMap.values());
+    let reviews = Array.from(uniqueReviewsMap.values());
+
+    // [FIX] Sort My Review to Top
+    if (currentUser) {
+        reviews.sort((a, b) => {
+            if (a.userId === currentUser.uid) return -1;
+            if (b.userId === currentUser.uid) return 1;
+            return 0; // Keep others as is (or sort by time)
+        });
+    }
 
     if (reviews.length === 0) {
         return <div className="text-center py-6 text-slate-400 text-sm">아직 등록된 리뷰가 없습니다.</div>;
@@ -131,38 +144,60 @@ const ReviewList = ({ restaurantName, allReviews, onOpenProfile }) => {
 
     return (
         <>
-            {reviews.map((review) => (
-                <div key={review.id} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative">
-                    <div className="flex justify-between items-start mb-2">
-                        <div
-                            className="flex items-center gap-2 cursor-pointer group"
-                            onClick={() => onOpenProfile && onOpenProfile(review.userId)}
-                        >
-                            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-100">
-                                {review.userPhoto ? (
-                                    <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover" />
-                                ) : (
-                                    <User size={14} className="text-slate-500" />
-                                )}
+            {reviews.map((review) => {
+                const isMyReview = currentUser && review.userId === currentUser.uid;
+
+                return (
+                    <div
+                        key={review.id}
+                        className={`bg-white p-4 rounded-xl border shadow-sm relative transition-all ${isMyReview ? "border-indigo-200 bg-indigo-50/30 ring-1 ring-indigo-100 cursor-pointer hover:bg-indigo-50" : "border-slate-100"}`}
+                        onClick={(e) => {
+                            if (isMyReview && onEditReview) {
+                                e.stopPropagation(); // [FIX] Prevent bubbling
+                                onEditReview(review);
+                            }
+                        }}
+                    >
+                        {isMyReview && (
+                            <div className="absolute top-4 right-4 text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
+                                ✎ 내 리뷰 수정하기
                             </div>
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <div className="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
-                                        {review.userName || "익명 사용자"}
-                                    </div>
-                                    <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded text-yellow-600 font-bold text-[10px]">
-                                        <Star size={8} className="fill-yellow-600" /> {review.globalScore}
-                                    </div>
+                        )}
+
+                        <div className="flex justify-between items-start mb-2">
+                            <div
+                                className="flex items-center gap-2 cursor-pointer group"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // prevent triggering edit
+                                    onOpenProfile && onOpenProfile(review.userId)
+                                }}
+                            >
+                                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-100">
+                                    {review.userPhoto ? (
+                                        <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <User size={14} className="text-slate-500" />
+                                    )}
                                 </div>
-                                <div className="text-[10px] text-slate-400 mt-0.5">
-                                    {formatDate(review.timestamp)}
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
+                                            {review.userName || "익명 사용자"}
+                                        </div>
+                                        <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded text-yellow-600 font-bold text-[10px]">
+                                            <Star size={8} className="fill-yellow-600" /> {review.globalScore}
+                                        </div>
+                                    </div>
+                                    <div className="text-[10px] text-slate-400 mt-0.5">
+                                        {formatDate(review.timestamp)}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <p className="text-sm text-slate-600 leading-relaxed pl-10 -mt-2">{review.comment}</p>
                     </div>
-                    <p className="text-sm text-slate-600 leading-relaxed pl-10 -mt-2">{review.comment}</p>
-                </div>
-            ))}
+                );
+            })}
         </>
     );
 }

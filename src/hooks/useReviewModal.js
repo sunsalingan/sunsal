@@ -24,6 +24,8 @@ export function useReviewModal() {
         // Ensure category is preserved from the review
         setSelectedNewPlace({ ...review, category: review.category });
         setNewReviewParams({ text: review.comment || "", score: review.globalScore || 5 });
+        // [FIX] Initialize tempRankIndex with the existing rank so "Update" preserves it
+        setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
         setIsOpen(true);
     }, []);
 
@@ -39,6 +41,7 @@ export function useReviewModal() {
         isOpen,
         setIsOpen,
         editingReview,
+        setEditingReview, // [FIX] Added export for App.jsx manual handling
         selectedNewPlace,
         setSelectedNewPlace, // Exposed if needed specific overriding
         newReviewParams,

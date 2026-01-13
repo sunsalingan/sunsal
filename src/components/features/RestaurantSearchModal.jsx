@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, X, Loader2 } from "lucide-react";
 import { searchNaverPlaces, getRegionFromCoords } from "../../services/naverApi";
+import { normalizeCategory } from "../../utils/categoryHelper";
 
 const RestaurantSearchModal = ({
     isOpen,
@@ -9,6 +10,20 @@ const RestaurantSearchModal = ({
     onSelectRestaurant, // Handler when a restaurant is clicked
     mapInstance, // [NEW] Map instance for location sort
 }) => {
+    // ... existing code ...
+
+    // In render map loop:
+    /*
+                            <div
+                                key={idx}
+                                onClick={() => {
+                                    const normalized = {
+                                        ...place,
+                                        category: normalizeCategory(place.category) // [FIX] Normalize here
+                                    };
+                                    onSelectRestaurant(normalized);
+                                }}
+    */
     const [searchTerm, setSearchTerm] = useState("");
     const [results, setResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -62,7 +77,7 @@ const RestaurantSearchModal = ({
 
     // Helper to filter only restaurants
     const filterRestaurants = (items) => {
-        const validCategories = ["음식점", "식당", "카페", "한식", "양식", "중식", "일식", "분식", "주점", "술집", "베이커리", "패스트푸드", "육류", "고기", "해산물", "면", "요리"];
+        const validCategories = ["음식점", "식당", "카페", "한식", "양식", "중식", "일식", "분식", "주점", "술집", "베이커리", "패스트푸드", "육류", "고기", "해산물", "면", "요리", "아시안", "태국", "베트남", "인도"];
         return items.filter(item => {
             const cat = (item.category || "").replace(/\s/g, ""); // remove spaces
             return validCategories.some(v => cat.includes(v));
@@ -133,7 +148,7 @@ const RestaurantSearchModal = ({
                     <Search className="text-slate-400" />
                     <input
                         className="flex-1 outline-none text-base font-medium placeholder:text-slate-300"
-                        placeholder="지역명, 주소 검색 (예: 강남대로 390)"
+                        placeholder="식당 이름을 검색해주세요 (예: 스타벅스 강남점)"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         autoFocus
@@ -152,7 +167,11 @@ const RestaurantSearchModal = ({
                             <div
                                 key={idx}
                                 onClick={() => {
-                                    onSelectRestaurant(place);
+                                    const normalized = {
+                                        ...place,
+                                        category: normalizeCategory(place.category)
+                                    };
+                                    onSelectRestaurant(normalized);
                                 }}
                                 className="p-3 hover:bg-slate-50 rounded-xl cursor-pointer flex items-center justify-between group transition-colors"
                             >
@@ -186,7 +205,7 @@ const RestaurantSearchModal = ({
                         ))
                     ) : (
                         <div className="py-10 text-center text-slate-400 text-sm">
-                            {searchTerm ? "검색 결과가 없습니다. 도로명 주소로 검색해보세요." : "방문한 식당의 주소를 검색해보세요."}
+                            {searchTerm ? "검색 결과가 없습니다. 식당 이름으로 다시 검색해보세요." : "방문한 식당의 이름을 검색해보세요."}
                         </div>
                     )}
                 </div>

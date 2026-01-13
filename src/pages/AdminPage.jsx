@@ -105,6 +105,38 @@ const AdminPage = ({ onBack }) => {
         reader.readAsText(file);
     };
 
+    // --- Clear All Functionality ---
+    const handleClearAll = async () => {
+        if (!window.confirm("⛔️ [최종 경고] 정말로 모든 데이터를 삭제하시겠습니까?\n\n이 작업은 DB의 모든 유저와 리뷰를 영구적으로 삭제합니다.\n백업 파일을 미리 다운로드 받았는지 확인해주세요.")) {
+            return;
+        }
+
+        const confirmation = prompt("보안을 위해 관리자 비밀번호(PIN)를 입력해주세요.");
+        if (confirmation !== "0901") {
+            alert("비밀번호가 올바르지 않습니다. 삭제가 취소됩니다.");
+            return;
+        }
+
+        setIsLoading(true);
+        setStatus("데이터 전체 삭제 시작...");
+
+        try {
+            await deleteCollection("users");
+            setStatus("유저 데이터 삭제 완료.");
+            await deleteCollection("reviews");
+            setStatus("리뷰 데이터 삭제 완료.");
+
+            alert("모든 데이터가 삭제되었습니다. 깨끗한 상태로 리로드합니다.");
+            window.location.reload();
+        } catch (e) {
+            console.error(e);
+            setStatus(`삭제 실패: ${e.message}`);
+            alert(`오류 발생: ${e.message}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     // Helper: Delete Utility
     const deleteCollection = async (collectionName) => {
         const q = collection(db, collectionName);
@@ -190,8 +222,8 @@ const AdminPage = ({ onBack }) => {
                             onClick={handleBackup}
                             disabled={isLoading}
                             className={`w-full py-3 rounded-xl font-bold transition-all ${isLoading
-                                    ? "bg-slate-600 cursor-not-allowed"
-                                    : "bg-teal-600 hover:bg-teal-500 shadow-lg shadow-teal-900/50"
+                                ? "bg-slate-600 cursor-not-allowed"
+                                : "bg-teal-600 hover:bg-teal-500 shadow-lg shadow-teal-900/50"
                                 }`}
                         >
                             {isLoading ? "처리 중..." : "전체 데이터 다운로드"}
@@ -212,9 +244,9 @@ const AdminPage = ({ onBack }) => {
                             <strong className="text-red-400">주의: 기존 데이터는 모두 삭제됩니다.</strong>
                         </p>
 
-                        <label className={`block w-full text-center py-3 rounded-xl font-bold transition-all cursor-pointer ${isLoading
-                                ? "bg-slate-600 cursor-not-allowed"
-                                : "bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600 hover:border-slate-500"
+                        <label className={`block w-full text-center py-3 rounded-xl font-bold transition-all cursor-pointer mb-4 ${isLoading
+                            ? "bg-slate-600 cursor-not-allowed"
+                            : "bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600 hover:border-slate-500"
                             }`}>
                             <span>{isLoading ? "처리 중..." : "백업 파일 선택 (.json)"}</span>
                             <input
@@ -225,6 +257,17 @@ const AdminPage = ({ onBack }) => {
                                 className="hidden"
                             />
                         </label>
+
+                        <div className="border-t border-slate-700 my-4 pt-4">
+                            <h3 className="text-red-500 font-bold mb-2 text-sm">⛔️ 데이터 초기화</h3>
+                            <button
+                                onClick={handleClearAll}
+                                disabled={isLoading}
+                                className="w-full py-3 bg-red-900/50 hover:bg-red-900/80 text-red-200 border border-red-800 rounded-xl font-bold transition-all"
+                            >
+                                전체 데이터 삭제 (DB 초기화)
+                            </button>
+                        </div>
                     </div>
                 </div>
 

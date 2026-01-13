@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { X, Check, Search, CreditCard, MapPin } from "lucide-react";
-import RecursiveRankingGroup from "./RecursiveRankingGroup";
+import { X, Check, Search, CreditCard, MapPin, Trash2 } from "lucide-react";
+import HierarchicalRankingSelector from "./HierarchicalRankingSelector";
 
 const ReviewModal = ({
     isOpen,
@@ -14,6 +14,7 @@ const ReviewModal = ({
     editingReview, // [NEW] If not null, we are editing
     // Props for Step 2
     categoryReviews = [], // Restaurants in same category for comparison
+    onDelete, // [FIX] Handler for deletion
     onInsert, // Handler for ranking insertion
     // Props for Step 3
     allReviews = [], // All restaurants for final comparison
@@ -25,12 +26,16 @@ const ReviewModal = ({
     const [isLocationAuthed, setIsLocationAuthed] = useState(false);
     const [isReceiptAuthed, setIsReceiptAuthed] = useState(false);
 
+    // [NEW] Bounded Ranking State: 0-based index range [min, max) keys in global list
+    const [globalBounds, setGlobalBounds] = useState({ min: 0, max: Infinity });
+
     // [FIX] Reset state when modal opens
     React.useEffect(() => {
         if (isOpen) {
             setStep(1);
             setIsLocationAuthed(false);
             setIsReceiptAuthed(false);
+            setGlobalBounds({ min: 0, max: Infinity });
         }
     }, [isOpen]);
 
@@ -58,12 +63,11 @@ const ReviewModal = ({
     };
 
     const handleSubmit = async () => {
-        // Fallback: Default to Top 1 (Index 0) if bottom button is clicked without specific selection
+        // Fallback user clicked the main CTA. Use current/temp rank.
         if (onSubmit) {
-            onSubmit(0);
+            onSubmit();
         }
     };
-
     const currentStepTitle =
         step === 1
             ? (editingReview ? "1단계: 리뷰 수정 (인증 및 정보)" : "1단계: 인증 및 정보")
@@ -72,16 +76,31 @@ const ReviewModal = ({
                 : "3단계: 전체 랭킹 확정";
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[10000]">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 <div className="px-5 py-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
                     <h2 className="font-bold text-lg">{currentStepTitle}</h2>
-                    <button
-                        onClick={onClose}
-                        className="p-1 rounded-full hover:bg-slate-100"
-                    >
-                        <X size={20} />
-                    </button>
+                    <div className="flex gap-2">
+                        {editingReview && (
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("정말로 이 리뷰를 삭제하시겠습니까? 복구할 수 없습니다.")) {
+                                        if (onDelete) onDelete(editingReview);
+                                    }
+                                }}
+                                className="p-2 rounded-full text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                title="리뷰 삭제"
+                            >
+                                <Trash2 size={20} />
+                            </button>
+                        )}
+                        <button
+                            onClick={onClose}
+                            className="p-1 rounded-full hover:bg-slate-100"
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="p-5 overflow-y-auto flex-1 bg-slate-50">
@@ -165,16 +184,25 @@ const ReviewModal = ({
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-indigo-600 ml-1">
-                                    한줄 평
-                                </label>
+                                <div className="flex justify-between items-center px-1">
+                                    <label className="text-xs font-bold text-indigo-600">
+                                        한줄 평 (30자 제한)
+                                    </label>
+                                    <span className={`text-xs font-medium ${newReviewParams.text.length >= 30 ? "text-red-500" : "text-slate-500"}`}>
+                                        {newReviewParams.text.length} / 30
+                                    </span>
+                                </div>
                                 <textarea
-                                    className="w-full p-4 bg-white border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[100px] resize-none shadow-sm placeholder:text-slate-300"
-                                    placeholder="어떤 점이 좋았나요?"
+                                    className="w-full p-4 bg-white border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[80px] resize-none shadow-sm placeholder:text-slate-400 text-sm"
+                                    placeholder="핵심만 간결하게! (30자 이내)"
                                     value={newReviewParams.text}
-                                    onChange={(e) =>
-                                        setNewReviewParams({ ...newReviewParams, text: e.target.value })
-                                    }
+                                    onChange={(e) => {
+                                        // Length Limit 30
+                                        if (e.target.value.length <= 30) {
+                                            setNewReviewParams({ ...newReviewParams, text: e.target.value });
+                                        }
+                                    }}
+                                    maxLength={30}
                                 />
                             </div>
 
@@ -225,9 +253,19 @@ const ReviewModal = ({
 
                             <button
                                 onClick={() => {
-                                    // Step 2 is just for show/mental model, doesn't set global rank directly yet.
-                                    // Or maybe we want to use this input? 
-                                    // For now, let's proceed to Step 3 for Global Ranking which is what really matters.
+                                    // [FIX] BOUNDED LOGIC: Top 1 in Category
+                                    let maxLimit = allReviews.length;
+                                    // Get sorted category list
+                                    const catList = (categoryReviews || []).filter(r => r.id !== editingReview?.id);
+                                    catList.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+
+                                    if (catList.length > 0) {
+                                        const topCatItem = catList[0];
+                                        const globalItem = allReviews.find(r => r.id === topCatItem.id);
+                                        // If I am Top 1 in Category, I must be ranked BEFORE the current Top 1 (lower index)
+                                        if (globalItem) maxLimit = globalItem.rankIndex;
+                                    }
+                                    setGlobalBounds({ min: 0, max: maxLimit });
                                     handleNext();
                                 }}
                                 className="w-full py-3 border-2 border-dashed border-indigo-300 rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all text-sm font-bold mb-4"
@@ -235,15 +273,44 @@ const ReviewModal = ({
                                 ↑ 이 카테고리 1등으로 선정
                             </button>
 
-                            <RecursiveRankingGroup
+                            <HierarchicalRankingSelector
                                 items={(categoryReviews || []).filter(r => r.id !== editingReview?.id)}
                                 onInsert={(targetId, position) => {
-                                    // Just proceed to Step 3
+                                    // [FIX] BOUNDED LOGIC: Insert After X
+                                    const catList = (categoryReviews || []).filter(r => r.id !== editingReview?.id);
+                                    catList.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+
+                                    let minGlobal = 0;
+                                    let maxGlobal = allReviews.length; // Default to end
+
+                                    const targetIdx = catList.findIndex(r => r.id === targetId);
+                                    if (targetIdx !== -1) {
+                                        // Lower Bound (Item I am after)
+                                        const lowerItem = catList[targetIdx];
+                                        const lowerGlobal = allReviews.find(r => r.id === lowerItem.id);
+                                        if (lowerGlobal) {
+                                            minGlobal = lowerGlobal.rankIndex + 1;
+                                        }
+
+                                        // Upper Bound (Next Item in Category)
+                                        const upperItem = catList[targetIdx + 1];
+                                        if (upperItem) {
+                                            const upperGlobal = allReviews.find(r => r.id === upperItem.id);
+                                            if (upperGlobal) {
+                                                maxGlobal = upperGlobal.rankIndex;
+                                            }
+                                        }
+                                    }
+
+                                    // [FIX] Safety Clamp: prevent min > max (which causes confusing UI)
+                                    if (maxGlobal < minGlobal) {
+                                        maxGlobal = minGlobal;
+                                    }
+
+                                    setGlobalBounds({ min: minGlobal, max: maxGlobal });
                                     handleNext();
                                 }}
                                 startIndex={0}
-                                expandedFolders={expandedFolders}
-                                toggleFolder={toggleFolder}
                             />
                         </div>
                     )}
@@ -255,62 +322,55 @@ const ReviewModal = ({
                                 <div className="font-normal mt-1 opacity-80 text-xs">
                                     다른 종류의 식당들과 비교해보세요.
                                 </div>
-                                {editingReview && (
-                                    <div className="mt-2 text-xs bg-white/50 p-2 rounded text-indigo-900 border border-indigo-200">
-                                        💡 기존 위치:
-                                        <strong>
-                                            {(() => {
-                                                const targetKey = `${editingReview.name}-${parseFloat(editingReview.lat).toFixed(4)}-${parseFloat(editingReview.lng).toFixed(4)}`;
-
-                                                const hasIt = allReviews.some(r => {
-                                                    const k = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
-                                                    return k === targetKey;
-                                                });
-
-                                                let sortedList = allReviews;
-                                                if (!hasIt) {
-                                                    sortedList = [...allReviews, editingReview];
-                                                }
-                                                sortedList.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
-
-                                                const myIndex = sortedList.findIndex(r => {
-                                                    const k = `${r.name}-${parseFloat(r.lat).toFixed(4)}-${parseFloat(r.lng).toFixed(4)}`;
-                                                    return k === targetKey;
-                                                });
-
-                                                if (myIndex === -1) return "정보 없음";
-                                                return ` ${myIndex + 1}번째 가고 싶은 집`;
-                                            })()}
-                                        </strong>
-                                    </div>
-                                )}
+                                <div className="mt-2 pt-2 border-t border-indigo-200/50 text-xs font-normal text-slate-600">
+                                    선택 가능한 랭킹 구간: <span className="font-bold text-indigo-600">
+                                        {globalBounds.min >= globalBounds.max
+                                            ? `${globalBounds.min + 1}위 (고정)`
+                                            : `${globalBounds.min + 1}위 ~ ${globalBounds.max === Infinity ? "끝" : globalBounds.max + "위"}`
+                                        }
+                                    </span>
+                                </div>
                             </div>
-                            <button
-                                onClick={() => {
-                                    // Calculate Rank: TOP (0)
-                                    const rankIndex = 0;
-                                    onSubmit(rankIndex);
-                                }}
-                                className="w-full py-3 border-2 border-dashed border-indigo-300 rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all text-sm font-bold mb-4"
-                            >
-                                ↑ 전체 1등으로 선정
-                            </button>
-                            <RecursiveRankingGroup
-                                items={(allReviews || []).filter(r => r.id !== editingReview?.id)} // Exclude self
+
+                            {/* Top 1 Button - Only show if min is 0 */}
+                            {globalBounds.min === 0 && (
+                                <button
+                                    onClick={() => {
+                                        onSubmit(0);
+                                    }}
+                                    className="w-full py-3 border-2 border-dashed border-indigo-300 rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all text-sm font-bold mb-4"
+                                >
+                                    ↑ 전체 1등으로 선정
+                                </button>
+                            )}
+
+                            {/* Tight Bound Fallback: If range is empty (e.g. inserting between 4 and 5 -> Rank 5), show direct confirm */}
+                            {globalBounds.min >= globalBounds.max && (
+                                <button
+                                    onClick={() => onSubmit(globalBounds.min)}
+                                    className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 animate-pulse"
+                                >
+                                    {globalBounds.min + 1}위로 등록하기 (자동 확정)
+                                </button>
+                            )}
+
+                            <HierarchicalRankingSelector
+                                items={(allReviews || [])
+                                    .filter(r => r.id !== editingReview?.id)
+                                    .filter(r => (r.rankIndex || 0) >= globalBounds.min && (r.rankIndex || 0) < globalBounds.max)
+                                }
+                                initialTargetRank={editingReview?.rankIndex}
                                 onInsert={(targetId, position) => {
-                                    // Calculate Rank LOCALLY to avoid async state issues
-                                    let rankIndex = 0;
-                                    const targetIdx = allReviews.findIndex(r => r.id === targetId);
-                                    if (targetIdx !== -1) {
-                                        rankIndex = position === "BEFORE" ? targetIdx : targetIdx + 1;
+                                    // Find exact target in global list to be safe
+                                    const targetItem = allReviews.find(r => r.id === targetId);
+                                    if (targetItem) {
+                                        // Insert After Target
+                                        onSubmit(targetItem.rankIndex + 1);
+                                    } else {
+                                        onSubmit(globalBounds.min);
                                     }
-                                    onSubmit(rankIndex);
                                 }}
-                                startIndex={0}
-                                showTotalRank={true}
-                                allReviews={allReviews}
-                                expandedFolders={expandedFolders}
-                                toggleFolder={toggleFolder}
+                                startIndex={globalBounds.min}
                             />
                         </div>
                     )}

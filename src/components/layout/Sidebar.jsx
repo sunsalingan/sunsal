@@ -11,7 +11,10 @@ const Sidebar = ({
     onOpenMyProfile,
     onOpenFriendManagement,
     darkMode,
-    toggleDarkMode
+    toggleDarkMode,
+    rankingInterval,
+    setRankingInterval,
+    onRequestFixData // [NEW]
 }) => {
     return (
         <>
@@ -111,11 +114,41 @@ const Sidebar = ({
                             </div>
                         </div>
 
+                        {/* Ranking Interval Setting */}
+                        <div className="px-3 py-3 flex items-center justify-between hover:bg-slate-50 rounded-lg mx-2 transition-colors">
+                            <div className="flex items-center gap-3 text-slate-600">
+                                <Trophy size={18} />
+                                <span className="font-medium text-sm">랭킹 그룹 단위</span>
+                            </div>
+                            <div className="flex gap-1 bg-slate-100 p-1 rounded-lg">
+                                {[5, 10, 20].map(val => (
+                                    <button
+                                        key={val}
+                                        onClick={() => setRankingInterval(val)}
+                                        className={`px-2 py-1 text-xs font-bold rounded-md transition-all ${rankingInterval === val
+                                            ? "bg-white text-indigo-600 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-600"
+                                            }`}
+                                    >
+                                        {val}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
                 {/* Footer (User Info) */}
-                <div className="p-4 border-t border-slate-100 bg-slate-50 dark:bg-slate-950 dark:border-slate-800">
+                <div className="p-4 border-t border-slate-100 bg-slate-50 dark:bg-slate-950 dark:border-slate-800 space-y-2">
+                    {/* [FIX] Data Repair Button (Dev purpose but exposed for user to fix rank corruption) */}
+                    <button
+                        onClick={onRequestFixData}
+                        className="w-full py-2 text-xs text-slate-400 hover:text-indigo-600 underline"
+                    >
+                        데이터 최적화 (랭킹 오류 수정)
+                    </button>
+
                     {user ? (
                         <button
                             onClick={handleLogout}

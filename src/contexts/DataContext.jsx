@@ -16,6 +16,7 @@ import {
     getDocs
 } from "../lib/firebase";
 import { useAuth } from "./AuthContext";
+import { normalizeCategory } from "../utils/categoryHelper"; // [FIX] Import at top level
 
 const DataContext = createContext();
 
@@ -32,7 +33,18 @@ export function DataProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     // Filters
-    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS, FRANCHISE
+    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS, FRANCHISE, WISHLIST
+
+    // [NEW] Ranking Interval Setting (Default: 5)
+    const [rankingInterval, setRankingIntervalState] = useState(() => {
+        const saved = localStorage.getItem("sunsal_ranking_interval");
+        return saved ? parseInt(saved, 10) : 5;
+    });
+
+    const setRankingInterval = (val) => {
+        setRankingIntervalState(val);
+        localStorage.setItem("sunsal_ranking_interval", val);
+    };
     const [categoryFilter, setCategoryFilter] = useState("전체");
     const [searchTerm, setSearchTerm] = useState(""); // [NEW] Franchise Search Term
 
@@ -103,7 +115,8 @@ export function DataProvider({ children }) {
 
         // 2. Category Filter
         if (categoryFilter !== "전체") {
-            filtered = filtered.filter(r => r.category === categoryFilter);
+            const normalizedFilter = normalizeCategory(categoryFilter);
+            filtered = filtered.filter(r => normalizeCategory(r.category) === normalizedFilter);
         }
 
         // 3. Map Bounds Filter (Optional - usually better to filter ONLY for list, but keep map markers?)
@@ -177,31 +190,73 @@ export function DataProvider({ children }) {
             });
         }
 
+        // [NEW] 1. Pre-calculate User Reputation (Review Counts)
+        const userReviewCounts = {};
+        reviews.forEach(r => {
+            userReviewCounts[r.userId] = (userReviewCounts[r.userId] || 0) + 1;
+        });
+
         return finalDisplayList.map((r) => {
-            // Calculate Average Score
-            // Handle 0 reviews case safely
+            // Calculate Weighted Average Score
             let avgScore = "0.0";
+            let currentTotalWeight = 0; // [NEW] Scope hoisting
+
             if (r.reviews && r.reviews.length > 0) {
-                const totalScore = r.reviews.reduce((sum, rev) => sum + parseFloat(rev.globalScore || 0), 0);
-                avgScore = (totalScore / r.reviews.length).toFixed(1);
+                let totalWeightedScore = 0;
+
+                r.reviews.forEach(rev => {
+                    const rawScore = parseFloat(rev.globalScore || 0);
+                    // Weight = 1 + log10(UserTotalReviews)
+                    const userCount = userReviewCounts[rev.userId] || 1;
+                    const weight = 1 + Math.log10(userCount);
+
+                    totalWeightedScore += rawScore * weight;
+                    currentTotalWeight += weight;
+                });
+
+                if (currentTotalWeight > 0) {
+                    avgScore = (totalWeightedScore / currentTotalWeight).toFixed(1);
+                }
             } else if (r.displayScore) {
-                avgScore = r.displayScore; // Fallback to snapshot
+                avgScore = r.displayScore; // Fallback
             }
+
+            // [FIX] For "MY" view, use Max Score to avoid "Ghost" reviews.
+            // For Global/Friends, use Weighted Average.
+            const finalScore = (viewMode === "MY") ? (r.maxScore || 0).toFixed(1) : avgScore;
 
             return {
                 ...r,
-                displayScore: avgScore, // Use Average Score
-                maxScore: r.maxScore || 0, // Keep max for reference if needed
+                displayScore: finalScore,
+                maxScore: r.maxScore || 0,
                 friendScore: r.friendScore || (Math.random() * (9.9 - 8.0) + 8.0).toFixed(1),
+                totalWeight: currentTotalWeight // [NEW] For Sorting
             };
         }).sort((a, b) => {
-            // Sort by Score Descending (High score first)
-            return parseFloat(b.displayScore) - parseFloat(a.displayScore);
+            const scoreA = parseFloat(a.displayScore);
+            const scoreB = parseFloat(b.displayScore);
+            // Tie-breaker Logic
+            if (scoreB !== scoreA) {
+                return scoreB - scoreA;
+            }
+            // Secondary: Total Weight (Reputation * Volume)
+            return (b.totalWeight || 0) - (a.totalWeight || 0);
         });
     }, [activeReviews, viewMode, wishlist]); // Added viewMode, wishlist deps
 
     // --- Actions ---
     const addReview = async (reviewData) => {
+        if (user?.isMock) {
+            console.log("Mock Add Review:", reviewData);
+            const newReview = {
+                id: "mock_" + Date.now(),
+                ...reviewData,
+                timestamp: { seconds: Date.now() / 1000 }
+            };
+            setReviews(prev => [newReview, ...prev]); // [FIX] Update local state for Mock
+            alert("테스트 모드: 리뷰가 등록되었습니다. (로컬 상태 업데이트됨)");
+            return { id: newReview.id };
+        }
         return await addDoc(collection(db, "reviews"), {
             ...reviewData,
             timestamp: serverTimestamp()
@@ -209,6 +264,12 @@ export function DataProvider({ children }) {
     };
 
     const deleteReview = async (reviewId) => {
+        if (user?.isMock) {
+            console.log("Mock Delete Review:", reviewId);
+            setReviews(prev => prev.filter(r => r.id !== reviewId)); // [FIX] Update local state for Mock
+            alert("테스트 모드: 리뷰가 삭제되었습니다. (로컬 상태 업데이트됨)");
+            return;
+        }
         if (!reviewId) return;
         await deleteDoc(doc(db, "reviews", reviewId));
     };
@@ -360,6 +421,9 @@ export function DataProvider({ children }) {
         updateReview, // [NEW] Export update
         deleteReview, // [NEW] Export delete
         toggleWishlist, // [NEW] Export toggle
+        // Settings
+        rankingInterval,
+        setRankingInterval,
         followUser,
         unfollowUser,
         searchUsers // [NEW] Export search

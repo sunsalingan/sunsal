@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, CheckCircle } from "lucide-react"; // Import CheckCircle
-import { calculateMyScore } from "../../utils";
+// import { calculateMyScore } from "../../utils"; // Removed legacy import
 
 const RestaurantList = ({
     displayedReviews,
@@ -19,16 +19,10 @@ const RestaurantList = ({
                 </div>
             ) : displayedReviews.length > 0 ? (
                 displayedReviews.map((review, index) => {
-                    const myRankIndex = activeReviews.findIndex(
-                        (r) => r.id === review.id
-                    );
-                    const myScore = calculateMyScore(myRankIndex, activeReviews.length);
-                    const displayScore =
-                        (currentPage === "MAIN" && viewMode === "GLOBAL") || viewMode === "WISHLIST"
-                            ? (review.globalScore || "0.0")
-                            : currentPage === "MAIN" && viewMode === "FRIENDS"
-                                ? (review.friendScore || "-")
-                                : (myScore || "-");
+                    // [FIX] Use pre-calculated displayScore directly.
+                    // DataContext already aggregates and calculates 'displayScore' based on globalScore.
+                    // For 'MY' view, it's the user's score. For 'GLOBAL', it's the average.
+                    const displayScore = review.displayScore || "0.0";
                     const scoreColor =
                         (currentPage === "MAIN" && viewMode === "GLOBAL") || viewMode === "WISHLIST"
                             ? "text-indigo-600 dark:text-indigo-400"

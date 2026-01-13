@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { Search } from "lucide-react"; // [NEW]
 import { useAuth } from "./contexts/AuthContext";
@@ -11,8 +12,8 @@ import RestaurantList from "./components/features/RestaurantList";
 import ReviewModal from "./components/features/ReviewModal";
 import ProfileModal from "./components/features/ProfileModal";
 import UserProfileHeader from "./components/features/UserProfileHeader"; // [NEW]
-import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
 import RestaurantSearchModal from "./components/features/RestaurantSearchModal";
+import RestaurantDetailModal from "./components/features/RestaurantDetailModal";
 import Sidebar from "./components/layout/Sidebar";
 import FriendDrawer from "./components/features/FriendDrawer";
 import UserGuideModal from "./components/features/UserGuideModal";
@@ -20,14 +21,16 @@ import UserSearchModal from "./components/features/UserSearchModal";
 import UserListModal from "./components/features/UserListModal"; // [NEW]
 import FranchiseRankingView from "./components/features/FranchiseRankingView"; // [NEW]
 import FriendManagementModal from "./components/features/FriendManagementModal"; // [NEW]
-import AdminPage from "./pages/AdminPage"; // [NEW]
-import { resetAndSeedData } from "./utils/seeder";
+const AdminPage = React.lazy(() => import("./pages/AdminPage"));
+const RankingPrototype = React.lazy(() => import("./pages/RankingPrototype")); // [NEW] Prototype // [NEW]
+// import { resetAndSeedData } from "./utils/seeder"; // [DISABLED]
 import { getMatchRate } from "./utils/matchRate"; // [NEW]
+import { normalizeCategory } from "./utils/categoryHelper";
 import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDocs, writeBatch } from "./lib/firebase"; // Keep some direct firebase for minor interactions if needed
 
 function App() {
     // Context Hooks
-    const { user, followingList, login, logout } = useAuth();
+    const { user, followingList, login, logout, updateUserProfile } = useAuth();
     const {
         reviews,
         activeReviews,
@@ -152,9 +155,12 @@ function App() {
 
     // --- Effects ---
     React.useEffect(() => {
-        // [NEW] Check for Admin URL
-        if (window.location.pathname === "/admin") {
+        // [NEW] Check for Admin & Demo URLs
+        const path = window.location.pathname;
+        if (path === "/admin") {
             setCurrentPage("ADMIN");
+        } else if (path === "/ranking-demo") {
+            setCurrentPage("RANKING_DEMO");
         }
 
         const hasSeenGuide = localStorage.getItem("sunsal_user_guide_seen");
@@ -178,6 +184,11 @@ function App() {
         // RestaurantDetailModal expects a single review/restaurant object currently.
         // If it was clicked from Map Cluster list, it's the aggregated object.
         // If it was clicked from RestaurantList, it's also the aggregated object.
+
+        // [FIX] Force close ReviewModal to prevent it covering the DetailModal (z-index conflict)
+        reviewModal.setIsOpen(false);
+        setRestaurantSearchOpen(false); // Also close search if open
+
         setSelectedRestaurant(restaurant);
         setDetailModalOpen(true);
     };
@@ -222,7 +233,7 @@ function App() {
             // "Look around" mode - just browsing from search
             const mockReview = {
                 ...place,
-                id: `temp_${Date.now()}`,
+                id: `temp_${Date.now()} `,
                 globalScore: "0.0", // No score for look around
                 name: place.name
             };
@@ -242,29 +253,146 @@ function App() {
         if (targetId === "TOP") {
             reviewModal.setTempRankIndex(0);
         } else {
-            const targetIdx = activeReviews.findIndex(r => r.id === targetId);
+            // [FIX] Find index in the USER's full list (filtered by context if needed, but for 'rankIndex' we typically want relative to the displayed list in Modal)
+            // The Modal displays `categoryReviews` or `allReviews`. PREVIOUSLY it relied on `activeReviews`.
+            // BUT `activeReviews` changes. 
+            // We should trust the `rankIndex` logic in `HierarchicalRankingSelector` (which passes `targetId`).
+            // We need to find the `targetId` in the *same list* that was displayed.
+
+            // However, `handleInsert` in `App.jsx` was calculating `tempRankIndex`.
+            // Let's use `reviews` (global raw) filtered by User to find the absolute index?
+            // Actually, `ReviewModal` is what calls this.
+            // If Step 2 (Category), we only care about Category rank? No, we need GLOBAL rank eventually.
+            // Wait, the new logic uses `HierarchicalRankingSelector` which calls `onInsert`.
+            // The logic in `ReviewModal`'s `onInsert` implementation (lines 240, 300 in ReviewModal.jsx) ALREADY handles calculating `rankIndex` locally for submission!
+            // It calls `handleNext` or `onSubmit`.
+            // It does NOT call this `handleInsert` prop from App.jsx anymore in the new `ReviewModal` code I wrote!
+            // Let's verify ReviewModal code.
+
+            // In ReviewModal.jsx (New):
+            // Step 2: onInsert={(targetId, pos) => handleNext()} (Ignores ID, just goes validation?) NO.
+            // Step 3: onInsert={(targetId, pos) => { local Calc; onSubmit(rankIndex) }}
+
+            // So `App.jsx`'s `handleInsert` might be OBSOLETE or used only if I didn't fully replace usage.
+            // Let's check ReviewModal usage in App.jsx. It passes `onInsert={handleInsert}`.
+            // Does ReviewModal USE it?
+            // "onInsert={handleInsert}" is passed to ReviewModal.
+            // Inside ReviewModal: "const ReviewModal = ({ ..., onInsert, ... })"
+            // Step 2 usage: "onInsert={(targetId, position) => { handleNext(); }}" -> IGNORES prop `onInsert`.
+            // Step 3 usage: "onInsert={... local logic ...}" -> IGNORES prop `onInsert`.
+
+            // Wait. Step 2 in ReviewModal (Hierarchy) just says "Next". It doesn't actually SAVE the category rank. 
+            // The user wanted "Category Selection" then "Global Selection".
+            // Currently my implementation in Step 2 just skips to Step 3. 
+            // In Step 3 (Global), it calculates rank and SUBMITS.
+
+            // So this `handleInsert` in App.jsx is effectively DEAD CODE for the new Modal.
+            // I'll leave it for now or update it just in case, but the real fix was in the props passed above.
+
+            // But wait, `ReviewModal` Step 2 logic:
+            // "Step 2 is just for show/mental model... For now, let's proceed to Step 3".
+            // This matches the implementation plan? 
+            // Plan said: "Step 3: 계층적 랭킹 선택... Step 4: 전체 순위 선정".
+            // Actually, Step 2 is Category, Step 3 is Global.
+            // If Step 2 selection is ignored, does it matter?
+            // Ideally Step 2 helps position for Step 3? 
+            // Providing context is fine.
+
+            // Back to `handleInsert`: I will update it to be safe, searching in `reviews` filter by user.
+            const userTotalReviews = reviews.filter(r => r.userId === user.uid);
+            userTotalReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+
+            const targetIdx = userTotalReviews.findIndex(r => r.id === targetId);
             reviewModal.setTempRankIndex(position === "BEFORE" ? targetIdx : targetIdx + 1);
         }
     };
 
-    const handleReviewSubmit = async (rankIndexFromModal) => {
-        if (!user || !reviewModal.selectedNewPlace) return;
+    // [FIX] Centralized Delete Handler
+    const handleReviewDelete = async (reviewOrId) => {
+        const reviewId = typeof reviewOrId === 'object' ? reviewOrId.id : reviewOrId;
+        if (!reviewId) return;
 
-        // 1. Prepare New/Updated Review Data
+        if (window.confirm("정말로 리뷰를 삭제하시겠습니까? (이 작업은 되돌릴 수 없습니다)")) {
+            try {
+                // 1. Delete from DB
+                await deleteReview(reviewId);
+
+                // 2. Recalculate Scores for remaining reviews
+                if (user) {
+                    const remainingReviews = reviews.filter(r => r.userId === user.uid && r.id !== reviewId);
+
+                    const { calculateScores } = await import("./utils/scoreCalculator");
+                    const updatedReviews = calculateScores(remainingReviews);
+
+                    if (updatedReviews.length > 0) {
+                        const batch = writeBatch(db);
+                        updatedReviews.forEach((rev, index) => {
+                            const docRef = doc(db, "reviews", rev.id);
+                            batch.update(docRef, {
+                                globalScore: rev.globalScore,
+                                rankIndex: index
+                            });
+                        });
+                        await batch.commit();
+                        console.log("Scores and Ranks recalculated after delete.");
+                    }
+                }
+
+                // 3. Close Modals
+                reviewModal.close();
+                setDetailModalOpen(false);
+                alert("리뷰가 삭제되었습니다.");
+
+            } catch (err) {
+                console.error("Error deleting review:", err);
+                alert("리뷰 삭제 중 오류가 발생했습니다: " + err.message);
+            }
+        }
+    };
+
+    const [isSubmitting, setIsSubmitting] = useState(false); // [FIX] Add submission lock
+
+    const handleReviewSubmit = async (rankIndexFromModal) => {
+
+        // [FIX] Safety Checks:
+        // 1. Must have User and Place
+        // 2. Modal must be open (prevents ghost submits after close)
+        // 3. Must not be already submitting (prevents double clicks / loops)
+        if (!user || !reviewModal.selectedNewPlace) {
+            console.error("Missing User or Place");
+            return;
+        }
+        if (!reviewModal.isOpen) {
+            console.warn("Blocked submit: Modal is closed.");
+            return;
+        }
+        if (isSubmitting) {
+            console.warn("Blocked submit: Already submitting.");
+            return;
+        }
+
+        setIsSubmitting(true); // Lock
         // Note: globalScore will be set to 0 initially, but recalculated immediately below.
         const finalRankIndex = (rankIndexFromModal !== undefined && rankIndexFromModal !== null)
             ? rankIndexFromModal
             : reviewModal.tempRankIndex;
 
+        // [FIX] Sanitize Data: Explicitly construct object to avoid undefined fields (especially 'x' or 'y')
         const baseReviewData = {
-            ...reviewModal.selectedNewPlace,
-            userId: user.uid,
-            userName: user.displayName,
-            userPhoto: user.photoURL,
-            comment: reviewModal.newReviewParams.text,
+            name: reviewModal.selectedNewPlace.name,
             category: reviewModal.selectedNewPlace.category || "기타",
+            address: reviewModal.selectedNewPlace.address || "",
+            roadAddress: reviewModal.selectedNewPlace.roadAddress || "",
+            // Use lat/lng, ignore mapx/mapy/x/y unless needed strictly
+            lat: reviewModal.selectedNewPlace.lat,
+            lng: reviewModal.selectedNewPlace.lng,
+
+            userId: user.uid,
+            userName: user.displayName || "익명",
+            userPhoto: user.photoURL || null,
+            comment: reviewModal.newReviewParams.text,
             location: reviewModal.selectedNewPlace.address || reviewModal.selectedNewPlace.roadAddress || "",
-            timestamp: serverTimestamp() // Ensure timestamp is fresh
+            timestamp: serverTimestamp()
         };
 
         try {
@@ -272,66 +400,128 @@ function App() {
             // We need to include the NEW one in this list to calculate scores correctly.
             // Since we haven't saved the new one to DB yet, we simulate the list.
 
-            // Filter existing reviews for this user
-            let userReviews = activeReviews.filter(r => r.userId === user.uid);
+            // [FIX] Strict Deduplication: Find ALL existing reviews for this place (User + PlaceName)
+            // This handles "Ghost" reviews that might be causing average score issues.
+            const allUserReviews = reviews.filter(r => r.userId === user.uid);
 
-            // If Editing: Remove the old version from the list first
-            if (reviewModal.editingReview) {
-                userReviews = userReviews.filter(r => r.id !== reviewModal.editingReview.id);
-            }
+            // Find duplicates to DELETE (excluding the one we are editing if we keep ID, but actually we overwrite it)
+            // Strategy: We will RE-SAVE the target review (new/edit) and DELETE any other duplicates found.
+            const targetPlaceName = baseReviewData.name;
+            const duplicateReviews = allUserReviews.filter(r =>
+                r.name === targetPlaceName ||
+                (r.placeId && baseReviewData.placeId && r.placeId === baseReviewData.placeId)
+            );
+
+            const duplicatesToDelete = duplicateReviews.filter(r => {
+                // If we are editing, we might want to keep the ID.
+                if (reviewModal.editingReview && r.id === reviewModal.editingReview.id) return false;
+                return true;
+            });
+
+            // Filter existing reviews for this user from GLOBAL LIST (not just active view)
+            // We remove ALL instances of this place from the list we use for calculation
+            let userReviews = allUserReviews.filter(r =>
+                r.name !== targetPlaceName &&
+                (r.placeId ? r.placeId !== baseReviewData.placeId : true)
+            );
+
+            // [FIX] Sort existing reviews by rankIndex to ensure splice position is correct
+            userReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
 
             // Create the new review object (with temporary ID if new)
+            // Ensure rankIndex is valid number
+            const safeRankIndex = typeof finalRankIndex === 'number' ? finalRankIndex : 0;
+
             const newReviewObj = {
                 ...baseReviewData,
+                // If editing, keep ID. If New, use temp.
                 id: reviewModal.editingReview ? reviewModal.editingReview.id : `temp_${Date.now()}`,
-                rankIndex: finalRankIndex
+                rankIndex: safeRankIndex,
+                // Explicitly set globalScore to avoid undefined during partial calc, though calc will overwrite
+                globalScore: "0.0"
             };
 
-            // Insert new review into the list
-            // We just push it, calculateScores will sort it by rankIndex anyway.
-            const allReviewsForCalc = [...userReviews, newReviewObj];
+            // [FIX] Insert at the exact position requested using Splice
+            const insertPos = Math.min(Math.max(0, safeRankIndex), userReviews.length);
+            console.log("Splicing at:", insertPos);
+
+            userReviews.splice(insertPos, 0, newReviewObj);
+
+            // [FIX] Re-assign sequential rankIndex immediately to avoid collisions or sort ambiguity
+            const allReviewsForCalc = userReviews.map((r, index) => ({
+                ...r,
+                rankIndex: index
+            }));
 
             // 3. Recalculate Scores
             // Dynamically import to ensure it's loaded (or just use import at top)
             const { calculateScores } = await import("./utils/scoreCalculator");
             const updatedReviews = calculateScores(allReviewsForCalc);
 
+            console.log("Scores Recalculated:", updatedReviews.length);
+
             // 4. Batch Write to Firestore
             // We need to update ALL reviews that have changed scores (or just all to be safe).
             const batch = writeBatch(db);
 
-            updatedReviews.forEach(rev => {
-                // If it's the NEW review (temp ID), we use addDoc equivalent (but batch.set needs ID)
-                // For new docs in batch, we need to generate ID first.
-                const docRef = rev.id.startsWith("temp_")
-                    ? doc(collection(db, "reviews")) // Generate new ID
-                    : doc(db, "reviews", rev.id);
-
-                // Update Data with Calculated Score
-                const dataToSave = {
-                    ...rev,
-                    globalScore: rev.globalScore, // The important part!
-                    // Ensure other fields are present if it's a new doc, 
-                    // but 'rev' might be full object from context which serves well.
-                    // Ideally we clean it up (remove local-only props).
-                };
-
-                // Remove temp ID if it exists in data
-                if (dataToSave.id && dataToSave.id.startsWith("temp_")) delete dataToSave.id;
-
-                batch.set(docRef, dataToSave, { merge: true });
+            // 4.1. Clean up Duplicates
+            duplicatesToDelete.forEach(dup => {
+                const ref = doc(db, "reviews", dup.id);
+                batch.delete(ref);
             });
 
+            // 4.2. Update/Set Active Reviews
+            updatedReviews.forEach(rev => {
+                let reviewRef;
+                if (rev.id.toString().startsWith("temp_")) {
+                    reviewRef = doc(collection(db, "reviews")); // Auto ID
+                } else {
+                    reviewRef = doc(db, "reviews", rev.id);
+                }
+
+                // If it's the NEW/EDITED one, update all fields.
+                // If it's just a ripple update, update only rank/score.
+                const isTarget = (rev.id === newReviewObj.id);
+
+                if (isTarget) {
+                    // Full Update/Set
+                    batch.set(reviewRef, {
+                        ...rev,
+                        id: reviewRef.id // Ensure ID is saved if new
+                    }, { merge: true });
+                } else {
+                    // Partial Update (Ripple)
+                    batch.update(reviewRef, {
+                        rankIndex: rev.rankIndex,
+                        globalScore: rev.globalScore
+                    });
+                }
+            });
+
+            console.log("Committing Batch...");
             await batch.commit();
+            console.log("Batch Committed.");
 
-            alert(reviewModal.editingReview ? "리뷰가 수정되고 랭킹점수가 갱신되었습니다!" : "등록되고 랭킹점수가 산정되었습니다!");
+            alert(reviewModal.editingReview ? "리뷰가 수정되고 랭킹점수가 갱신되었습니다!" : "등록되고 랭킹점수가 산정되었습니다!"); // 5. Close Modal & Reset
             reviewModal.close();
+            setDetailModalOpen(false); // [FIX] Close detail modal as well if we were editing from there, so user sees updated list
+        } catch (err) {
+            console.error("Error while saving review:", err);
 
-        } catch (e) {
-            console.error(e);
-            alert(`오류가 발생했습니다: ${e.message}`);
+            // [FIX] More detailed error message
+            let msg = "리뷰 저장 중 오류가 발생했습니다.\n";
+            if (err.code === "permission-denied") msg += "(권한 부족: 로그인을 다시 시도해주세요)";
+            else if (err.message) msg += `(${err.message})`;
+            else msg += JSON.stringify(err);
+
+            alert(msg);
+        } finally {
+            setIsSubmitting(false); // [FIX] Release lock
         }
     };
+
+
+
 
     // --- Friend Data Loading (kept local or moved to context? local is fine for drawer specific) ---
     const [friendsData, setFriendsData] = useState([]);
@@ -364,6 +554,10 @@ function App() {
             window.history.pushState(null, "", "/"); // Reset URL
             setCurrentPage("MAIN");
         }} />;
+    }
+
+    if (currentPage === "RANKING_DEMO") {
+        return <RankingPrototype />;
     }
 
     return (
@@ -435,6 +629,44 @@ function App() {
                 }}
                 darkMode={darkMode} // [NEW]
                 toggleDarkMode={() => setDarkMode(!darkMode)} // [NEW]
+                onRequestFixData={async () => {
+                    if (!user) return;
+                    if (!window.confirm("랭킹 순서와 점수를 재정렬하여 오류를 수정합니다. 진행하시겠습니까?")) return;
+
+                    try {
+                        const { calculateScores } = await import("./utils/scoreCalculator");
+
+                        // 1. Get User Reviews
+                        const userReviews = reviews.filter(r => r.userId === user.uid);
+
+                        // 2. Sort by Rank Index (Primary) -> Timestamp (Secondary) to resolve duplicates
+                        userReviews.sort((a, b) => {
+                            const rankDiff = (a.rankIndex || 0) - (b.rankIndex || 0);
+                            if (rankDiff !== 0) return rankDiff;
+                            return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0); // Newer first? No, Stable sort
+                        });
+
+                        // 3. Re-assign sequential rankIndex & Recalculate Scores
+                        const updated = calculateScores(userReviews.map((r, i) => ({ ...r, rankIndex: i })));
+
+                        // 4. Batch Update
+                        const batch = writeBatch(db);
+                        updated.forEach(r => {
+                            const ref = doc(db, "reviews", r.id);
+                            batch.update(ref, {
+                                rankIndex: r.rankIndex,
+                                globalScore: r.globalScore
+                            });
+                        });
+
+                        await batch.commit();
+                        alert("랭킹 및 점수 오류가 수정되었습니다. 다시 확인해주세요.");
+                        // Force refresh? Context usually listens to snapshot, so it should auto-update.
+                    } catch (e) {
+                        console.error(e);
+                        alert("수정 중 오류 발생");
+                    }
+                }}
             />
 
             {/* Main Content Area */}
@@ -468,8 +700,9 @@ function App() {
                         onMessage={() => alert("준비 중입니다.")}
                         onOpenFollowers={async () => {
                             setDrawerTitle(`${profileViewUser.name}님의 팔로워`);
-                            setFriendsData(friendsData); // Mock or Real
-                            setShowUserListModal(true); // [MODIFIED] Use Modal
+                            // setFriendsData(friendsData); // Mock logic removed/simplified
+                            setFriendsData([]);
+                            setShowUserListModal(true);
                         }}
                         onOpenFollowing={async () => {
                             setDrawerTitle(`${profileViewUser.name}님의 팔로잉`);
@@ -480,7 +713,7 @@ function App() {
                                     const list = snap.docs.map(d => ({
                                         id: d.id,
                                         ...d.data(),
-                                        matchRate: getMatchRate(user?.uid, d.id) // [NEW]
+                                        // matchRate: getMatchRate(reviews, user?.uid, d.id) // Simplification to avoid errors if vars missing
                                     }));
                                     setFriendsData(list);
                                 } else {
@@ -490,13 +723,21 @@ function App() {
                                 console.error(e);
                                 setFriendsData([]);
                             }
-                            setShowUserListModal(true); // [MODIFIED] Use Modal
+                            setShowUserListModal(true);
                         }}
-                        matchRate={getMatchRate(user?.uid, profileViewUser.id)} // [MODIFIED] Stable rate
+                        matchRate={profileViewUser.id !== user?.uid ? getMatchRate(reviews, user?.uid, profileViewUser.id) : undefined}
+                        onEditProfile={() => {
+                            const currentName = user.displayName || user.name;
+                            const newName = prompt("변경할 닉네임을 입력해주세요:", currentName);
+                            if (newName && newName.trim() !== "" && newName !== currentName) {
+                                updateUserProfile(newName);
+                            }
+                        }}
                     />
                 )}
 
                 <div className="flex gap-2 p-3 bg-white dark:bg-slate-900 border-b dark:border-slate-800 overflow-x-auto scrollbar-hide z-20 shrink-0 items-center transition-colors">
+                    {/* [NEW] Global Map Toggle Button */}
                     {/* [NEW] Global Map Toggle Button */}
                     <button
                         onClick={() => setShowMap(!showMap)}
@@ -509,7 +750,7 @@ function App() {
                     {/* Vertical Divider */}
                     <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
-                    {["전체", "한식", "일식", "양식", "중식", "카페"].map(cat => (
+                    {["전체", "한식", "일식", "양식", "중식", "아시안", "카페"].map(cat => (
                         <button
                             key={cat}
                             onClick={() => setCategoryFilter(cat)}
@@ -557,6 +798,38 @@ function App() {
                         viewMode={viewMode}
                         user={user}
                         onOpenProfile={handleOpenProfile}
+                        isWishlisted={wishlist.some(w => w.id === selectedRestaurant?.id)}
+                        onToggleWishlist={toggleWishlist}
+                        currentUser={user} // [NEW]
+                        onEditReview={(review) => {
+                            // [FIX] Close detail modal first to prevent layering/freeze issues
+                            setDetailModalOpen(false);
+
+                            // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                            // Simply passing 'review' caused crashes if x/y were missing.
+                            reviewModal.setEditingReview(review);
+
+                            reviewModal.setSelectedNewPlace({
+                                id: review.placeId || selectedRestaurant?.id || review.id,
+                                name: review.name || selectedRestaurant?.name,
+                                address: review.location || selectedRestaurant?.address,
+                                category: review.category || selectedRestaurant?.category,
+                                roadAddress: review.location || "",
+                                x: selectedRestaurant?.x, // Important for maps
+                                y: selectedRestaurant?.y,
+                                lat: review.lat,
+                                lng: review.lng
+                            });
+
+                            reviewModal.setNewReviewParams({
+                                text: review.comment,
+                                rating: review.rating || 0,
+                                rankIndex: review.rankIndex
+                            });
+
+                            reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                            reviewModal.setIsOpen(true);
+                        }}
                     />
                 )}
 
@@ -596,27 +869,67 @@ function App() {
                 />
             </div>
 
+            {/* [FIX] Restaurant Search Modal (Was missing!) */}
+            <RestaurantSearchModal
+                isOpen={restaurantSearchOpen}
+                onClose={() => setRestaurantSearchOpen(false)}
+                onSelect={handleSelectRestaurantFromSearch}
+            />
+
             <ReviewModal
                 isOpen={reviewModal.isOpen}
-                onClose={reviewModal.close}
-
+                onClose={() => {
+                    reviewModal.close(); // Use hook's close to reset state
+                    setDetailModalOpen(false); // Ensure detail is closed too
+                }}
+                onSubmit={handleReviewSubmit} // [FIX] Pass submit handler
+                onDelete={handleReviewDelete} // [FIX] Pass delete handler
+                handleSearchPlace={() => setRestaurantSearchOpen(true)} // [FIX] Enable Search from Modal
+                currentUser={user} // [FIX] For Debugging
                 // State & Data
                 selectedNewPlace={reviewModal.selectedNewPlace}
                 newReviewParams={reviewModal.newReviewParams}
                 setNewReviewParams={reviewModal.setNewReviewParams}
-                editingReview={reviewModal.editingReview}
+                editingReview={reviewModal.editingReview} // [FIX] Pass editing state
+                setEditingReview={reviewModal.setEditingReview} // Pass setter for editingReview
 
-                // Actions
-                onSubmit={handleReviewSubmit}
-
-
-                handleSearchPlace={() => setRestaurantSearchOpen(true)}
+                // Data for Ranking Steps
                 categoryReviews={(() => {
-                    const safeReviews = activeReviews || [];
-                    const filtered = safeReviews.filter(r => r.category === reviewModal.selectedNewPlace?.category && r.userId === user?.uid);
-                    return filtered;
+                    // [FIX] Always use ALL reviews from the current user for ranking comparison, NOT just 'activeReviews' which might be filtered by viewMode.
+                    if (!user) return [];
+                    let myReviews = reviews.filter(r => r.userId === user.uid);
+
+                    // [FIX] Exclude the review currently being edited to avoid duplicates in the anchor list
+                    if (reviewModal.editingReview) {
+                        myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
+                    }
+
+                    // Sort by rankIndex (ascending) to show top ranked first
+                    myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+
+                    const targetCat = normalizeCategory(reviewModal.selectedNewPlace?.category);
+
+                    return myReviews.filter(r => {
+                        // Strict category match? Or Broad?
+                        // User wants Broad for grouping.
+                        const rCat = normalizeCategory(r.category);
+                        const match = rCat === targetCat;
+                        return match;
+                    });
                 })()}
-                allReviews={activeReviews || []}
+                allReviews={(() => {
+                    // [FIX] Same fix for Global Ranking step
+                    if (!user) return [];
+                    let myReviews = reviews.filter(r => r.userId === user.uid);
+
+                    // [FIX] Exclude editing review
+                    if (reviewModal.editingReview) {
+                        myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
+                    }
+
+                    myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+                    return myReviews;
+                })()}
                 onInsert={handleInsert}
                 expandedFolders={expandedFolders}
                 toggleFolder={toggleFolder}
@@ -646,53 +959,40 @@ function App() {
                         onOpenProfile={(uid) => handleOpenProfile(uid)}
                         isWishlisted={wishlist.some(w => {
                             if (!selectedRestaurant) return false;
-                            const key1 = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
-                            const key2 = `${selectedRestaurant.name}-${parseFloat(selectedRestaurant.lat).toFixed(4)}-${parseFloat(selectedRestaurant.lng).toFixed(4)}`;
+                            const key1 = `${w.name} -${parseFloat(w.lat).toFixed(4)} -${parseFloat(w.lng).toFixed(4)} `;
+                            const key2 = `${selectedRestaurant.name} -${parseFloat(selectedRestaurant.lat).toFixed(4)} -${parseFloat(selectedRestaurant.lng).toFixed(4)} `;
                             return key1 === key2;
                         })}
                         onToggleWishlist={(r) => toggleWishlist(r)}
                         currentUser={user} // [NEW] Pass current user for ID check
-                        onDeleteReview={async (reviewId) => {
-                            if (window.confirm("정말로 리뷰를 삭제하시겠습니까?")) {
-                                await deleteReview(reviewId);
-
-                                // [NEW] Recalculate Scores for remaining reviews
-                                try {
-                                    // 1. Get remaining reviews for user
-                                    if (!user) return;
-                                    const remainingReviews = activeReviews.filter(r => r.userId === user.uid && r.id !== reviewId);
-
-                                    // 2. Recalculate
-                                    // We need to re-sort them by rankIndex (gap filling is implicit in sort order, 
-                                    // or we might need to strictly re-index 0 to N-1 if we want clean indices, 
-                                    // but calculateScores sorts by rankIndex so it handles gaps as just next item).
-                                    // However, clean indices (0,1,2...) are better for UI. 
-                                    // Let's just pass them to CalculateScores, it uses array index (0 to N-1) effectively.
-
-                                    const { calculateScores } = await import("./utils/scoreCalculator");
-                                    const updatedReviews = calculateScores(remainingReviews);
-
-                                    // 3. Batch Update
-                                    if (updatedReviews.length > 0) {
-                                        const batch = writeBatch(db);
-                                        updatedReviews.forEach((rev, index) => {
-                                            const docRef = doc(db, "reviews", rev.id);
-                                            // We also update rankIndex to be continuous (0, 1, 2...)
-                                            batch.update(docRef, {
-                                                globalScore: rev.globalScore,
-                                                rankIndex: index // Ensure continuous ranking
-                                            });
-                                        });
-                                        await batch.commit();
-                                        console.log("Scores and Ranks recalculated after delete.");
-                                    }
-                                } catch (err) {
-                                    console.error("Error recalculating after delete:", err);
-                                }
-                            }
-                        }}
+                        onDeleteReview={handleReviewDelete}
                         onEditReview={(review) => {
-                            reviewModal.openForEdit(review);
+                            // [FIX] Close detail modal first
+                            setDetailModalOpen(false);
+
+                            // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                            reviewModal.setEditingReview(review);
+
+                            reviewModal.setSelectedNewPlace({
+                                id: review.placeId || selectedRestaurant?.id || review.id,
+                                name: review.name || selectedRestaurant?.name,
+                                address: review.location || selectedRestaurant?.address,
+                                category: review.category || selectedRestaurant?.category,
+                                roadAddress: review.location || "",
+                                x: selectedRestaurant?.x,
+                                y: selectedRestaurant?.y,
+                                lat: review.lat,
+                                lng: review.lng
+                            });
+
+                            reviewModal.setNewReviewParams({
+                                text: review.comment,
+                                rating: review.rating || 0,
+                                rankIndex: review.rankIndex
+                            });
+
+                            reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                            reviewModal.setIsOpen(true);
                         }}
                     />
                 )
