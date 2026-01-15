@@ -40,7 +40,7 @@ const Header = ({
                                 {user ? (
                                     <div className="flex items-center gap-2">
                                         <span className="text-xs font-bold text-slate-600">
-                                            {user.displayName}
+                                            {user.nickname || user.displayName || user.name}
                                         </span>
                                         <button
                                             onClick={handleLogout}
@@ -72,7 +72,9 @@ const Header = ({
                             <button onClick={handleBackToMain}>
                                 <ArrowLeft />
                             </button>
-                            <h1 className="text-lg font-bold">{targetProfile?.name}</h1>
+                            <h1 className="text-lg font-bold">
+                                {targetProfile?.nickname || "익명 유저"}
+                            </h1>
                         </div>
                     </>
                 )}

@@ -3,9 +3,9 @@ import { X, Search, UserPlus, UserCheck, User } from "lucide-react";
 import { useData } from "../../contexts/DataContext";
 import { useAuth } from "../../contexts/AuthContext";
 
-const UserSearchModal = ({ isOpen, onClose }) => {
-    const { searchUsers, followUser, unfollowUser } = useData();
-    const { user: currentUser, followingList } = useAuth();
+const UserSearchModal = ({ isOpen, onClose, onOpenProfile }) => {
+    const { searchUsers } = useData();
+    const { user: currentUser, followingList, followUser, unfollowUser } = useAuth();
 
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
@@ -13,6 +13,9 @@ const UserSearchModal = ({ isOpen, onClose }) => {
     const [searched, setSearched] = useState(false);
 
     if (!isOpen) return null;
+
+    // [DEBUG] Check mount cycle
+    // React.useEffect(() => { console.log("UserSearchModal MOUNTED/OPENED"); }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -32,22 +35,28 @@ const UserSearchModal = ({ isOpen, onClose }) => {
     };
 
     const isFollowing = (targetId) => {
-        // followingList in DataContext/AuthContext is just an array of IDs? 
-        // Need to verify standard in DataContext.
-        // Assuming followingList is an array of IDs from AuthContext or DataContext.
         return followingList && followingList.includes(targetId);
     };
 
     const handleToggleFollow = async (targetUser) => {
-        if (isFollowing(targetUser.id)) {
-            await unfollowUser(targetUser.id);
-        } else {
-            await followUser(targetUser.id);
+        if (!currentUser) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+        try {
+            if (isFollowing(targetUser.id)) {
+                await unfollowUser(targetUser.id);
+            } else {
+                // [FIX] Pass full object
+                await followUser(targetUser);
+            }
+        } catch (e) {
+            console.error(e);
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[70] animate-in fade-in duration-200 p-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[10002] animate-in fade-in duration-200 p-4">
             <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[600px]">
 
                 {/* Header */}
@@ -92,23 +101,37 @@ const UserSearchModal = ({ isOpen, onClose }) => {
                     ) : results.length > 0 ? (
                         <div className="space-y-1">
                             {results.map((u) => (
-                                <div key={u.id} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                                <div
+                                    key={u.id}
+                                    className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group"
+                                    onClick={() => {
+                                        if (onOpenProfile) onOpenProfile(u.id);
+                                        onClose(); // Optional: Close modal after selection? User might want to browse. Let's keep it open or ask. Usually search -> select -> go. Let's close it to be clean.
+                                    }}
+                                >
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-100">
                                             {u.photoURL ? (
-                                                <img src={u.photoURL} alt={u.name} className="w-full h-full object-cover" />
+                                                <img src={u.photoURL} alt={u.nickname} className="w-full h-full object-cover" />
                                             ) : (
                                                 <User size={18} className="text-slate-500" />
                                             )}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-sm text-slate-800">{u.name || "알 수 없음"}</div>
-                                            <div className="text-xs text-slate-400">{u.email}</div>
+                                            {/* [FIX] Show Nickname ONLY. Fallback to 'User' if missing, but NEVER show Email */}
+                                            <div className="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
+                                                {u.nickname || "익명 유저"}
+                                            </div>
+                                            {/* [FIX] Hide Email/Name per user request for privacy */}
                                         </div>
                                     </div>
 
                                     <button
-                                        onClick={() => handleToggleFollow(u)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleToggleFollow(u);
+                                        }}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${isFollowing(u.id)
                                             ? "bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-500 border border-slate-200"
                                             : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-200"

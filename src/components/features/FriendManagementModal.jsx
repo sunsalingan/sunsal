@@ -34,17 +34,17 @@ const FriendManagementModal = ({ isOpen, onClose, onOpenProfile }) => {
 
         const loadData = async () => {
             // Real Following List
-            setFollowingData(followingList.map(id => ({ id, name: "친구 " + id.substr(0, 4), matchRate: 88 })));
+            setFollowingData(followingList.map(id => ({ id, name: "친구 " + id.substr(0, 4), nickname: "친구 " + id.substr(0, 4), matchRate: 88 })));
 
             // Mock Followers (Random)
             setFollowersData([
-                { id: "f1", name: "팔로워1", matchRate: 90 },
-                { id: "f2", name: "팔로워2", matchRate: 85 }
+                { id: "f1", name: "팔로워1", nickname: "팔로워1", matchRate: 90 },
+                { id: "f2", name: "팔로워2", nickname: "팔로워2", matchRate: 85 }
             ]);
 
             // Mock Blocked
             setBlockedUsers([
-                { id: "b1", name: "차단된 유저1" }
+                { id: "b1", name: "차단된 유저1", nickname: "차단된 유저1" }
             ]);
         };
         loadData();
@@ -134,7 +134,8 @@ const UserList = ({ items, type, onAction, actionLabel }) => {
                             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} alt="avatar" />
                         </div>
                         <div>
-                            <p className="font-bold text-slate-800 text-sm">{user.name || "알 수 없음"}</p>
+                            {/* [FIX] Strict Privacy: Nickname Only */}
+                            <p className="font-bold text-slate-800 text-sm">{user.nickname || "익명 유저"}</p>
                             <p className="text-xs text-slate-500">일치도 {user.matchRate || 80}%</p>
                         </div>
                     </div>

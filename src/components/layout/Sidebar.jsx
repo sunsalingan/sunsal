@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Trophy, User, Users, Settings, LogOut, ChevronRight, Search, Heart, Map } from "lucide-react";
+import { X, Trophy, User, Users, Settings, LogOut, ChevronRight, Search, Heart, Map, UserPlus } from "lucide-react";
 
 const Sidebar = ({
     isOpen,
@@ -10,6 +10,7 @@ const Sidebar = ({
     currentViewMode,
     onOpenMyProfile,
     onOpenFriendManagement,
+    onOpenUserSearch, // [FIX] Added missing prop
     darkMode,
     toggleDarkMode,
     rankingInterval,
@@ -82,8 +83,17 @@ const Sidebar = ({
                             isActive={currentViewMode === "WISHLIST"}
                         />
 
+                        {/* Friend Search (Restored) */}
+                        <SidebarItem
+                            icon={<UserPlus size={18} className="text-indigo-500" />}
+                            label="🔍 친구 찾기"
+                            onClick={onOpenUserSearch}
+                        />
+
                         {/* Divider */}
                         <div className="my-4 border-t border-slate-100 mx-3" />
+
+
 
                         {/* 3. Management Section */}
                         <SidebarItem

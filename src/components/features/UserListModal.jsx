@@ -15,7 +15,7 @@ const UserListModal = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] animate-in fade-in duration-200">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[10001] animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl w-full max-w-sm max-h-[80vh] flex flex-col shadow-2xl overflow-hidden relative">
                 {/* Header */}
                 <div className="p-4 border-b flex justify-between items-center bg-slate-50">
@@ -37,10 +37,10 @@ const UserListModal = ({
                                 className="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-indigo-200 transition-all"
                             >
                                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
-                                    {u.userPhoto ? (
-                                        <img src={u.userPhoto} alt={u.name} className="w-full h-full object-cover" />
+                                    {u.photoURL ? (
+                                        <img src={u.photoURL} alt={u.nickname} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="font-bold text-slate-400">{u.name?.[0]}</span>
+                                        <span className="font-bold text-slate-400">{(u.nickname || "U")[0]}</span>
                                     )}
                                 </div>
                                 <div
@@ -50,7 +50,7 @@ const UserListModal = ({
                                         onClose(); // Close list when viewing profile
                                     }}
                                 >
-                                    <div className="font-bold text-slate-800 truncate">{u.name}</div>
+                                    <div className="font-bold text-slate-800 truncate">{u.nickname || "익명 유저"}</div>
                                     <div className="text-[10px] text-slate-400">
                                         {u.matchRate ? `${u.matchRate}% 일치` : "활동 중"}
                                     </div>

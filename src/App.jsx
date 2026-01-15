@@ -1,4 +1,4 @@
-
+// Cache Buster: 2026-01-15_1215
 import React, { useState, useRef } from "react";
 import { Search } from "lucide-react"; // [NEW]
 import { useAuth } from "./contexts/AuthContext";
@@ -21,6 +21,7 @@ import UserSearchModal from "./components/features/UserSearchModal";
 import UserListModal from "./components/features/UserListModal"; // [NEW]
 import FranchiseRankingView from "./components/features/FranchiseRankingView"; // [NEW]
 import FriendManagementModal from "./components/features/FriendManagementModal"; // [NEW]
+import ProfileEditModal from "./components/features/ProfileEditModal"; // [NEW]
 const AdminPage = React.lazy(() => import("./pages/AdminPage"));
 const RankingPrototype = React.lazy(() => import("./pages/RankingPrototype")); // [NEW] Prototype // [NEW]
 // import { resetAndSeedData } from "./utils/seeder"; // [DISABLED]
@@ -30,7 +31,7 @@ import { doc, getDoc, db, deleteDoc, setDoc, serverTimestamp, collection, getDoc
 
 function App() {
     // Context Hooks
-    const { user, followingList, login, logout, updateUserProfile } = useAuth();
+    const { user, followingList, login, logout, updateUserProfile, followUser, unfollowUser } = useAuth();
     const {
         reviews,
         activeReviews,
@@ -46,14 +47,11 @@ function App() {
         setCategoryFilter,
         mapBounds,
         setMapBounds,
-        searchTerm, // [NEW]
-        setSearchTerm, // [NEW]
         addReview,
         updateReview,
         deleteReview,
         toggleWishlist, // [NEW] Import toggle
-        followUser,
-        unfollowUser
+        setTargetUserFilter // [NEW]
     } = useData();
 
     // --- Local UI State ---
@@ -79,6 +77,7 @@ function App() {
     const [userGuideOpen, setUserGuideOpen] = useState(false);
     const [userSearchOpen, setUserSearchOpen] = useState(false);
     const [showUserListModal, setShowUserListModal] = useState(false); // [NEW]
+    const [profileEditModalOpen, setProfileEditModalOpen] = useState(false); // [NEW]
 
     // --- Selected Data State ---
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -103,10 +102,13 @@ function App() {
         setProfileModalOpen(false);
         setDetailModalOpen(false);
         setCurrentPage("USER_PROFILE");
-        setShowMap(false); // [CRITICAL] Hide map by default for profile page
-        // We do NOT center map here because map is hidden.
-        // But if user toggles map ON, it should be centered. 
-        // We can set it when toggle happens or just pre-set it if possible.
+        setShowMap(false);
+
+        // [FIX] Reset Filters to ensure we see the target user's reviews
+        setTargetUserFilter(userProfile.id);
+        setViewMode("USER_DETAIL");
+        setCategoryFilter("전체");
+
         if (userProfile.ranking && userProfile.ranking.length > 0 && mapInstance && window.naver) {
             const top = userProfile.ranking[0];
             // We can still move the map instance even if hidden container (it exists in DOM)
@@ -194,16 +196,22 @@ function App() {
     };
 
     const handleOpenProfile = async (userId) => {
+        console.log("handleOpenProfile called with:", userId); // [DEBUG]
         if (!userId) return;
         try {
             const userRef = doc(db, "users", userId);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
+                console.log("User found:", userSnap.data()); // [DEBUG]
                 setTargetProfile({ id: userId, ...userSnap.data() });
                 setProfileModalOpen(true);
+            } else {
+                console.warn("User not found in Firestore"); // [DEBUG]
+                alert("유저 정보를 찾을 수 없습니다.");
             }
         } catch (e) {
-            console.error(e);
+            console.error("handleOpenProfile Error:", e);
+            alert("프로필을 불러오는 중 오류가 발생했습니다.");
         }
     };
 
@@ -577,6 +585,7 @@ function App() {
                 handleBackToMain={() => {
                     setCurrentPage("MAIN");
                     setProfileViewUser(null);
+                    setTargetUserFilter(null); // [NEW] Reset filter
                     setShowMap(true); // [FIX] Show map when returning to main
                 }}
                 targetProfile={currentPage === "USER_PROFILE" ? profileViewUser : targetProfile}
@@ -699,13 +708,13 @@ function App() {
                         onUnfollow={unfollowUser}
                         onMessage={() => alert("준비 중입니다.")}
                         onOpenFollowers={async () => {
-                            setDrawerTitle(`${profileViewUser.name}님의 팔로워`);
+                            setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로워`);
                             // setFriendsData(friendsData); // Mock logic removed/simplified
                             setFriendsData([]);
                             setShowUserListModal(true);
                         }}
                         onOpenFollowing={async () => {
-                            setDrawerTitle(`${profileViewUser.name}님의 팔로잉`);
+                            setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로잉`);
                             try {
                                 const q = collection(db, "users", profileViewUser.id, "following");
                                 const snap = await getDocs(q);
@@ -726,13 +735,8 @@ function App() {
                             setShowUserListModal(true);
                         }}
                         matchRate={profileViewUser.id !== user?.uid ? getMatchRate(reviews, user?.uid, profileViewUser.id) : undefined}
-                        onEditProfile={() => {
-                            const currentName = user.displayName || user.name;
-                            const newName = prompt("변경할 닉네임을 입력해주세요:", currentName);
-                            if (newName && newName.trim() !== "" && newName !== currentName) {
-                                updateUserProfile(newName);
-                            }
-                        }}
+                        onEditProfile={() => setProfileEditModalOpen(true)}
+                        totalReviewsCount={finalDisplayedRestaurants ? finalDisplayedRestaurants.length : 0} // [RENAME]
                     />
                 )}
 
@@ -869,12 +873,7 @@ function App() {
                 />
             </div>
 
-            {/* [FIX] Restaurant Search Modal (Was missing!) */}
-            <RestaurantSearchModal
-                isOpen={restaurantSearchOpen}
-                onClose={() => setRestaurantSearchOpen(false)}
-                onSelect={handleSelectRestaurantFromSearch}
-            />
+
 
             <ReviewModal
                 isOpen={reviewModal.isOpen}
@@ -1011,9 +1010,21 @@ function App() {
                 onClose={() => setUserGuideOpen(false)}
             />
 
-            <UserSearchModal
-                isOpen={userSearchOpen}
-                onClose={() => setUserSearchOpen(false)}
+
+            {userSearchOpen && (
+                <UserSearchModal
+                    isOpen={userSearchOpen}
+                    onClose={() => setUserSearchOpen(false)}
+                    onOpenProfile={handleOpenProfile}
+                />
+            )}
+
+            {/* [NEW] Profile Edit Modal */}
+            <ProfileEditModal
+                isOpen={profileEditModalOpen}
+                user={user}
+                onClose={() => setProfileEditModalOpen(false)}
+                onUpdate={updateUserProfile}
             />
 
             <UserListModal

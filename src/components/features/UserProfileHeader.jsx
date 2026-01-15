@@ -1,3 +1,4 @@
+
 import React from "react";
 import { User, MessageCircle, UserPlus, UserMinus, Settings } from "lucide-react";
 
@@ -5,21 +6,34 @@ import { User, MessageCircle, UserPlus, UserMinus, Settings } from "lucide-react
  * UserProfileHeader
  * Displays user info, stats, and actions at the top of the Profile Page.
  */
-const UserProfileHeader = ({
-    user,
-    currentUser,
-    isFollowing,
-    onFollow,
-    onUnfollow,
-    onMessage,
-    onOpenFollowers,
-    onOpenFollowing,
-    onEditProfile, // [NEW]
-    matchRate, // Optional match rate (0-100)
-}) => {
+const UserProfileHeader = (props) => {
+    // [FIX] Destructure safely inside component body to avoid any scope issues or ReferenceErrors
+    // [REFACTOR] Renamed reviewsCount -> totalReviewsCount to ensure cache busting
+    const {
+        user,
+        currentUser,
+        isFollowing,
+        onFollow,
+        onUnfollow,
+        onMessage,
+        onOpenFollowers,
+        onOpenFollowing,
+        onEditProfile,
+        matchRate,
+        totalReviewsCount // Prop passed from parent
+    } = props;
+
+    // Safety Debug
+    console.log("UserProfileHeader Render PROPS:", props);
+
     if (!user) return null;
 
     const isMe = currentUser && currentUser.uid === user.id;
+
+    // [FIX] Robust Fallback for display count
+    const displayReviewCount = (totalReviewsCount !== undefined && totalReviewsCount !== null)
+        ? totalReviewsCount
+        : (user.ranking ? user.ranking.length : 0);
 
     return (
         <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 pb-4 px-4 pt-2 mb-2 transition-colors">
@@ -40,7 +54,7 @@ const UserProfileHeader = ({
                 {/* Stats */}
                 <div className="flex-1 flex justify-around text-center">
                     <div className="flex flex-col">
-                        <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{user.ranking ? user.ranking.length : 0}</span>
+                        <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{displayReviewCount}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">리뷰</span>
                     </div>
                     <button onClick={onOpenFollowers} className="flex flex-col hover:opacity-70 transition-opacity">
@@ -57,7 +71,9 @@ const UserProfileHeader = ({
             {/* Bio & Name */}
             <div className="mb-4">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold text-slate-800 dark:text-white">{user.name}</h2>
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-white">
+                        {user.nickname || (user.email ? user.email.split('@')[0] : "익명 유저")}
+                    </h2>
                     {matchRate !== undefined && !isMe && (
                         <span className="text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-500 px-3 py-1 rounded-full shadow-sm flex items-center gap-1">
                             <span>❤️</span> {matchRate}% 일치
@@ -104,7 +120,7 @@ const UserProfileHeader = ({
                     </>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

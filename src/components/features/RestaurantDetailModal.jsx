@@ -173,8 +173,8 @@ const ReviewList = ({ restaurantName, allReviews, onOpenProfile, currentUser, on
                                 }}
                             >
                                 <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-100">
-                                    {review.userPhoto ? (
-                                        <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover" />
+                                    {review.userPhoto || (review.author && review.author.photoURL) ? (
+                                        <img src={review.author?.photoURL || review.userPhoto} alt={review.author?.nickname || review.userName} className="w-full h-full object-cover" />
                                     ) : (
                                         <User size={14} className="text-slate-500" />
                                     )}
@@ -182,7 +182,7 @@ const ReviewList = ({ restaurantName, allReviews, onOpenProfile, currentUser, on
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <div className="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
-                                            {review.userName || "익명 사용자"}
+                                            {review.author?.nickname || review.userName || review.author?.name || "익명 사용자"}
                                         </div>
                                         <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded text-yellow-600 font-bold text-[10px]">
                                             <Star size={8} className="fill-yellow-600" /> {review.globalScore}

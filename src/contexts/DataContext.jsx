@@ -33,7 +33,8 @@ export function DataProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     // Filters
-    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS, FRANCHISE, WISHLIST
+    const [viewMode, setViewMode] = useState("GLOBAL"); // GLOBAL, MY, FRIENDS, FRANCHISE, WISHLIST, USER_DETAIL
+    const [targetUserFilter, setTargetUserFilter] = useState(null); // [NEW] For USER_DETAIL mode
 
     // [NEW] Ranking Interval Setting (Default: 5)
     const [rankingInterval, setRankingIntervalState] = useState(() => {
@@ -98,6 +99,13 @@ export function DataProvider({ children }) {
         } else if (viewMode === "FRIENDS") {
             if (!user) return [];
             filtered = reviews.filter((r) => followingList.includes(r.userId));
+        } else if (viewMode === "USER_DETAIL") {
+            // [NEW] Filter by specific target user
+            if (targetUserFilter) {
+                filtered = reviews.filter((r) => r.userId === targetUserFilter);
+            } else {
+                filtered = [];
+            }
         } else if (viewMode === "WISHLIST") {
             if (!user) return [];
 
@@ -137,7 +145,7 @@ export function DataProvider({ children }) {
         }
 
         return filtered;
-    }, [reviews, viewMode, user, followingList, categoryFilter, mapBounds, searchTerm]);
+    }, [reviews, viewMode, user, followingList, categoryFilter, mapBounds, searchTerm, targetUserFilter]);
 
     // --- Derived Data: Displayed Restaurants (Aggregated) ---
     const displayedRestaurants = useMemo(() => {
@@ -232,8 +240,10 @@ export function DataProvider({ children }) {
             }
 
             // --- B. View-Dependent Logic ---
-            if (viewMode === "MY") {
-                // [MY View] Raw Max Score (My own ranking)
+            if (viewMode === "MY" || viewMode === "USER_DETAIL") {
+                // [MY/USER View] Raw Max Score (My own ranking)
+                // For USER_DETAIL, activeReviews is already filtered to that user, 
+                // so R (or maxScore) is their score.
                 finalScore = (r.maxScore || 0).toFixed(1);
             } else if (viewMode === "GLOBAL" || viewMode === "WISHLIST") {
                 // [GLOBAL View] B. Bayesian Average
@@ -302,7 +312,7 @@ export function DataProvider({ children }) {
                 // Secondary: Total Weight (Reliability Sum)
                 return (b.totalWeight || 0) - (a.totalWeight || 0);
             });
-    }, [activeReviews, viewMode, wishlist, reviews, followingList]);
+    }, [activeReviews, viewMode, wishlist, reviews, followingList, targetUserFilter]);
 
     // --- Actions ---
     const addReview = async (reviewData) => {
@@ -319,6 +329,13 @@ export function DataProvider({ children }) {
         }
         return await addDoc(collection(db, "reviews"), {
             ...reviewData,
+            author: {
+                uid: user.uid,
+                name: user.name || user.displayName || "Unknown",
+                nickname: user.nickname || "",
+                photoURL: user.photoURL || user.userPhoto || "",
+                email: user.email || ""
+            },
             timestamp: serverTimestamp()
         });
     };
@@ -372,44 +389,75 @@ export function DataProvider({ children }) {
         }
     };
 
-    const followUser = async (targetInput) => {
-        if (!user || !targetInput) return;
-        const targetId = typeof targetInput === 'string' ? targetInput : targetInput.id;
-        if (!targetId) return;
 
-        // Save some snapshot data if available (useful for lists)
-        const snapshotData = typeof targetInput === 'object' ? {
-            name: targetInput.name || null,
-            userPhoto: targetInput.userPhoto || null,
-            email: targetInput.email || null,
-        } : {};
 
-        await setDoc(doc(db, "users", user.uid, "following", targetId), {
-            uid: targetId,
-            ...snapshotData,
-            timestamp: serverTimestamp()
-        });
-    };
-
-    const unfollowUser = async (targetId) => {
-        if (!user) return;
-        await deleteDoc(doc(db, "users", user.uid, "following", targetId));
-    };
-
-    // [NEW] Search Users (Prefix Search)
+    // [NEW] Search Users (Prefix Search - Name, Nickname, Email)
     const searchUsers = async (term) => {
         if (!term) return [];
         try {
-            const q = query(
+            // 1. Search by Nickname (Was 2)
+            const qNickname = query(
                 collection(db, "users"),
-                where("name", ">=", term),
-                where("name", "<=", term + "\uf8ff"),
+                where("nickname", ">=", term),
+                where("nickname", "<=", term + "\uf8ff"),
                 limit(10)
             );
-            const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            // Run (Only Nickname)
+            const resultsRaw = await Promise.allSettled([
+                getDocs(qNickname)
+            ]);
+
+            let results = [];
+            const ids = new Set();
+
+            const addResult = (doc) => {
+                const data = doc.data();
+                // [FIX] PRIVACY - Double check we only allow nickname matches if somehow name leaked
+                // (Though query is only on nickname now)
+
+                if (!ids.has(doc.id)) {
+                    ids.add(doc.id);
+                    // [FIX] Do NOT expose 'name' (real name) if possible, but UI might need it.
+                    // If UI needs it, we must ensure 'name' is NOT searched.
+                    // Retaining data for UI is okay providing we didn't FIND it by searching the name.
+                    results.push({ id: doc.id, ...data });
+                }
+            };
+
+            // Process Nickname Results
+            if (resultsRaw[0].status === 'fulfilled') {
+                resultsRaw[0].value.forEach(addResult);
+            } else {
+                console.warn("Search by Nickname failed:", resultsRaw[0].reason);
+            }
+            if (resultsRaw[1].status === 'fulfilled') {
+                resultsRaw[1].value.forEach(addResult);
+            } else {
+                console.warn("Search by Nickname failed:", resultsRaw[1].reason);
+            }
+
+            // 3. Fallback: Search by Email if results are few
+            if (results.length < 5) {
+                try {
+                    const qEmail = query(
+                        collection(db, "users"),
+                        where("email", ">=", term),
+                        where("email", "<=", term + "\uf8ff"),
+                        limit(5)
+                    );
+                    const snapEmail = await getDocs(qEmail);
+                    snapEmail.forEach(addResult);
+                } catch (e) {
+                    console.warn("Search by Email failed:", e);
+                }
+            }
+
+            console.log(`Search for '${term}' found ${results.length} results.`);
+            return results;
         } catch (error) {
-            console.error("Error searching users:", error);
+            console.error("Critical Error seeking users:", error);
+            // Return empty array so UI doesn't crash
             return [];
         }
     };
@@ -484,9 +532,8 @@ export function DataProvider({ children }) {
         // Settings
         rankingInterval,
         setRankingInterval,
-        followUser,
-        unfollowUser,
-        searchUsers // [NEW] Export search
+        searchUsers, // [NEW] Export search
+        setTargetUserFilter // [NEW] Mode switching
     };
 
     return (

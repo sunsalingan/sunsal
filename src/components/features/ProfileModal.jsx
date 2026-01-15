@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { User, X, MapPin } from "lucide-react";
-import { db, doc, setDoc, deleteDoc, getDoc } from "../../lib/firebase"; // Import firebase tools
+import { db, doc, setDoc, deleteDoc, getDoc } from "../../lib/firebase";
+import { useData } from "../../contexts/DataContext"; // [NEW]
+import { useAuth } from "../../contexts/AuthContext"; // [NEW]
 
 const ProfileModal = ({
     isOpen, // Added isOpen prop
@@ -16,19 +18,11 @@ const ProfileModal = ({
     // Safety: ensure ranking is array
     if (!userProfile.ranking) userProfile.ranking = [];
 
-    const isMe = currentUser && currentUser.uid === userProfile.id;
-    const [isFollowing, setIsFollowing] = useState(false);
+    const { followUser, unfollowUser } = useData(); // [FIX] Use centralized context
+    const { followingList } = useAuth(); // Import useAuth too
 
-    useEffect(() => {
-        if (currentUser && userProfile.id) {
-            const checkFollow = async () => {
-                const docRef = doc(db, "users", currentUser.uid, "following", userProfile.id);
-                const docSnap = await getDoc(docRef);
-                setIsFollowing(docSnap.exists());
-            };
-            checkFollow();
-        }
-    }, [currentUser, userProfile.id]);
+    const isMe = currentUser && currentUser.uid === userProfile.id;
+    const isFollowing = followingList && followingList.includes(userProfile.id);
 
     const handleFollowToggle = async () => {
         if (!currentUser) {
@@ -36,17 +30,10 @@ const ProfileModal = ({
             return;
         }
         try {
-            const docRef = doc(db, "users", currentUser.uid, "following", userProfile.id);
             if (isFollowing) {
-                await deleteDoc(docRef);
-                setIsFollowing(false);
+                await unfollowUser(userProfile.id);
             } else {
-                await setDoc(docRef, {
-                    uid: userProfile.id,
-                    name: userProfile.name,
-                    timestamp: new Date()
-                });
-                setIsFollowing(true);
+                await followUser(userProfile);
             }
         } catch (e) {
             console.error(e);
@@ -54,8 +41,8 @@ const ProfileModal = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] animate-in fade-in duration-200">
-            <div className="fixed inset-0 z-[9999] bg-white sm:max-w-md sm:mx-auto sm:h-[85vh] sm:my-10 sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[10000] animate-in fade-in duration-200">
+            <div className="fixed inset-0 z-[10001] bg-white sm:max-w-md sm:mx-auto sm:h-[85vh] sm:my-10 sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
                 {/* Close Button */}
                 <div className="absolute top-4 right-4 z-50">
                     <button
@@ -70,7 +57,7 @@ const ProfileModal = ({
                             <User size={40} />
                         </div>
                     </div>
-                    <h2 className="text-xl font-bold text-slate-800">{userProfile.name}</h2>
+                    <h2 className="text-xl font-bold text-slate-800">{userProfile.nickname || "익명 사용자"}</h2>
                     <div className="flex gap-2 text-xs text-slate-500 mt-1 mb-4">
                         <span>팔로워 {userProfile.followers}</span>
                         <span>•</span>
