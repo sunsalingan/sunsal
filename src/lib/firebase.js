@@ -1,4 +1,3 @@
-
 import { initializeApp } from "firebase/app";
 import {
     getAuth,
@@ -26,6 +25,8 @@ import {
     getDocs,
     limit,
     writeBatch,
+    increment,
+    deleteField
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -63,5 +64,7 @@ export {
     arrayRemove,
     getDocs,
     limit,
-    writeBatch
+    writeBatch,
+    increment,
+    deleteField
 };

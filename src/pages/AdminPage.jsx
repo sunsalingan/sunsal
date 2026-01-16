@@ -1,10 +1,120 @@
 import React, { useState } from 'react';
-import { db, collection, getDocs, doc, writeBatch } from '../lib/firebase';
+import { db, collection, getDocs, doc, writeBatch, deleteDoc } from '../lib/firebase'; // Added deleteDoc if needed, though batch used primarily
 import { addVerificationData } from '../utils/seeder';
 
 const AdminPage = ({ onBack }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [status, setStatus] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState("");
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        if (passwordInput === "0901") {
+            setIsAuthenticated(true);
+        } else {
+            alert("비밀번호가 올바르지 않습니다.");
+        }
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+                <form onSubmit={handleLogin} className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md">
+                    <h1 className="text-2xl font-bold text-white mb-6 text-center">관리자 접속</h1>
+                    <input
+                        type="password"
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        placeholder="관리자 비밀번호"
+                        className="w-full p-4 bg-slate-700 text-white rounded-xl mb-4 border border-slate-600 focus:border-teal-500 focus:outline-none"
+                        autoFocus
+                    />
+                    <button
+                        type="submit"
+                        className="w-full py-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl transition-all"
+                    >
+                        접속하기
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onBack}
+                        className="w-full mt-4 py-2 text-slate-400 hover:text-white text-sm"
+                    >
+                        돌아가기
+                    </button>
+                </form>
+            </div>
+        );
+    }
+
+    // --- Helper Functions ---
+    const deleteCollection = async (collectionName) => {
+        const q = collection(db, collectionName);
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) return;
+
+        const chunks = [];
+        let currentBatch = writeBatch(db);
+        let count = 0;
+
+        snapshot.docs.forEach((docSnap) => {
+            currentBatch.delete(doc(db, collectionName, docSnap.id));
+            count++;
+            if (count >= 400) {
+                chunks.push(currentBatch.commit());
+                currentBatch = writeBatch(db);
+                count = 0;
+            }
+        });
+        if (count > 0) chunks.push(currentBatch.commit());
+        await Promise.all(chunks);
+    };
+
+    const batchInsert = async (collectionName, items) => {
+        if (!items || items.length === 0) return;
+
+        const chunks = [];
+        let currentBatch = writeBatch(db);
+        let count = 0;
+
+        items.forEach((item) => {
+            const ref = doc(db, collectionName, item.id);
+            const { id, ...data } = item;
+            currentBatch.set(ref, data);
+
+            count++;
+            if (count >= 400) {
+                chunks.push(currentBatch.commit());
+                currentBatch = writeBatch(db);
+                count = 0;
+            }
+        });
+        if (count > 0) chunks.push(currentBatch.commit());
+        await Promise.all(chunks);
+    };
+
+    const batchDeleteDocs = async (collectionName, items) => {
+        if (!items || items.length === 0) return;
+
+        const chunks = [];
+        let currentBatch = writeBatch(db);
+        let count = 0;
+
+        items.forEach((item) => {
+            currentBatch.delete(doc(db, collectionName, item.id));
+            count++;
+            if (count >= 400) {
+                chunks.push(currentBatch.commit());
+                currentBatch = writeBatch(db);
+                count = 0;
+            }
+        });
+        if (count > 0) chunks.push(currentBatch.commit());
+        await Promise.all(chunks);
+    };
+
 
     // --- Backup Functionality ---
     const handleBackup = async () => {
@@ -77,16 +187,11 @@ const AdminPage = ({ onBack }) => {
 
                 setStatus("기존 데이터 삭제 중...");
 
-                // 1. Delete Existing Data (Batch)
-                // Note: Firestore recommends deleting via Cloud Functions for large collections.
-                // For client-side, we must query and delete.
                 await deleteCollection("users");
                 await deleteCollection("reviews");
 
                 setStatus("데이터 복구 중 (Batch Insert)...");
 
-                // 2. Insert New Data
-                // Process in chunks of 500 (Firestore limit)
                 await batchInsert("users", importedData.users);
                 await batchInsert("reviews", importedData.reviews);
 
@@ -138,56 +243,68 @@ const AdminPage = ({ onBack }) => {
         }
     };
 
-    // Helper: Delete Utility
-    const deleteCollection = async (collectionName) => {
-        const q = collection(db, collectionName);
-        const snapshot = await getDocs(q);
+    // --- Delete Dummy Users (Non-Admin) ---
+    const handleDeleteDummyUsers = async () => {
+        if (!window.confirm("⚠️ 위험: 관리자(개발자) 계정을 제외한 모든 '더미 유저'와 '그들의 리뷰'를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.")) {
+            return;
+        }
 
-        if (snapshot.empty) return;
+        const confirmation = prompt("보안을 위해 관리자 비밀번호(PIN)를 입력해주세요.");
+        if (confirmation !== "0901") {
+            alert("비밀번호가 올바르지 않습니다. 취소합니다.");
+            return;
+        }
 
-        // Chunking for deletion
-        const chunks = [];
-        let currentBatch = writeBatch(db);
-        let count = 0;
+        setIsLoading(true);
+        setStatus("더미 데이터 식별 및 삭제 시작...");
 
-        snapshot.docs.forEach((docSnap) => {
-            currentBatch.delete(doc(db, collectionName, docSnap.id));
-            count++;
-            if (count >= 400) { // Safety margin < 500
-                chunks.push(currentBatch.commit());
-                currentBatch = writeBatch(db);
-                count = 0;
+        try {
+            // 1. Fetch All Users
+            const usersSnap = await getDocs(collection(db, "users"));
+            const allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+            // 2. Identify Dummy Users (Strict Pattern Matching)
+            const dummyUsers = allUsers.filter(u => {
+                const isDummyPattern = u.id.startsWith("soonsal_user_") ||
+                    u.id.startsWith("verifier_") ||
+                    u.id.startsWith("mock_");
+                return isDummyPattern;
+            });
+
+            if (dummyUsers.length === 0) {
+                setStatus("삭제할 더미 유저가 없습니다.");
+                alert("삭제할 더미 유저가 없습니다.");
+                setIsLoading(false);
+                return;
             }
-        });
-        if (count > 0) chunks.push(currentBatch.commit());
 
-        await Promise.all(chunks);
-    };
+            setStatus(`더미 유저 ${dummyUsers.length}명 발견. 삭제 중...`);
 
-    // Helper: Insert Utility
-    const batchInsert = async (collectionName, items) => {
-        if (!items || items.length === 0) return;
+            // 3. Delete Dummy Users
+            await batchDeleteDocs("users", dummyUsers);
 
-        const chunks = [];
-        let currentBatch = writeBatch(db);
-        let count = 0;
+            // 4. Delete Reviews from Dummy Users
+            setStatus("리뷰 데이터 정리 중...");
+            const reviewsSnap = await getDocs(collection(db, "reviews"));
+            const allReviews = reviewsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        items.forEach((item) => {
-            const ref = doc(db, collectionName, item.id); // Use preserved ID
-            // Exclude 'id' from data if spread, but doc() takes id separately.
-            const { id, ...data } = item;
-            currentBatch.set(ref, data);
+            const dummyUserIds = new Set(dummyUsers.map(u => u.id));
+            const dummyReviews = allReviews.filter(r => dummyUserIds.has(r.userId));
 
-            count++;
-            if (count >= 400) {
-                chunks.push(currentBatch.commit());
-                currentBatch = writeBatch(db);
-                count = 0;
+            if (dummyReviews.length > 0) {
+                await batchDeleteDocs("reviews", dummyReviews);
             }
-        });
-        if (count > 0) chunks.push(currentBatch.commit());
 
-        await Promise.all(chunks);
+            setStatus(`삭제 완료! (유저: ${dummyUsers.length}명, 리뷰: ${dummyReviews.length}개)`);
+            alert(`정리 완료!\n유저 ${dummyUsers.length}명과 리뷰 ${dummyReviews.length}개를 삭제했습니다.`);
+
+        } catch (e) {
+            console.error(e);
+            setStatus(`삭제 실패: ${e.message}`);
+            alert(`오류 발생: ${e.message}`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -278,6 +395,17 @@ const AdminPage = ({ onBack }) => {
                                 className="w-full py-3 bg-blue-900/50 hover:bg-blue-900/80 text-blue-200 border border-blue-800 rounded-xl font-bold transition-all"
                             >
                                 검증용 데이터 추가 (Threshold Test)
+                            </button>
+                        </div>
+
+                        <div className="border-t border-slate-700 my-4 pt-4">
+                            <h3 className="text-orange-400 font-bold mb-2 text-sm">🧹 데이터 정리</h3>
+                            <button
+                                onClick={handleDeleteDummyUsers}
+                                disabled={isLoading}
+                                className="w-full py-3 bg-orange-900/50 hover:bg-orange-900/80 text-orange-200 border border-orange-800 rounded-xl font-bold transition-all"
+                            >
+                                더미 유저 삭제 (관리자 제외)
                             </button>
                         </div>
                     </div>

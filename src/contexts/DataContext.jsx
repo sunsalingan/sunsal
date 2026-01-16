@@ -359,33 +359,45 @@ export function DataProvider({ children }) {
     };
 
     const toggleWishlist = async (restaurant) => {
-        if (!user || !restaurant) return;
+        if (!user) {
+            alert("가고싶어요(찜하기) 기능을 사용하려면 로그인이 필요합니다.");
+            return;
+        }
+        if (!restaurant) return;
 
-        // Use a consistent ID key for checking existence in wishlist
-        // We can use the firestore doc ID if it's from the DB, or generate one if from search
-        // But to be safe against duplicates, let's use the unique ID approach (name-lat-lng)
-        // OR simply rely on the fact that if we click 'Heart' on a restaurant object, we might want to store THAT specific object.
-        // Actually, easier to check if we already have it by some unique key.
-        // Let's rely on checking `wishlist` array for now.
+        try {
+            // Key: name + lat + lng
+            const key = `${restaurant.name}-${parseFloat(restaurant.lat).toFixed(4)}-${parseFloat(restaurant.lng).toFixed(4)}`;
 
-        // Key: name + lat + lng
-        const key = `${restaurant.name}-${parseFloat(restaurant.lat).toFixed(4)}-${parseFloat(restaurant.lng).toFixed(4)}`;
+            // 1. Try to find by ID (if restaurant object came from Wishlist view)
+            let existingItem = wishlist.find(w => w.id === restaurant.id);
 
-        const existingItem = wishlist.find(w => {
-            const wKey = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
-            return wKey === key;
-        });
+            // 2. If not found by ID, try finding by Key (Location)
+            if (!existingItem) {
+                existingItem = wishlist.find(w => {
+                    const wKey = `${w.name}-${parseFloat(w.lat).toFixed(4)}-${parseFloat(w.lng).toFixed(4)}`;
+                    return wKey === key;
+                });
+            }
 
-        if (existingItem) {
-            // Remove
-            await deleteDoc(doc(db, "users", user.uid, "wishlist", existingItem.id));
-        } else {
-            // Add
-            // Make sure we save enough info to display it later
-            await addDoc(collection(db, "users", user.uid, "wishlist"), {
-                ...restaurant,
-                timestamp: serverTimestamp()
-            });
+            if (existingItem) {
+                // Remove
+                await deleteDoc(doc(db, "users", user.uid, "wishlist", existingItem.id));
+                console.log("Wishlist removed:", existingItem.id);
+            } else {
+                // Add
+                await addDoc(collection(db, "users", user.uid, "wishlist"), {
+                    ...restaurant,
+                    // Ensure lat/lng are saved as numbers or strings consistently
+                    lat: restaurant.lat,
+                    lng: restaurant.lng,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Wishlist added:", restaurant.name);
+            }
+        } catch (error) {
+            console.error("Toggle Wishlist Failed:", error);
+            alert("찜하기 처리에 실패했습니다: " + error.message);
         }
     };
 
@@ -430,11 +442,6 @@ export function DataProvider({ children }) {
                 resultsRaw[0].value.forEach(addResult);
             } else {
                 console.warn("Search by Nickname failed:", resultsRaw[0].reason);
-            }
-            if (resultsRaw[1].status === 'fulfilled') {
-                resultsRaw[1].value.forEach(addResult);
-            } else {
-                console.warn("Search by Nickname failed:", resultsRaw[1].reason);
             }
 
             // 3. Fallback: Search by Email if results are few
@@ -503,7 +510,7 @@ export function DataProvider({ children }) {
                 ...s,
                 avgScore: (s.totalScore / s.count).toFixed(1)
             }))
-            .filter(s => s.count > 1) // Only show if there are multiple branches (Franchise candidate)
+            .filter(s => s.count >= 1) // Show all brands for now
             .sort((a, b) => parseFloat(b.avgScore) - parseFloat(a.avgScore)); // Rank by avg score
 
     }, [displayedRestaurants]);

@@ -2,50 +2,37 @@ import React, { useState, useEffect } from "react";
 import { X, UserX, UserCheck, Users } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useData } from "../../contexts/DataContext";
+import { db, collection, getDocs } from "../../lib/firebase";
 
 const FriendManagementModal = ({ isOpen, onClose, onOpenProfile }) => {
-    const { user, followingList } = useAuth();
-    const { searchUsers, followUser, unfollowUser } = useData();
+    const { user, followingList, followUser, unfollowUser } = useAuth();
+    const { searchUsers } = useData();
     const [activeTab, setActiveTab] = useState("following"); // following, followers, blocked
 
     // Mock Blocked Users for now (Since we don't have block logic yet)
     const [blockedUsers, setBlockedUsers] = useState([]);
 
-    // Derived Lists
     const [followingData, setFollowingData] = useState([]);
     const [followersData, setFollowersData] = useState([]);
 
     useEffect(() => {
         if (!isOpen || !user) return;
 
-        // Fetch Data Logic
-        // 1. Following: We have IDs in followingList. Need to fetch details? 
-        // Actually, AuthContext followingList is just an array of IDs usually, or objects?
-        // Let's assume we need to resolving IDs to Names if possible, or just use what we have.
-        // For simplicity, let's reuse the 'fetchFriends' logic from App.jsx or just pass it in?
-        // To keep it self-contained, let's just use what's available.
-        // Wait, App.jsx already has 'friendsData'. Maybe we should pass that?
-        // But for independence, let's just fetch profiles if needed.
-        // Ideally, we passed 'friendsData' to UserListModal. 
-        // Let's assume for this specific modal, we might just re-fetch or use a simple heuristic.
-
-        // Actually, let's use searchUsers simply to 'find' by ID if we could, but we can't.
-        // Let's Mock for the UI demonstration as requested, combining with real followingList for following.
-
         const loadData = async () => {
-            // Real Following List
-            setFollowingData(followingList.map(id => ({ id, name: "친구 " + id.substr(0, 4), nickname: "친구 " + id.substr(0, 4), matchRate: 88 })));
+            // 1. Load Following (My 'following' collection)
+            const followingRef = collection(db, "users", user.uid, "following");
+            const followingSnap = await getDocs(followingRef);
+            const following = followingSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setFollowingData(following);
 
-            // Mock Followers (Random)
-            setFollowersData([
-                { id: "f1", name: "팔로워1", nickname: "팔로워1", matchRate: 90 },
-                { id: "f2", name: "팔로워2", nickname: "팔로워2", matchRate: 85 }
-            ]);
+            // 2. Load Followers (My 'followers' collection)
+            const followersRef = collection(db, "users", user.uid, "followers");
+            const followersSnap = await getDocs(followersRef);
+            const followers = followersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setFollowersData(followers);
 
-            // Mock Blocked
-            setBlockedUsers([
-                { id: "b1", name: "차단된 유저1", nickname: "차단된 유저1" }
-            ]);
+            // Blocked is still mock or unimplemented
+            setBlockedUsers([]);
         };
         loadData();
 
@@ -94,10 +81,10 @@ const FriendManagementModal = ({ isOpen, onClose, onOpenProfile }) => {
                 {/* List Content */}
                 <div className="flex-1 overflow-y-auto p-0 bg-slate-50">
                     {activeTab === "following" && (
-                        <UserList items={followingData} type="following" onAction={unfollowUser} actionLabel="언팔로우" />
+                        <UserList items={followingData} type="following" onAction={unfollowUser} actionLabel="언팔로우" onOpenProfile={onOpenProfile} />
                     )}
                     {activeTab === "followers" && (
-                        <UserList items={followersData} type="follower" onAction={followUser} actionLabel="맞팔로우" />
+                        <UserList items={followersData} type="follower" onAction={followUser} actionLabel="맞팔로우" onOpenProfile={onOpenProfile} />
                     )}
                     {activeTab === "blocked" && (
                         <div className="p-4 space-y-2">
@@ -121,21 +108,21 @@ const FriendManagementModal = ({ isOpen, onClose, onOpenProfile }) => {
     );
 };
 
-const UserList = ({ items, type, onAction, actionLabel }) => {
+const UserList = ({ items, type, onAction, actionLabel, onOpenProfile }) => {
     if (items.length === 0) return <div className="text-center p-10 text-slate-400">목록이 비어있습니다.</div>;
 
     return (
         <div className="divide-y divide-slate-100 bg-white">
             {items.map(user => (
                 <div key={user.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => onOpenProfile && onOpenProfile(user.id)}>
                         <div className="w-10 h-10 rounded-full bg-slate-200 border overflow-hidden">
                             {/* Placeholder Avatar */}
-                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} alt="avatar" />
+                            <img src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} alt="avatar" />
                         </div>
                         <div>
                             {/* [FIX] Strict Privacy: Nickname Only */}
-                            <p className="font-bold text-slate-800 text-sm">{user.nickname || "익명 유저"}</p>
+                            <p className="font-bold text-slate-800 text-sm hover:text-indigo-600 transition-colors">{user.nickname || "익명 유저"}</p>
                             <p className="text-xs text-slate-500">일치도 {user.matchRate || 80}%</p>
                         </div>
                     </div>

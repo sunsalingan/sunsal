@@ -1,6 +1,6 @@
 // Cache Buster: 2026-01-15_1215
 import React, { useState, useRef } from "react";
-import { Search } from "lucide-react"; // [NEW]
+import { Search, LayoutList } from "lucide-react"; // [NEW]
 import { useAuth } from "./contexts/AuthContext";
 import { useData } from "./contexts/DataContext";
 import { searchNaverPlaces } from "./services/naverApi";
@@ -824,48 +824,62 @@ function App() {
                         handleOpenDetail={handleOpenDetail}
                     />
                 ) : (
-                    <RestaurantList
-                        displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
-                        activeReviews={activeReviews}
-                        loading={loading}
-                        handleOpenDetail={handleOpenDetail}
-                        currentPage={currentPage}
-                        viewMode={viewMode}
-                        user={user}
-                        onOpenProfile={handleOpenProfile}
-                        isWishlisted={wishlist.some(w => w.id === selectedRestaurant?.id)}
-                        onToggleWishlist={toggleWishlist}
-                        currentUser={user} // [NEW]
-                        onEditReview={(review) => {
-                            // [FIX] Close detail modal first to prevent layering/freeze issues
-                            setDetailModalOpen(false);
+                    (finalDisplayedRestaurants && finalDisplayedRestaurants.length > 0) || loading ? (
+                        <RestaurantList
+                            displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
+                            activeReviews={activeReviews}
+                            loading={loading}
+                            handleOpenDetail={handleOpenDetail}
+                            currentPage={currentPage}
+                            viewMode={viewMode}
+                            user={user}
+                            onOpenProfile={handleOpenProfile}
+                            isWishlisted={wishlist.some(w => w.id === selectedRestaurant?.id)}
+                            onToggleWishlist={toggleWishlist}
+                            currentUser={user} // [NEW]
+                            onEditReview={(review) => {
+                                // [FIX] Close detail modal first to prevent layering/freeze issues
+                                setDetailModalOpen(false);
 
-                            // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
-                            // Simply passing 'review' caused crashes if x/y were missing.
-                            reviewModal.setEditingReview(review);
+                                // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                                // Simply passing 'review' caused crashes if x/y were missing.
+                                reviewModal.setEditingReview(review);
 
-                            reviewModal.setSelectedNewPlace({
-                                id: review.placeId || selectedRestaurant?.id || review.id,
-                                name: review.name || selectedRestaurant?.name,
-                                address: review.location || selectedRestaurant?.address,
-                                category: review.category || selectedRestaurant?.category,
-                                roadAddress: review.location || "",
-                                x: selectedRestaurant?.x, // Important for maps
-                                y: selectedRestaurant?.y,
-                                lat: review.lat,
-                                lng: review.lng
-                            });
+                                reviewModal.setSelectedNewPlace({
+                                    id: review.placeId || selectedRestaurant?.id || review.id,
+                                    name: review.name || selectedRestaurant?.name,
+                                    address: review.location || selectedRestaurant?.address,
+                                    category: review.category || selectedRestaurant?.category,
+                                    roadAddress: review.location || "",
+                                    x: selectedRestaurant?.x, // Important for maps
+                                    y: selectedRestaurant?.y,
+                                    lat: review.lat,
+                                    lng: review.lng
+                                });
 
-                            reviewModal.setNewReviewParams({
-                                text: review.comment,
-                                rating: review.rating || 0,
-                                rankIndex: review.rankIndex
-                            });
+                                reviewModal.setNewReviewParams({
+                                    text: review.comment,
+                                    rating: review.rating || 0,
+                                    rankIndex: review.rankIndex
+                                });
 
-                            reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
-                            reviewModal.setIsOpen(true);
-                        }}
-                    />
+                                reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                                reviewModal.setIsOpen(true);
+                            }}
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-300">
+                            <div className="bg-slate-100 p-6 rounded-full mb-4 shadow-inner">
+                                <LayoutList size={48} className="text-slate-300" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-700 mb-2">랭킹 데이터가 없습니다</h3>
+                            <p className="text-slate-500 max-w-xs mx-auto leading-relaxed">
+                                아직 등록된 맛집 랭킹이 없습니다.<br />
+                                <span className="text-indigo-500 font-bold">첫 번째 리뷰</span>를 작성하여<br />
+                                랭킹의 주인공이 되어보세요!
+                            </p>
+                        </div>
+                    )
                 )}
 
                 {currentPage === "MAIN" && (

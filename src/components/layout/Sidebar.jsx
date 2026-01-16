@@ -61,7 +61,7 @@ const Sidebar = ({
                         />
                         <SidebarItem
                             icon={<Users size={18} className="text-pink-500" />}
-                            label="👥 지인 랭킹"
+                            label="👥 친구 랭킹"
                             onClick={() => { onChangeViewMode("FRIENDS"); onClose(); }}
                             isActive={currentViewMode === "FRIENDS"}
                         />
