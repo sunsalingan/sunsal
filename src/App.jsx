@@ -51,7 +51,9 @@ function App() {
         updateReview,
         deleteReview,
         toggleWishlist, // [NEW] Import toggle
-        setTargetUserFilter // [NEW]
+        setTargetUserFilter, // [NEW]
+        searchTerm, // [NEW]
+        setSearchTerm // [NEW]
     } = useData();
 
     // --- Local UI State ---
@@ -196,17 +198,32 @@ function App() {
     };
 
     const handleOpenProfile = async (userId) => {
-        console.log("handleOpenProfile called with:", userId); // [DEBUG]
         if (!userId) return;
         try {
+            // [FIX] Direct Navigation (Skip ProfileModal)
             const userRef = doc(db, "users", userId);
             const userSnap = await getDoc(userRef);
+
             if (userSnap.exists()) {
-                console.log("User found:", userSnap.data()); // [DEBUG]
-                setTargetProfile({ id: userId, ...userSnap.data() });
-                setProfileModalOpen(true);
+                const userData = { id: userId, ...userSnap.data() };
+
+                // Emulate handleVisitProfile logic directly
+                setProfileViewUser(userData);
+
+                // Close any open modals
+                setProfileModalOpen(false); // Ensure closed
+                setDetailModalOpen(false);
+                setUserSearchOpen(false);
+                setRestaurantSearchOpen(false);
+
+                // Switch View
+                setCurrentPage("USER_PROFILE");
+                setShowMap(false);
+                setTargetUserFilter(userId);
+                setViewMode("USER_DETAIL");
+                setCategoryFilter("전체");
+
             } else {
-                console.warn("User not found in Firestore"); // [DEBUG]
                 alert("유저 정보를 찾을 수 없습니다.");
             }
         } catch (e) {
@@ -709,8 +726,22 @@ function App() {
                         onMessage={() => alert("준비 중입니다.")}
                         onOpenFollowers={async () => {
                             setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로워`);
-                            // setFriendsData(friendsData); // Mock logic removed/simplified
-                            setFriendsData([]);
+                            try {
+                                const q = collection(db, "users", profileViewUser.id, "followers"); // [FIX] 'followers' subcollection
+                                const snap = await getDocs(q);
+                                if (!snap.empty) {
+                                    const list = snap.docs.map(d => ({
+                                        id: d.id,
+                                        ...d.data(),
+                                    }));
+                                    setFriendsData(list);
+                                } else {
+                                    setFriendsData([]);
+                                }
+                            } catch (e) {
+                                console.error(e);
+                                setFriendsData([]);
+                            }
                             setShowUserListModal(true);
                         }}
                         onOpenFollowing={async () => {

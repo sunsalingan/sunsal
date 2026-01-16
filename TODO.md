@@ -1,7 +1,14 @@
 ## 🚀 작업 인계 사항 (Handover Note - Latest)
 **현재 상태**: v2.0 Ranking Logic Enhanced (Bayesian, User Weights) & Admin Verified
 
-### 📅 오늘 작업한 내용 (Today's Work - 2026-01-13)
+### 📅 오늘 작업한 내용 (Today's Work - 2026-01-16)
+1.  **v2.1 Critical Bug Fixes (Navigation, Search, Friend System)**:
+    *   **Privacy**: 친구 목록 및 검색에서 실명 대신 닉네임 우선 표시 적용 (FriendDrawer, UserList).
+    *   **Logic Fix**: 팔로워/팔로잉 숫자가 0이나 -1로 고정되는 문제 해결 (Firestore Collection Size 실시간 카운팅으로 변경).
+    *   **Navigation**: 헤더의 모든 로고 클릭 시 홈 화면 강제 이동 (Reset Navigation).
+    *   **Search**: 프랜차이즈 랭킹 검색바 필터링 로직 구현 (검색어 포함 필터).
+
+### 📅 이전 작업 내용 (History)
 1.  **점수 산정 및 랭킹 고도화**:
     *   **Tie-breaker Logic**: 같은 점수일 경우, 리뷰 활동량(가중치 총합)이 높은 쪽을 우선 노출.
     *   **Weighted Scoring**: 유저 활동량(리뷰 수)에 따른 점수 가중치 적용 (Logarithmic Scale).
@@ -28,6 +35,7 @@
 맛집 랭킹 및 지도 서비스 'RankEats' (Sunsal)
 
 ## ✅ 완료된 작업 (Done)
+*   **v2.1 Bug Fixes**: 친구 실명 감춤, 팔로워 카운트 로직 변경(Dynamic Size), 로고 네비게이션, 프랜차이즈 검색 수정.
 *   **v2.0 Ranking Logic Enhanced**: 사용자 활동량 가중치, 베이지안 평균, 진입 장벽(Threshold) 구현 완료.
 *   **v1.9 Ranking Logic Enhanced**: 가중치 점수, 동점자 처리, 카테고리 개선 완료.
 *   **v1.8 Admin & Features**: 닉네임 변경, 데이터 관리(백업/복구/초기화).

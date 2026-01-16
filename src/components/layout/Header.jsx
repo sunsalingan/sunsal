@@ -28,12 +28,19 @@ const Header = ({
                             >
                                 <Menu size={20} className="text-slate-600" />
                             </button>
-                            <div className="flex items-center gap-2">
+                            {/* [FIX] Clickable Logo in Main View too */}
+                            <button
+                                onClick={() => {
+                                    handleBackToMain();
+                                    // Optional: window.location.reload() if hard reset needed, but handleBackToMain should suffice
+                                }}
+                                className="flex items-center gap-2"
+                            >
                                 <div className="bg-indigo-600 p-2 rounded-lg text-white">
                                     <Trophy size={18} />
                                 </div>
                                 <h1 className="text-lg font-bold text-slate-900">RankEats</h1>
-                            </div>
+                            </button>
                         </div>
                         <div className="flex gap-2">
                             <div className="flex items-center gap-2">
@@ -68,13 +75,23 @@ const Header = ({
                     </>
                 ) : (
                     <>
-                        <div className="flex items-center gap-2">
-                            <button onClick={handleBackToMain}>
-                                <ArrowLeft />
+                        <div className="flex items-center gap-3">
+                            {/* [FIX] Clickable Logo to go Home from ANY page */}
+                            <button onClick={handleBackToMain} className="flex items-center gap-2">
+                                <div className="bg-indigo-600 p-2 rounded-lg text-white">
+                                    <Trophy size={18} />
+                                </div>
+                                <h1 className="text-lg font-bold text-slate-900">RankEats</h1>
                             </button>
-                            <h1 className="text-lg font-bold">
-                                {targetProfile?.nickname || "익명 유저"}
-                            </h1>
+
+                            <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                            <button onClick={handleBackToMain} className="flex items-center gap-1 text-slate-500 hover:text-slate-800">
+                                <ArrowLeft size={18} />
+                                <span className="font-bold cursor-pointer">
+                                    {targetProfile?.nickname || "유저 프로필"}
+                                </span>
+                            </button>
                         </div>
                     </>
                 )}

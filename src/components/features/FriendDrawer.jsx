@@ -51,14 +51,14 @@ const FriendDrawer = ({
                                     {f.userPhoto ? (
                                         <img src={f.userPhoto} alt={f.name} className="w-full h-full rounded-full object-cover" />
                                     ) : (
-                                        f.name?.[0] || "?"
+                                        (f.nickname || f.name)?.[0] || "?"
                                     )}
                                 </div>
                                 <div
                                     className="flex-1 min-w-0 cursor-pointer"
                                     onClick={() => onViewProfile(f)}
                                 >
-                                    <div className="font-bold text-slate-800 truncate hover:text-indigo-600 transition-colors">{f.name}</div>
+                                    <div className="font-bold text-slate-800 truncate hover:text-indigo-600 transition-colors">{f.nickname || f.name}</div>
                                     <div className="text-[10px] text-slate-400 mt-0.5">
                                         {f.matchRate ? `취향 일치도 ${f.matchRate}%` : "활동 중"}
                                     </div>
