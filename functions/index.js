@@ -1,6 +1,10 @@
 const functions = require('firebase-functions');
 const axios = require('axios');
 const cors = require('cors')({ origin: true });
+const admin = require('firebase-admin');
+
+admin.initializeApp();
+const db = admin.firestore();
 
 // 네이버 지역 검색 API 프록시
 exports.searchNaverPlaces = functions.https.onRequest((req, res) => {
@@ -52,4 +56,35 @@ exports.searchNaverPlaces = functions.https.onRequest((req, res) => {
             });
         }
     });
+});
+
+// [NEW] Server-Side Recursive Delete for Dummy Users
+exports.deleteDummyUsers = functions.https.onCall(async (data, context) => {
+    // 1. Auth Check (Optional but recommended)
+    // if (!context.auth) {
+    //     throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
+    // }
+
+    // 2. Identify Dummy Users
+    // Logic: Find users with IDs starting with "mock_", "soonsal_user_", "verifier_"
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.get();
+
+    const dummyDocs = [];
+
+    snapshot.forEach(doc => {
+        const id = doc.id;
+        if (id.startsWith('mock_') || id.startsWith('soonsal_user_') || id.startsWith('verifier_')) {
+            dummyDocs.push(doc.ref);
+        }
+    });
+
+    // 3. Recursive Delete
+    const promises = dummyDocs.map(ref => db.recursiveDelete(ref));
+    await Promise.all(promises);
+
+    return {
+        success: true,
+        message: `Recursively deleted ${dummyDocs.length} dummy user profiles.`
+    };
 });

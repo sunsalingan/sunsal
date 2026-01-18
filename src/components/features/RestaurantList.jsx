@@ -1,6 +1,9 @@
 import React from "react";
 import { Search, CheckCircle } from "lucide-react"; // Import CheckCircle
-// import { calculateMyScore } from "../../utils"; // Removed legacy import
+import { getRecommendedUsers } from "../../utils/recommendation";
+import { collection, getDocs, db } from "../../lib/firebase";
+import FriendRecommendation from "./FriendRecommendation";
+import { useAuth } from "../../contexts/AuthContext"; // Need followingList
 
 const RestaurantList = ({
     displayedReviews,
@@ -9,8 +12,39 @@ const RestaurantList = ({
     handleOpenDetail,
     currentPage,
     viewMode,
-    user
+    user,
+    allReviews, // [NEW]
+    onOpenProfile // [NEW]
 }) => {
+    const { followingList, followUser } = useAuth(); // Get auth data
+    const [recommendations, setRecommendations] = React.useState([]);
+    const [loadingRecs, setLoadingRecs] = React.useState(false);
+
+    // Fetch Recommendations when list is empty
+    React.useEffect(() => {
+        const fetchRecs = async () => {
+            if (displayedReviews.length === 0 && user && allReviews) {
+                setLoadingRecs(true);
+                try {
+                    // Fetch Users (Limit to 50 for performance)
+                    // Optimization: In real app, use a Cloud Function or dedicated index
+                    const usersRef = collection(db, "users");
+                    const userSnap = await getDocs(usersRef);
+                    const allUsers = userSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                    const recs = await getRecommendedUsers(user, allUsers, allReviews, followingList);
+                    setRecommendations(recs);
+                } catch (e) {
+                    console.error("Error fetching recommendations:", e);
+                } finally {
+                    setLoadingRecs(false);
+                }
+            }
+        };
+
+        fetchRecs();
+    }, [displayedReviews.length, user, allReviews]); // Dependency array
+
     return (
         <main className="flex-1 overflow-y-auto px-4 py-6 bg-slate-50 dark:bg-slate-900 transition-colors">
             {loading ? (
@@ -93,12 +127,37 @@ const RestaurantList = ({
                     );
                 })
             ) : (
-                <div className="py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-800/50">
-                    <Search className="mx-auto text-slate-300 dark:text-slate-600 mb-2" size={32} />
-                    <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">
-                        등록된 맛집이 없습니다.
-                        <br />첫 번째 맛집을 등록해보세요!
+                <div className="py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 px-4">
+                    <Search className="mx-auto text-slate-300 dark:text-slate-600 mb-4" size={32} />
+                    <p className="text-slate-500 dark:text-slate-400 font-bold text-sm mb-2">
+                        아직은 믿을만한 랭킹 데이터가 충분하지 않아요 🥲
                     </p>
+                    <p className="text-slate-400 dark:text-slate-500 text-xs">
+                        친구를 먼저 찾아서 <strong>친구 랭킹</strong>을 확인해보세요!
+                        <br />나와 취향이 비슷한 친구를 만나면 더 정확해집니다.
+                    </p>
+
+                    {/* [NEW] Recommendation Component */}
+                    {user && (
+                        <div className="mt-4">
+                            {loadingRecs ? (
+                                <div className="text-xs text-slate-400 animate-pulse">추천 친구를 찾는 중...</div>
+                            ) : recommendations.length > 0 ? (
+                                <FriendRecommendation
+                                    recommendations={recommendations}
+                                    onFollow={async (uid) => {
+                                        await followUser(uid);
+                                    }}
+                                    followingList={followingList}
+                                />
+                            ) : (
+                                <div className="text-xs text-slate-400 mt-2">
+                                    아쉽게도 아직 비슷한 취향의 친구를 못 찾았어요 😭<br />
+                                    (활동이 늘어나면 추천이 정확해집니다)
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
         </main>

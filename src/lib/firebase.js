@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import {
     getAuth,
     GoogleAuthProvider,
@@ -42,6 +43,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const functions = getFunctions(app, 'us-central1'); // [NEW] Export functions instance
 export const googleProvider = new GoogleAuthProvider();
 
 export {
@@ -66,5 +68,7 @@ export {
     limit,
     writeBatch,
     increment,
-    deleteField
+
+    deleteField,
+    httpsCallable // [NEW] Export httpsCallable
 };

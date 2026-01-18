@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db, collection, getDocs, doc, writeBatch, deleteDoc } from '../lib/firebase'; // Added deleteDoc if needed, though batch used primarily
+import { db, collection, getDocs, doc, writeBatch, deleteDoc, httpsCallable, functions } from '../lib/firebase'; // Added httpsCallable, functions
 import { addVerificationData } from '../utils/seeder';
 
 const AdminPage = ({ onBack }) => {
@@ -113,6 +113,40 @@ const AdminPage = ({ onBack }) => {
         });
         if (count > 0) chunks.push(currentBatch.commit());
         await Promise.all(chunks);
+        if (count > 0) chunks.push(currentBatch.commit());
+        await Promise.all(chunks);
+    };
+
+    // [NEW] Recursive Delete for User (includes Wishlist)
+    const deleteUserRecursively = async (userId) => {
+        // 1. Delete Wishlist Subcollection
+        const wishlistRef = collection(db, "users", userId, "wishlist");
+        const wishlistSnap = await getDocs(wishlistRef);
+
+        if (!wishlistSnap.empty) {
+            const batch = writeBatch(db);
+            wishlistSnap.docs.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
+            await batch.commit();
+        }
+
+        // 2. Delete User Document
+        await deleteDoc(doc(db, "users", userId));
+    };
+
+    // [NEW] Delete All Users Recursively
+    const deleteAllUsersRecursively = async () => {
+        const q = collection(db, "users");
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) return;
+
+        // Process sequentially or in limited parallel to avoid overwhelming network
+        // For simplicity and safety, `for...of` loop
+        for (const docSnap of snapshot.docs) {
+            await deleteUserRecursively(docSnap.id);
+        }
     };
 
 
@@ -227,8 +261,11 @@ const AdminPage = ({ onBack }) => {
         setStatus("데이터 전체 삭제 시작...");
 
         try {
-            await deleteCollection("users");
+            // [MODIFIED] Use Recursive Delete for Users
+            setStatus("유저 데이터 및 위시리스트 삭제 중... (시간이 걸릴 수 있습니다)");
+            await deleteAllUsersRecursively();
             setStatus("유저 데이터 삭제 완료.");
+
             await deleteCollection("reviews");
             setStatus("리뷰 데이터 삭제 완료.");
 
@@ -243,9 +280,9 @@ const AdminPage = ({ onBack }) => {
         }
     };
 
-    // --- Delete Dummy Users (Non-Admin) ---
+    // --- Delete Dummy Users (Server-Side) ---
     const handleDeleteDummyUsers = async () => {
-        if (!window.confirm("⚠️ 위험: 관리자(개발자) 계정을 제외한 모든 '더미 유저'와 '그들의 리뷰'를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.")) {
+        if (!window.confirm("⚠️ 위험 (Server-Side):\n'더미 유저' 및 '유령 문서'를 포함하여 관련된 모든 데이터를 강력하게 삭제하시겠습니까?\n\n이 작업은 Cloud Functions를 통해 수행되며 되돌릴 수 없습니다.")) {
             return;
         }
 
@@ -256,51 +293,22 @@ const AdminPage = ({ onBack }) => {
         }
 
         setIsLoading(true);
-        setStatus("더미 데이터 식별 및 삭제 시작...");
+        setStatus("서버에 삭제 요청 중... (Cloud Function)");
 
         try {
-            // 1. Fetch All Users
-            const usersSnap = await getDocs(collection(db, "users"));
-            const allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const deleteDummyUsersFn = httpsCallable(functions, 'deleteDummyUsers');
+            const result = await deleteDummyUsersFn();
 
-            // 2. Identify Dummy Users (Strict Pattern Matching)
-            const dummyUsers = allUsers.filter(u => {
-                const isDummyPattern = u.id.startsWith("soonsal_user_") ||
-                    u.id.startsWith("verifier_") ||
-                    u.id.startsWith("mock_");
-                return isDummyPattern;
-            });
+            console.log("Delete Result:", result.data);
+            setStatus(`삭제 완료: ${result.data.message}`);
+            alert(`정리 완료!\n${result.data.message}`);
 
-            if (dummyUsers.length === 0) {
-                setStatus("삭제할 더미 유저가 없습니다.");
-                alert("삭제할 더미 유저가 없습니다.");
-                setIsLoading(false);
-                return;
-            }
-
-            setStatus(`더미 유저 ${dummyUsers.length}명 발견. 삭제 중...`);
-
-            // 3. Delete Dummy Users
-            await batchDeleteDocs("users", dummyUsers);
-
-            // 4. Delete Reviews from Dummy Users
-            setStatus("리뷰 데이터 정리 중...");
-            const reviewsSnap = await getDocs(collection(db, "reviews"));
-            const allReviews = reviewsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-            const dummyUserIds = new Set(dummyUsers.map(u => u.id));
-            const dummyReviews = allReviews.filter(r => dummyUserIds.has(r.userId));
-
-            if (dummyReviews.length > 0) {
-                await batchDeleteDocs("reviews", dummyReviews);
-            }
-
-            setStatus(`삭제 완료! (유저: ${dummyUsers.length}명, 리뷰: ${dummyReviews.length}개)`);
-            alert(`정리 완료!\n유저 ${dummyUsers.length}명과 리뷰 ${dummyReviews.length}개를 삭제했습니다.`);
+            // Reload to reflect changes
+            window.location.reload();
 
         } catch (e) {
             console.error(e);
-            setStatus(`삭제 실패: ${e.message}`);
+            setStatus(`삭제 실패 (Server): ${e.message}`);
             alert(`오류 발생: ${e.message}`);
         } finally {
             setIsLoading(false);
