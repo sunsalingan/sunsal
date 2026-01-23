@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- Users Collection ---
+    match /users/{userId} {
+      allow read: if true; // Public profiles
+      
+      // Creation: Only the user themselves
+      allow create: if isOwner(userId);
+      
+      // Update: 
+      // 1. Owner can update any field
+      // 2. Others (Authenticated) can ONLY update 'followers' count (for Follow feature)
+      //    Note: ideally this should be done via Cloud Functions to be 100% secure.
+      allow update: if isOwner(userId) || 
+                   (isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']));
+                   
+      allow delete: if isOwner(userId);
+
+      // Subcollection: Wishlist
+      match /wishlist/{wishId} {
+        allow read: if isOwner(userId); // Private wishlist by default? (App logic suggests owner usage)
+        allow write: if isOwner(userId);
+      }
+      
+      // Subcollection: Following (Users I follow)
+      match /following/{targetId} {
+         allow read: if true; // Public following list (to see who they follow)
+         allow write: if isOwner(userId);
+      }
+      
+      // Subcollection: Followers (Users who follow me)
+      // DocId is the FOLLOWER's ID.
+      // Validation: The WRITER must be the FOLLOWER.
+      match /followers/{followerId} {
+         allow read: if true; // Public follower list
+         allow write: if isSignedIn() && request.auth.uid == followerId;
+      }
+    }
+
+    // --- Reviews Collection ---
+    match /reviews/{reviewId} {
+      allow read: if true; // Public reviews
+      
+      // Create: Must be signed in AND userId must match auth.uid
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      
+      // Update/Delete: Must be owner
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+    
+    // --- Default Lock ---
+    match /{document=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}

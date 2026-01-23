@@ -22,6 +22,7 @@ import UserListModal from "./components/features/UserListModal"; // [NEW]
 import FranchiseRankingView from "./components/features/FranchiseRankingView"; // [NEW]
 import FriendManagementModal from "./components/features/FriendManagementModal"; // [NEW]
 import ProfileEditModal from "./components/features/ProfileEditModal"; // [NEW]
+import InAppBrowserGuard from "./components/auth/InAppBrowserGuard"; // [NEW] In-App Browser Guard
 const AdminPage = React.lazy(() => import("./pages/AdminPage"));
 const RankingPrototype = React.lazy(() => import("./pages/RankingPrototype")); // [NEW] Prototype // [NEW]
 // import { resetAndSeedData } from "./utils/seeder"; // [DISABLED]
@@ -586,491 +587,493 @@ function App() {
     }
 
     return (
-        <div className={`h-screen w-full flex flex-col overflow-hidden font-sans text-slate-800 transition-colors duration-300 ${darkMode ? "dark bg-slate-950 text-slate-100" : "bg-slate-100"}`}>
-            {/* Outer Container with Dark Mode */}
-            <Header
-                currentPage={currentPage}
-                user={user}
-                viewMode={viewMode}
-                showMap={showMap}
-                useRealMap={useRealMap}
-                setViewMode={setViewMode}
-                setShowMap={setShowMap}
-                setFriendsListOpen={setFriendsListOpen}
-                handleLogin={handleLogin}
-                handleLogout={logout}
-                handleBackToMain={() => {
-                    setCurrentPage("MAIN");
-                    setProfileViewUser(null);
-                    setTargetUserFilter(null); // [NEW] Reset filter
-                    setShowMap(true); // [FIX] Show map when returning to main
-                }}
-                targetProfile={currentPage === "USER_PROFILE" ? profileViewUser : targetProfile}
-                onMenuClick={() => setSidebarOpen(true)}
-            />
+        <InAppBrowserGuard>
+            <div className={`h-screen w-full flex flex-col overflow-hidden font-sans text-slate-800 transition-colors duration-300 ${darkMode ? "dark bg-slate-950 text-slate-100" : "bg-slate-100"}`}>
+                {/* Outer Container with Dark Mode */}
+                <Header
+                    currentPage={currentPage}
+                    user={user}
+                    viewMode={viewMode}
+                    showMap={showMap}
+                    useRealMap={useRealMap}
+                    setViewMode={setViewMode}
+                    setShowMap={setShowMap}
+                    setFriendsListOpen={setFriendsListOpen}
+                    handleLogin={handleLogin}
+                    handleLogout={logout}
+                    handleBackToMain={() => {
+                        setCurrentPage("MAIN");
+                        setProfileViewUser(null);
+                        setTargetUserFilter(null); // [NEW] Reset filter
+                        setShowMap(true); // [FIX] Show map when returning to main
+                    }}
+                    targetProfile={currentPage === "USER_PROFILE" ? profileViewUser : targetProfile}
+                    onMenuClick={() => setSidebarOpen(true)}
+                />
 
-            <Sidebar
-                isOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                user={user}
-                handleLogout={logout}
-                onSearch={() => {
-                    setRestaurantSearchOpen(true);
-                    setSidebarOpen(false);
-                }}
-                onChangeViewMode={(mode) => {
-                    setViewMode(mode);
-                    setSidebarOpen(false);
-                }}
-                currentViewMode={viewMode}
-                onOpenUserSearch={() => {
-                    setUserSearchOpen(true);
-                    setSidebarOpen(false);
-                }}
-                onOpenMyProfile={() => { // [NEW]
-                    if (user) {
-                        // [FIX] Construct a normalized profile object for the current user
-                        // This ensures 'id' and 'name' are present as expected by Profile/Header components
-                        const myProfileObj = {
-                            ...user,
-                            id: user.uid,
-                            name: user.displayName,
-                            // User object from Auth might differ from Firestore data structure
-                            // Ideally we fetch from Firestore, but for speed we use Auth data
-                            // The 'ranking' or 'followers' might be missing here if only using Auth object
-                            // If we want full data, we should fetch it.
-                            // But handleVisitProfile will eventually setProfileViewUser.
-                        };
-                        handleVisitProfile(myProfileObj);
-                    }
-                    else handleLogin();
-                    setSidebarOpen(false);
-                }}
-                onOpenFriendManagement={() => { // [NEW]
-                    // We'll implement a separate state for this modal
-                    // For now let's reuse UserListModal but we need a dedicated "Management" modal as per request
-                    // Let's create `showFriendManagement` state in App.jsx next
-                    setShowFriendManagement(true);
-                    setSidebarOpen(false);
-                }}
-                darkMode={darkMode} // [NEW]
-                toggleDarkMode={() => setDarkMode(!darkMode)} // [NEW]
-                onRequestFixData={async () => {
-                    if (!user) return;
-                    if (!window.confirm("랭킹 순서와 점수를 재정렬하여 오류를 수정합니다. 진행하시겠습니까?")) return;
+                <Sidebar
+                    isOpen={sidebarOpen}
+                    onClose={() => setSidebarOpen(false)}
+                    user={user}
+                    handleLogout={logout}
+                    onSearch={() => {
+                        setRestaurantSearchOpen(true);
+                        setSidebarOpen(false);
+                    }}
+                    onChangeViewMode={(mode) => {
+                        setViewMode(mode);
+                        setSidebarOpen(false);
+                    }}
+                    currentViewMode={viewMode}
+                    onOpenUserSearch={() => {
+                        setUserSearchOpen(true);
+                        setSidebarOpen(false);
+                    }}
+                    onOpenMyProfile={() => { // [NEW]
+                        if (user) {
+                            // [FIX] Construct a normalized profile object for the current user
+                            // This ensures 'id' and 'name' are present as expected by Profile/Header components
+                            const myProfileObj = {
+                                ...user,
+                                id: user.uid,
+                                name: user.displayName,
+                                // User object from Auth might differ from Firestore data structure
+                                // Ideally we fetch from Firestore, but for speed we use Auth data
+                                // The 'ranking' or 'followers' might be missing here if only using Auth object
+                                // If we want full data, we should fetch it.
+                                // But handleVisitProfile will eventually setProfileViewUser.
+                            };
+                            handleVisitProfile(myProfileObj);
+                        }
+                        else handleLogin();
+                        setSidebarOpen(false);
+                    }}
+                    onOpenFriendManagement={() => { // [NEW]
+                        // We'll implement a separate state for this modal
+                        // For now let's reuse UserListModal but we need a dedicated "Management" modal as per request
+                        // Let's create `showFriendManagement` state in App.jsx next
+                        setShowFriendManagement(true);
+                        setSidebarOpen(false);
+                    }}
+                    darkMode={darkMode} // [NEW]
+                    toggleDarkMode={() => setDarkMode(!darkMode)} // [NEW]
+                    onRequestFixData={async () => {
+                        if (!user) return;
+                        if (!window.confirm("랭킹 순서와 점수를 재정렬하여 오류를 수정합니다. 진행하시겠습니까?")) return;
 
-                    try {
-                        const { calculateScores } = await import("./utils/scoreCalculator");
+                        try {
+                            const { calculateScores } = await import("./utils/scoreCalculator");
 
-                        // 1. Get User Reviews
-                        const userReviews = reviews.filter(r => r.userId === user.uid);
+                            // 1. Get User Reviews
+                            const userReviews = reviews.filter(r => r.userId === user.uid);
 
-                        // 2. Sort by Rank Index (Primary) -> Timestamp (Secondary) to resolve duplicates
-                        userReviews.sort((a, b) => {
-                            const rankDiff = (a.rankIndex || 0) - (b.rankIndex || 0);
-                            if (rankDiff !== 0) return rankDiff;
-                            return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0); // Newer first? No, Stable sort
-                        });
-
-                        // 3. Re-assign sequential rankIndex & Recalculate Scores
-                        const updated = calculateScores(userReviews.map((r, i) => ({ ...r, rankIndex: i })));
-
-                        // 4. Batch Update
-                        const batch = writeBatch(db);
-                        updated.forEach(r => {
-                            const ref = doc(db, "reviews", r.id);
-                            batch.update(ref, {
-                                rankIndex: r.rankIndex,
-                                globalScore: r.globalScore
+                            // 2. Sort by Rank Index (Primary) -> Timestamp (Secondary) to resolve duplicates
+                            userReviews.sort((a, b) => {
+                                const rankDiff = (a.rankIndex || 0) - (b.rankIndex || 0);
+                                if (rankDiff !== 0) return rankDiff;
+                                return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0); // Newer first? No, Stable sort
                             });
-                        });
 
-                        await batch.commit();
-                        alert("랭킹 및 점수 오류가 수정되었습니다. 다시 확인해주세요.");
-                        // Force refresh? Context usually listens to snapshot, so it should auto-update.
-                    } catch (e) {
-                        console.error(e);
-                        alert("수정 중 오류 발생");
-                    }
-                }}
-            />
+                            // 3. Re-assign sequential rankIndex & Recalculate Scores
+                            const updated = calculateScores(userReviews.map((r, i) => ({ ...r, rankIndex: i })));
 
-            {/* Main Content Area */}
-            {/* Dark Mode Background Application */}
-            <div className={`flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl transition-colors duration-300 ${darkMode ? "bg-slate-900 border-x border-slate-700" : "bg-white"}`}>
-                {/* [NEW] Franchise Search Bar */}
-                {viewMode === "FRANCHISE" && currentPage === "MAIN" && (
-                    <div className="p-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 flex items-center gap-2 transition-colors">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                            <input
-                                type="text"
-                                placeholder="브랜드명 검색 (예: 스타벅스, 버거킹)"
-                                className="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-700 dark:text-slate-100 transition-colors"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                autoFocus
-                            />
+                            // 4. Batch Update
+                            const batch = writeBatch(db);
+                            updated.forEach(r => {
+                                const ref = doc(db, "reviews", r.id);
+                                batch.update(ref, {
+                                    rankIndex: r.rankIndex,
+                                    globalScore: r.globalScore
+                                });
+                            });
+
+                            await batch.commit();
+                            alert("랭킹 및 점수 오류가 수정되었습니다. 다시 확인해주세요.");
+                            // Force refresh? Context usually listens to snapshot, so it should auto-update.
+                        } catch (e) {
+                            console.error(e);
+                            alert("수정 중 오류 발생");
+                        }
+                    }}
+                />
+
+                {/* Main Content Area */}
+                {/* Dark Mode Background Application */}
+                <div className={`flex-1 flex flex-col relative overflow-hidden max-w-2xl mx-auto w-full shadow-2xl transition-colors duration-300 ${darkMode ? "bg-slate-900 border-x border-slate-700" : "bg-white"}`}>
+                    {/* [NEW] Franchise Search Bar */}
+                    {viewMode === "FRANCHISE" && currentPage === "MAIN" && (
+                        <div className="p-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 flex items-center gap-2 transition-colors">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="브랜드명 검색 (예: 스타벅스, 버거킹)"
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-700 dark:text-slate-100 transition-colors"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    autoFocus
+                                />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* [NEW] User Profile Header */}
-                {currentPage === "USER_PROFILE" && profileViewUser && (
-                    <UserProfileHeader
-                        user={profileViewUser}
-                        currentUser={user}
-                        isFollowing={followingList.includes(profileViewUser.id)}
-                        onFollow={followUser}
-                        onUnfollow={unfollowUser}
-                        onMessage={() => alert("준비 중입니다.")}
-                        onOpenFollowers={async () => {
-                            setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로워`);
-                            try {
-                                const q = collection(db, "users", profileViewUser.id, "followers"); // [FIX] 'followers' subcollection
-                                const snap = await getDocs(q);
-                                if (!snap.empty) {
-                                    const list = snap.docs.map(d => ({
-                                        id: d.id,
-                                        ...d.data(),
-                                    }));
-                                    setFriendsData(list);
-                                } else {
+                    {/* [NEW] User Profile Header */}
+                    {currentPage === "USER_PROFILE" && profileViewUser && (
+                        <UserProfileHeader
+                            user={profileViewUser}
+                            currentUser={user}
+                            isFollowing={followingList.includes(profileViewUser.id)}
+                            onFollow={followUser}
+                            onUnfollow={unfollowUser}
+                            onMessage={() => alert("준비 중입니다.")}
+                            onOpenFollowers={async () => {
+                                setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로워`);
+                                try {
+                                    const q = collection(db, "users", profileViewUser.id, "followers"); // [FIX] 'followers' subcollection
+                                    const snap = await getDocs(q);
+                                    if (!snap.empty) {
+                                        const list = snap.docs.map(d => ({
+                                            id: d.id,
+                                            ...d.data(),
+                                        }));
+                                        setFriendsData(list);
+                                    } else {
+                                        setFriendsData([]);
+                                    }
+                                } catch (e) {
+                                    console.error(e);
                                     setFriendsData([]);
                                 }
-                            } catch (e) {
-                                console.error(e);
-                                setFriendsData([]);
-                            }
-                            setShowUserListModal(true);
-                        }}
-                        onOpenFollowing={async () => {
-                            setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로잉`);
-                            try {
-                                const q = collection(db, "users", profileViewUser.id, "following");
-                                const snap = await getDocs(q);
-                                if (!snap.empty) {
-                                    const list = snap.docs.map(d => ({
-                                        id: d.id,
-                                        ...d.data(),
-                                        // matchRate: getMatchRate(reviews, user?.uid, d.id) // Simplification to avoid errors if vars missing
-                                    }));
-                                    setFriendsData(list);
-                                } else {
+                                setShowUserListModal(true);
+                            }}
+                            onOpenFollowing={async () => {
+                                setDrawerTitle(`${profileViewUser.nickname || profileViewUser.name}님의 팔로잉`);
+                                try {
+                                    const q = collection(db, "users", profileViewUser.id, "following");
+                                    const snap = await getDocs(q);
+                                    if (!snap.empty) {
+                                        const list = snap.docs.map(d => ({
+                                            id: d.id,
+                                            ...d.data(),
+                                            // matchRate: getMatchRate(reviews, user?.uid, d.id) // Simplification to avoid errors if vars missing
+                                        }));
+                                        setFriendsData(list);
+                                    } else {
+                                        setFriendsData([]);
+                                    }
+                                } catch (e) {
+                                    console.error(e);
                                     setFriendsData([]);
                                 }
-                            } catch (e) {
-                                console.error(e);
-                                setFriendsData([]);
-                            }
-                            setShowUserListModal(true);
-                        }}
-                        matchRate={profileViewUser.id !== user?.uid ? getMatchRate(reviews, user?.uid, profileViewUser.id) : undefined}
-                        onEditProfile={() => setProfileEditModalOpen(true)}
-                        totalReviewsCount={finalDisplayedRestaurants ? finalDisplayedRestaurants.length : 0} // [RENAME]
-                    />
-                )}
+                                setShowUserListModal(true);
+                            }}
+                            matchRate={profileViewUser.id !== user?.uid ? getMatchRate(reviews, user?.uid, profileViewUser.id) : undefined}
+                            onEditProfile={() => setProfileEditModalOpen(true)}
+                            totalReviewsCount={finalDisplayedRestaurants ? finalDisplayedRestaurants.length : 0} // [RENAME]
+                        />
+                    )}
 
-                <div className="flex gap-2 p-3 bg-white dark:bg-slate-900 border-b dark:border-slate-800 overflow-x-auto scrollbar-hide z-20 shrink-0 items-center transition-colors">
-                    {/* [NEW] Global Map Toggle Button */}
-                    {/* [NEW] Global Map Toggle Button */}
-                    <button
-                        onClick={() => setShowMap(!showMap)}
-                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1 ${showMap ? "bg-indigo-600 text-white border-indigo-600" : "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-slate-700"
-                            }`}
-                    >
-                        {showMap ? "지도 접기" : "지도 보기"}
-                    </button>
-
-                    {/* Vertical Divider */}
-                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-
-                    {["전체", "한식", "일식", "양식", "중식", "아시안", "카페"].map(cat => (
+                    <div className="flex gap-2 p-3 bg-white dark:bg-slate-900 border-b dark:border-slate-800 overflow-x-auto scrollbar-hide z-20 shrink-0 items-center transition-colors">
+                        {/* [NEW] Global Map Toggle Button */}
+                        {/* [NEW] Global Map Toggle Button */}
                         <button
-                            key={cat}
-                            onClick={() => setCategoryFilter(cat)}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${categoryFilter === cat
-                                ? "bg-indigo-600 text-white shadow-md scale-105"
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            onClick={() => setShowMap(!showMap)}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1 ${showMap ? "bg-indigo-600 text-white border-indigo-600" : "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-slate-700"
                                 }`}
                         >
-                            {cat}
+                            {showMap ? "지도 접기" : "지도 보기"}
                         </button>
-                    ))}
-                </div>
 
-                <MapArea
-                    useRealMap={useRealMap}
-                    showMap={showMap}
-                    mapElement={mapElement}
-                    mapInstance={mapInstance}
-                    setMapInstance={setMapInstance}
-                    zoom={zoom}
-                    setZoom={setZoom}
-                    markersRef={markersRef}
-                    displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
-                    handleOpenDetail={handleOpenDetail}
-                    currentPage={currentPage}
-                    setRestaurantSearchOpen={setRestaurantSearchOpen}
-                    isMapMoved={isMapMoved}
-                    setIsMapMoved={setIsMapMoved}
-                    handleZoom={(delta) => setZoom(z => Math.max(0.2, Math.min(3, z + delta * 0.2)))}
-                    handleSearchInArea={() => setIsMapMoved(false)}
-                    onBoundsChanged={setMapBounds}
-                />
+                        {/* Vertical Divider */}
+                        <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
-                {viewMode === "FRANCHISE" ? (
-                    <FranchiseRankingView
-                        handleOpenDetail={handleOpenDetail}
-                    />
-                ) : (
-                    <RestaurantList
+                        {["전체", "한식", "일식", "양식", "중식", "아시안", "카페"].map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setCategoryFilter(cat)}
+                                className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${categoryFilter === cat
+                                    ? "bg-indigo-600 text-white shadow-md scale-105"
+                                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                                    }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+
+                    <MapArea
+                        useRealMap={useRealMap}
+                        showMap={showMap}
+                        mapElement={mapElement}
+                        mapInstance={mapInstance}
+                        setMapInstance={setMapInstance}
+                        zoom={zoom}
+                        setZoom={setZoom}
+                        markersRef={markersRef}
                         displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
-                        activeReviews={activeReviews}
-                        loading={loading}
                         handleOpenDetail={handleOpenDetail}
                         currentPage={currentPage}
-                        viewMode={viewMode}
-                        user={user}
+                        setRestaurantSearchOpen={setRestaurantSearchOpen}
+                        isMapMoved={isMapMoved}
+                        setIsMapMoved={setIsMapMoved}
+                        handleZoom={(delta) => setZoom(z => Math.max(0.2, Math.min(3, z + delta * 0.2)))}
+                        handleSearchInArea={() => setIsMapMoved(false)}
+                        onBoundsChanged={setMapBounds}
+                    />
+
+                    {viewMode === "FRANCHISE" ? (
+                        <FranchiseRankingView
+                            handleOpenDetail={handleOpenDetail}
+                        />
+                    ) : (
+                        <RestaurantList
+                            displayedReviews={finalDisplayedRestaurants} // [MODIFIED] Use computed list
+                            activeReviews={activeReviews}
+                            loading={loading}
+                            handleOpenDetail={handleOpenDetail}
+                            currentPage={currentPage}
+                            viewMode={viewMode}
+                            user={user}
+                            onOpenProfile={handleOpenProfile}
+                            isWishlisted={wishlist.some(w => w.id === selectedRestaurant?.id)}
+                            onToggleWishlist={toggleWishlist}
+                            currentUser={user} // [NEW]
+                            allReviews={reviews} // [NEW] For recommendation calculation
+                            onEditReview={(review) => {
+                                // [FIX] Close detail modal first to prevent layering/freeze issues
+                                setDetailModalOpen(false);
+
+                                // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                                // Simply passing 'review' caused crashes if x/y were missing.
+                                reviewModal.setEditingReview(review);
+
+                                reviewModal.setSelectedNewPlace({
+                                    id: review.placeId || selectedRestaurant?.id || review.id,
+                                    name: review.name || selectedRestaurant?.name,
+                                    address: review.location || selectedRestaurant?.address,
+                                    category: review.category || selectedRestaurant?.category,
+                                    roadAddress: review.location || "",
+                                    x: selectedRestaurant?.x, // Important for maps
+                                    y: selectedRestaurant?.y,
+                                    lat: review.lat,
+                                    lng: review.lng
+                                });
+
+                                reviewModal.setNewReviewParams({
+                                    text: review.comment,
+                                    rating: review.rating || 0,
+                                    rankIndex: review.rankIndex
+                                });
+
+                                reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                                reviewModal.setIsOpen(true);
+                            }}
+                        />
+                    )}
+
+                    {currentPage === "MAIN" && (
+                        <button
+                            onClick={() => {
+                                if (!user) {
+                                    alert("로그인이 필요합니다.");
+                                    return;
+                                }
+                                reviewModal.setIsOpen(true);
+                            }}
+                            className="absolute bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-xl flex items-center justify-center text-white hover:bg-indigo-700 hover:scale-105 transition-all z-30"
+                        >
+                            <span className="text-3xl font-light mb-1">+</span>
+                        </button>
+                    )}
+
+                    {/* Friend Management Modal */}
+                    <FriendManagementModal
+                        isOpen={showFriendManagement}
+                        onClose={() => setShowFriendManagement(false)}
                         onOpenProfile={handleOpenProfile}
-                        isWishlisted={wishlist.some(w => w.id === selectedRestaurant?.id)}
-                        onToggleWishlist={toggleWishlist}
-                        currentUser={user} // [NEW]
-                        allReviews={reviews} // [NEW] For recommendation calculation
-                        onEditReview={(review) => {
-                            // [FIX] Close detail modal first to prevent layering/freeze issues
-                            setDetailModalOpen(false);
+                    />
 
-                            // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
-                            // Simply passing 'review' caused crashes if x/y were missing.
-                            reviewModal.setEditingReview(review);
+                    {/* Friend Drawer (Legacy or for quick access?) - Keeping for now if used elsewhere */}
+                    <FriendDrawer
+                        isOpen={friendsListOpen}
+                        onClose={() => setFriendsListOpen(false)}
+                        friends={friendsData}
+                        followingIds={followingList}
+                        onFollow={followUser}
+                        onUnfollow={unfollowUser}
+                        onViewProfile={(f) => handleVisitProfile(f)} // Recursive navigation!
+                        currentUser={user}
+                        title={drawerTitle} // [NEW]
+                    />
+                </div>
 
-                            reviewModal.setSelectedNewPlace({
-                                id: review.placeId || selectedRestaurant?.id || review.id,
-                                name: review.name || selectedRestaurant?.name,
-                                address: review.location || selectedRestaurant?.address,
-                                category: review.category || selectedRestaurant?.category,
-                                roadAddress: review.location || "",
-                                x: selectedRestaurant?.x, // Important for maps
-                                y: selectedRestaurant?.y,
-                                lat: review.lat,
-                                lng: review.lng
-                            });
 
-                            reviewModal.setNewReviewParams({
-                                text: review.comment,
-                                rating: review.rating || 0,
-                                rankIndex: review.rankIndex
-                            });
 
-                            reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
-                            reviewModal.setIsOpen(true);
-                        }}
+                <ReviewModal
+                    isOpen={reviewModal.isOpen}
+                    onClose={() => {
+                        reviewModal.close(); // Use hook's close to reset state
+                        setDetailModalOpen(false); // Ensure detail is closed too
+                    }}
+                    onSubmit={handleReviewSubmit} // [FIX] Pass submit handler
+                    onDelete={handleReviewDelete} // [FIX] Pass delete handler
+                    handleSearchPlace={() => setRestaurantSearchOpen(true)} // [FIX] Enable Search from Modal
+                    currentUser={user} // [FIX] For Debugging
+                    // State & Data
+                    selectedNewPlace={reviewModal.selectedNewPlace}
+                    newReviewParams={reviewModal.newReviewParams}
+                    setNewReviewParams={reviewModal.setNewReviewParams}
+                    editingReview={reviewModal.editingReview} // [FIX] Pass editing state
+                    setEditingReview={reviewModal.setEditingReview} // Pass setter for editingReview
+
+                    // Data for Ranking Steps
+                    categoryReviews={(() => {
+                        // [FIX] Always use ALL reviews from the current user for ranking comparison, NOT just 'activeReviews' which might be filtered by viewMode.
+                        if (!user) return [];
+                        let myReviews = reviews.filter(r => r.userId === user.uid);
+
+                        // [FIX] Exclude the review currently being edited to avoid duplicates in the anchor list
+                        if (reviewModal.editingReview) {
+                            myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
+                        }
+
+                        // Sort by rankIndex (ascending) to show top ranked first
+                        myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+
+                        const targetCat = normalizeCategory(reviewModal.selectedNewPlace?.category);
+
+                        return myReviews.filter(r => {
+                            // Strict category match? Or Broad?
+                            // User wants Broad for grouping.
+                            const rCat = normalizeCategory(r.category);
+                            const match = rCat === targetCat;
+                            return match;
+                        });
+                    })()}
+                    allReviews={(() => {
+                        // [FIX] Same fix for Global Ranking step
+                        if (!user) return [];
+                        let myReviews = reviews.filter(r => r.userId === user.uid);
+
+                        // [FIX] Exclude editing review
+                        if (reviewModal.editingReview) {
+                            myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
+                        }
+
+                        myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
+                        return myReviews;
+                    })()}
+                    onInsert={handleInsert}
+                    expandedFolders={expandedFolders}
+                    toggleFolder={toggleFolder}
+                />
+
+                <ProfileModal
+                    isOpen={profileModalOpen}
+                    userProfile={targetProfile || (user ? {
+                        id: user.uid,
+                        name: user.displayName,
+                        followers: 10,
+                        following: 5,
+                        ranking: activeReviews
+                    } : null)}
+                    currentUser={user}
+                    onClose={() => setProfileModalOpen(false)}
+                    activeReviews={activeReviews}
+                    onViewMap={handleVisitProfile} // [MODIFIED] Use new handler
+                />
+
+                {
+                    detailModalOpen && (
+                        <RestaurantDetailModal
+                            restaurant={selectedRestaurant}
+                            allReviews={reviews} // Pass ALL reviews, modal filters them
+                            onClose={() => setDetailModalOpen(false)}
+                            onOpenProfile={(uid) => handleOpenProfile(uid)}
+                            isWishlisted={wishlist.some(w => {
+                                if (!selectedRestaurant) return false;
+                                const key1 = `${w.name} -${parseFloat(w.lat).toFixed(4)} -${parseFloat(w.lng).toFixed(4)} `;
+                                const key2 = `${selectedRestaurant.name} -${parseFloat(selectedRestaurant.lat).toFixed(4)} -${parseFloat(selectedRestaurant.lng).toFixed(4)} `;
+                                return key1 === key2;
+                            })}
+                            onToggleWishlist={(r) => toggleWishlist(r)}
+                            currentUser={user} // [NEW] Pass current user for ID check
+                            onDeleteReview={handleReviewDelete}
+                            onEditReview={(review) => {
+                                // [FIX] Close detail modal first
+                                setDetailModalOpen(false);
+
+                                // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                                reviewModal.setEditingReview(review);
+
+                                reviewModal.setSelectedNewPlace({
+                                    id: review.placeId || selectedRestaurant?.id || review.id,
+                                    name: review.name || selectedRestaurant?.name,
+                                    address: review.location || selectedRestaurant?.address,
+                                    category: review.category || selectedRestaurant?.category,
+                                    roadAddress: review.location || "",
+                                    x: selectedRestaurant?.x,
+                                    y: selectedRestaurant?.y,
+                                    lat: review.lat,
+                                    lng: review.lng
+                                });
+
+                                reviewModal.setNewReviewParams({
+                                    text: review.comment,
+                                    rating: review.rating || 0,
+                                    rankIndex: review.rankIndex
+                                });
+
+                                reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                                reviewModal.setIsOpen(true);
+                            }}
+                        />
+                    )
+                }
+
+                <RestaurantSearchModal
+                    isOpen={restaurantSearchOpen}
+                    onClose={() => setRestaurantSearchOpen(false)}
+                    mockRestaurantSearch={searchNaverPlaces} // This should eventually be a real API call if possible, or keep mock
+                    onSelectRestaurant={handleSelectRestaurantFromSearch}
+                    mapInstance={mapInstance} // [NEW] Pass map instance for location sorting
+                />
+
+                <UserGuideModal
+                    isOpen={userGuideOpen}
+                    onClose={() => setUserGuideOpen(false)}
+                />
+
+
+                {userSearchOpen && (
+                    <UserSearchModal
+                        isOpen={userSearchOpen}
+                        onClose={() => setUserSearchOpen(false)}
+                        onOpenProfile={handleOpenProfile}
                     />
                 )}
 
-                {currentPage === "MAIN" && (
-                    <button
-                        onClick={() => {
-                            if (!user) {
-                                alert("로그인이 필요합니다.");
-                                return;
-                            }
-                            reviewModal.setIsOpen(true);
-                        }}
-                        className="absolute bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-xl flex items-center justify-center text-white hover:bg-indigo-700 hover:scale-105 transition-all z-30"
-                    >
-                        <span className="text-3xl font-light mb-1">+</span>
-                    </button>
-                )}
-
-                {/* Friend Management Modal */}
-                <FriendManagementModal
-                    isOpen={showFriendManagement}
-                    onClose={() => setShowFriendManagement(false)}
-                    onOpenProfile={handleOpenProfile}
+                {/* [NEW] Profile Edit Modal */}
+                <ProfileEditModal
+                    isOpen={profileEditModalOpen}
+                    user={user}
+                    onClose={() => setProfileEditModalOpen(false)}
+                    onUpdate={updateUserProfile}
                 />
 
-                {/* Friend Drawer (Legacy or for quick access?) - Keeping for now if used elsewhere */}
-                <FriendDrawer
-                    isOpen={friendsListOpen}
-                    onClose={() => setFriendsListOpen(false)}
-                    friends={friendsData}
+                <UserListModal
+                    isOpen={showUserListModal}
+                    onClose={() => setShowUserListModal(false)}
+                    title={drawerTitle}
+                    users={friendsData}
                     followingIds={followingList}
                     onFollow={followUser}
                     onUnfollow={unfollowUser}
-                    onViewProfile={(f) => handleVisitProfile(f)} // Recursive navigation!
+                    onViewProfile={handleVisitProfile}
                     currentUser={user}
-                    title={drawerTitle} // [NEW]
                 />
-            </div>
-
-
-
-            <ReviewModal
-                isOpen={reviewModal.isOpen}
-                onClose={() => {
-                    reviewModal.close(); // Use hook's close to reset state
-                    setDetailModalOpen(false); // Ensure detail is closed too
-                }}
-                onSubmit={handleReviewSubmit} // [FIX] Pass submit handler
-                onDelete={handleReviewDelete} // [FIX] Pass delete handler
-                handleSearchPlace={() => setRestaurantSearchOpen(true)} // [FIX] Enable Search from Modal
-                currentUser={user} // [FIX] For Debugging
-                // State & Data
-                selectedNewPlace={reviewModal.selectedNewPlace}
-                newReviewParams={reviewModal.newReviewParams}
-                setNewReviewParams={reviewModal.setNewReviewParams}
-                editingReview={reviewModal.editingReview} // [FIX] Pass editing state
-                setEditingReview={reviewModal.setEditingReview} // Pass setter for editingReview
-
-                // Data for Ranking Steps
-                categoryReviews={(() => {
-                    // [FIX] Always use ALL reviews from the current user for ranking comparison, NOT just 'activeReviews' which might be filtered by viewMode.
-                    if (!user) return [];
-                    let myReviews = reviews.filter(r => r.userId === user.uid);
-
-                    // [FIX] Exclude the review currently being edited to avoid duplicates in the anchor list
-                    if (reviewModal.editingReview) {
-                        myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
-                    }
-
-                    // Sort by rankIndex (ascending) to show top ranked first
-                    myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
-
-                    const targetCat = normalizeCategory(reviewModal.selectedNewPlace?.category);
-
-                    return myReviews.filter(r => {
-                        // Strict category match? Or Broad?
-                        // User wants Broad for grouping.
-                        const rCat = normalizeCategory(r.category);
-                        const match = rCat === targetCat;
-                        return match;
-                    });
-                })()}
-                allReviews={(() => {
-                    // [FIX] Same fix for Global Ranking step
-                    if (!user) return [];
-                    let myReviews = reviews.filter(r => r.userId === user.uid);
-
-                    // [FIX] Exclude editing review
-                    if (reviewModal.editingReview) {
-                        myReviews = myReviews.filter(r => r.id !== reviewModal.editingReview.id);
-                    }
-
-                    myReviews.sort((a, b) => (a.rankIndex || 0) - (b.rankIndex || 0));
-                    return myReviews;
-                })()}
-                onInsert={handleInsert}
-                expandedFolders={expandedFolders}
-                toggleFolder={toggleFolder}
-            />
-
-            <ProfileModal
-                isOpen={profileModalOpen}
-                userProfile={targetProfile || (user ? {
-                    id: user.uid,
-                    name: user.displayName,
-                    followers: 10,
-                    following: 5,
-                    ranking: activeReviews
-                } : null)}
-                currentUser={user}
-                onClose={() => setProfileModalOpen(false)}
-                activeReviews={activeReviews}
-                onViewMap={handleVisitProfile} // [MODIFIED] Use new handler
-            />
-
-            {
-                detailModalOpen && (
-                    <RestaurantDetailModal
-                        restaurant={selectedRestaurant}
-                        allReviews={reviews} // Pass ALL reviews, modal filters them
-                        onClose={() => setDetailModalOpen(false)}
-                        onOpenProfile={(uid) => handleOpenProfile(uid)}
-                        isWishlisted={wishlist.some(w => {
-                            if (!selectedRestaurant) return false;
-                            const key1 = `${w.name} -${parseFloat(w.lat).toFixed(4)} -${parseFloat(w.lng).toFixed(4)} `;
-                            const key2 = `${selectedRestaurant.name} -${parseFloat(selectedRestaurant.lat).toFixed(4)} -${parseFloat(selectedRestaurant.lng).toFixed(4)} `;
-                            return key1 === key2;
-                        })}
-                        onToggleWishlist={(r) => toggleWishlist(r)}
-                        currentUser={user} // [NEW] Pass current user for ID check
-                        onDeleteReview={handleReviewDelete}
-                        onEditReview={(review) => {
-                            // [FIX] Close detail modal first
-                            setDetailModalOpen(false);
-
-                            // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
-                            reviewModal.setEditingReview(review);
-
-                            reviewModal.setSelectedNewPlace({
-                                id: review.placeId || selectedRestaurant?.id || review.id,
-                                name: review.name || selectedRestaurant?.name,
-                                address: review.location || selectedRestaurant?.address,
-                                category: review.category || selectedRestaurant?.category,
-                                roadAddress: review.location || "",
-                                x: selectedRestaurant?.x,
-                                y: selectedRestaurant?.y,
-                                lat: review.lat,
-                                lng: review.lng
-                            });
-
-                            reviewModal.setNewReviewParams({
-                                text: review.comment,
-                                rating: review.rating || 0,
-                                rankIndex: review.rankIndex
-                            });
-
-                            reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
-                            reviewModal.setIsOpen(true);
-                        }}
-                    />
-                )
-            }
-
-            <RestaurantSearchModal
-                isOpen={restaurantSearchOpen}
-                onClose={() => setRestaurantSearchOpen(false)}
-                mockRestaurantSearch={searchNaverPlaces} // This should eventually be a real API call if possible, or keep mock
-                onSelectRestaurant={handleSelectRestaurantFromSearch}
-                mapInstance={mapInstance} // [NEW] Pass map instance for location sorting
-            />
-
-            <UserGuideModal
-                isOpen={userGuideOpen}
-                onClose={() => setUserGuideOpen(false)}
-            />
-
-
-            {userSearchOpen && (
-                <UserSearchModal
-                    isOpen={userSearchOpen}
-                    onClose={() => setUserSearchOpen(false)}
-                    onOpenProfile={handleOpenProfile}
-                />
-            )}
-
-            {/* [NEW] Profile Edit Modal */}
-            <ProfileEditModal
-                isOpen={profileEditModalOpen}
-                user={user}
-                onClose={() => setProfileEditModalOpen(false)}
-                onUpdate={updateUserProfile}
-            />
-
-            <UserListModal
-                isOpen={showUserListModal}
-                onClose={() => setShowUserListModal(false)}
-                title={drawerTitle}
-                users={friendsData}
-                followingIds={followingList}
-                onFollow={followUser}
-                onUnfollow={unfollowUser}
-                onViewProfile={handleVisitProfile}
-                currentUser={user}
-            />
-        </div >
+            </div >
+        </InAppBrowserGuard>
     );
 }
 

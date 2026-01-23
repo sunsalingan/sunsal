@@ -20,10 +20,10 @@ const RestaurantList = ({
     const [recommendations, setRecommendations] = React.useState([]);
     const [loadingRecs, setLoadingRecs] = React.useState(false);
 
-    // Fetch Recommendations when list is empty
+    // Fetch Recommendations (Always fetch if logged in to show at bottom)
     React.useEffect(() => {
         const fetchRecs = async () => {
-            if (displayedReviews.length === 0 && user && allReviews) {
+            if (user && allReviews) {
                 setLoadingRecs(true);
                 try {
                     // Fetch Users (Limit to 50 for performance)
@@ -43,7 +43,7 @@ const RestaurantList = ({
         };
 
         fetchRecs();
-    }, [displayedReviews.length, user, allReviews]); // Dependency array
+    }, [user, allReviews, followingList]); // Dependency array updated
 
     return (
         <main className="flex-1 overflow-y-auto px-4 py-6 bg-slate-50 dark:bg-slate-900 transition-colors">
@@ -137,27 +137,28 @@ const RestaurantList = ({
                         <br />나와 취향이 비슷한 친구를 만나면 더 정확해집니다.
                     </p>
 
-                    {/* [NEW] Recommendation Component */}
-                    {user && (
-                        <div className="mt-4">
-                            {loadingRecs ? (
-                                <div className="text-xs text-slate-400 animate-pulse">추천 친구를 찾는 중...</div>
-                            ) : recommendations.length > 0 ? (
-                                <FriendRecommendation
-                                    recommendations={recommendations}
-                                    onFollow={async (uid) => {
-                                        await followUser(uid);
-                                    }}
-                                    followingList={followingList}
-                                />
-                            ) : (
-                                <div className="text-xs text-slate-400 mt-2">
-                                    아쉽게도 아직 비슷한 취향의 친구를 못 찾았어요 😭<br />
-                                    (활동이 늘어나면 추천이 정확해집니다)
-                                </div>
-                            )}
+                </div>
+            )}
+
+            {/* [MODIFIED] Recommendation Component - Always Show at Bottom if Logged In */}
+            {user && (
+                <div className="mt-8 pb-10 border-t border-slate-200 dark:border-slate-800 pt-6">
+                    {loadingRecs ? (
+                        <div className="text-xs text-slate-400 animate-pulse text-center">추천 친구를 찾는 중...</div>
+                    ) : recommendations.length > 0 ? (
+                        <FriendRecommendation
+                            recommendations={recommendations}
+                            onFollow={async (uid) => {
+                                await followUser(uid);
+                            }}
+                            followingList={followingList}
+                        />
+                    ) : displayedReviews.length === 0 ? (
+                        <div className="text-xs text-slate-400 mt-2 text-center">
+                            아쉽게도 아직 비슷한 취향의 친구를 못 찾았어요 😭<br />
+                            (활동이 늘어나면 추천이 정확해집니다)
                         </div>
-                    )}
+                    ) : null}
                 </div>
             )}
         </main>

@@ -77,9 +77,11 @@ const RestaurantSearchModal = ({
 
     // Helper to filter only restaurants
     const filterRestaurants = (items) => {
-        const validCategories = ["음식점", "식당", "카페", "한식", "양식", "중식", "일식", "분식", "주점", "술집", "베이커리", "패스트푸드", "육류", "고기", "해산물", "면", "요리", "아시안", "태국", "베트남", "인도"];
+        const validCategories = ["음식점", "식당", "카페", "한식", "양식", "중식", "일식", "분식", "주점", "술집", "베이커리", "패스트푸드", "육류", "고기", "해산물", "면", "요리", "아시안", "태국", "베트남", "인도", "cafe", "pub", "bar", "restaurant"];
         return items.filter(item => {
-            const cat = (item.category || "").replace(/\s/g, ""); // remove spaces
+            if (!item.category) return false;
+            // Normalize: lowercase, remove spaces
+            const cat = item.category.toLowerCase().replace(/\s/g, "");
             return validCategories.some(v => cat.includes(v));
         });
     };
@@ -132,7 +134,7 @@ const RestaurantSearchModal = ({
             } else {
                 setResults([]);
             }
-        }, 500);
+        }, 300); // [MODIFIED] Reduced to 300ms for better responsiveness
         return () => clearTimeout(timer);
     }, [searchTerm, isOpen, mapInstance, userLocation, currentRegion]);
 
