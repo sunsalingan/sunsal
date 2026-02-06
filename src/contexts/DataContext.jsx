@@ -510,7 +510,7 @@ export function DataProvider({ children }) {
                 ...s,
                 avgScore: (s.totalScore / s.count).toFixed(1)
             }))
-            .filter(s => s.count >= 1) // Show all brands for now
+            .filter(s => s.count >= 20) // Only show brands with 20+ branches
             .sort((a, b) => parseFloat(b.avgScore) - parseFloat(a.avgScore)); // Rank by avg score
 
     }, [displayedRestaurants]);

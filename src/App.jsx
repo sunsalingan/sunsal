@@ -160,6 +160,16 @@ function App() {
 
     // --- Effects ---
     React.useEffect(() => {
+        // [NEW] Dynamic Script Loading for Naver Maps (Security: Hide API Key)
+        if (!window.naver) {
+            const script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${import.meta.env.VITE_NAVER_MAP_CLIENT_ID}&submodules=geocoder`;
+            script.defer = true;
+            script.async = true;
+            document.head.appendChild(script);
+        }
+
         // [NEW] Check for Admin & Demo URLs
         const path = window.location.pathname;
         if (path === "/admin") {
@@ -1003,29 +1013,35 @@ function App() {
                                 // [FIX] Close detail modal first
                                 setDetailModalOpen(false);
 
-                                // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
-                                reviewModal.setEditingReview(review);
+                                if (!review) {
+                                    // NEW REVIEW MODE
+                                    reviewModal.openForNew(selectedRestaurant);
+                                } else {
+                                    // EDIT REVIEW MODE
+                                    // [FIX] Manually populate ReviewModal state to ensure all fields (x, y, address) are present.
+                                    reviewModal.setEditingReview(review);
 
-                                reviewModal.setSelectedNewPlace({
-                                    id: review.placeId || selectedRestaurant?.id || review.id,
-                                    name: review.name || selectedRestaurant?.name,
-                                    address: review.location || selectedRestaurant?.address,
-                                    category: review.category || selectedRestaurant?.category,
-                                    roadAddress: review.location || "",
-                                    x: selectedRestaurant?.x,
-                                    y: selectedRestaurant?.y,
-                                    lat: review.lat,
-                                    lng: review.lng
-                                });
+                                    reviewModal.setSelectedNewPlace({
+                                        id: review.placeId || selectedRestaurant?.id || review.id,
+                                        name: review.name || selectedRestaurant?.name,
+                                        address: review.location || selectedRestaurant?.address,
+                                        category: review.category || selectedRestaurant?.category,
+                                        roadAddress: review.location || "",
+                                        x: selectedRestaurant?.x,
+                                        y: selectedRestaurant?.y,
+                                        lat: review.lat,
+                                        lng: review.lng
+                                    });
 
-                                reviewModal.setNewReviewParams({
-                                    text: review.comment,
-                                    rating: review.rating || 0,
-                                    rankIndex: review.rankIndex
-                                });
+                                    reviewModal.setNewReviewParams({
+                                        text: review.comment,
+                                        rating: review.rating || 0,
+                                        rankIndex: review.rankIndex
+                                    });
 
-                                reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
-                                reviewModal.setIsOpen(true);
+                                    reviewModal.setTempRankIndex(review.rankIndex !== undefined ? review.rankIndex : 0);
+                                    reviewModal.setIsOpen(true);
+                                }
                             }}
                         />
                     )

@@ -207,7 +207,7 @@ const RestaurantSearchModal = ({
                         ))
                     ) : (
                         <div className="py-10 text-center text-slate-400 text-sm">
-                            {searchTerm ? "검색 결과가 없습니다. 식당 이름으로 다시 검색해보세요." : "방문한 식당의 이름을 검색해보세요."}
+                            {searchTerm ? "검색 결과가 없습니다. 식당 이름으로 다시 검색해보세요." : "식당 이름을 검색해보세요."}
                         </div>
                     )}
                 </div>

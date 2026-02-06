@@ -31,13 +31,13 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAgKCb9Hnu1SVhDkcQ4qpcCcDwODNXXjHs",
-    authDomain: "sunsal-ranking.firebaseapp.com",
-    projectId: "sunsal-ranking",
-    storageBucket: "sunsal-ranking.firebasestorage.app",
-    messagingSenderId: "144649731408",
-    appId: "1:144649731408:web:37cd49d6de1f1c4fdf8055",
-    measurementId: "G-KVNRH9L4JG"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);

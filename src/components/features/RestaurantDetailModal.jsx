@@ -1,5 +1,5 @@
 import React from "react";
-import { X, MapPin, Star, User, Heart } from "lucide-react";
+import { X, MapPin, Star, User, Heart, Edit3 } from "lucide-react";
 
 /**
  * RestaurantDetailModal
@@ -78,16 +78,24 @@ const RestaurantDetailModal = ({
                 </div>
 
                 {/* Fixed Footer */}
-                <div className="absolute bottom-0 left-0 w-full p-4 border-t bg-white safe-area-bottom z-10">
+                <div className="absolute bottom-0 left-0 w-full p-4 border-t bg-white safe-area-bottom z-10 flex gap-3">
+                    <button
+                        onClick={() => onEditReview ? onEditReview(null) : null} // null indicates new review
+                        className="flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    >
+                        <Edit3 size={18} />
+                        리뷰쓰기
+                    </button>
+
                     <button
                         onClick={() => onToggleWishlist && onToggleWishlist(restaurant)}
-                        className={`w-full py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${isWishlisted
+                        className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${isWishlisted
                             ? "bg-pink-50 text-pink-600 border border-pink-200 hover:bg-pink-100"
                             : "bg-indigo-600 text-white hover:bg-indigo-700"
                             }`}
                     >
                         <Heart size={20} className={isWishlisted ? "fill-current" : ""} />
-                        {isWishlisted ? "가고싶어요 취소" : "가고싶어요 (+내 리스트)"}
+                        {isWishlisted ? "가고싶어요 취소" : "가고싶어요"}
                     </button>
                 </div>
             </div >

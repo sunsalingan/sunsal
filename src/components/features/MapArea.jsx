@@ -259,8 +259,7 @@ const MapArea = ({
                         onClick={() => setRestaurantSearchOpen(true)}
                         className="w-full bg-white shadow-lg rounded-full py-3 px-4 flex items-center text-slate-400 text-sm font-medium hover:bg-slate-50 transition-colors"
                     >
-                        <Search size={16} className="mr-2 text-indigo-500" /> 방문한 식당
-                        검색...
+                        <Search size={16} className="mr-2 text-indigo-500" /> 식당 검색...
                     </button>
                 </div>
             )}
